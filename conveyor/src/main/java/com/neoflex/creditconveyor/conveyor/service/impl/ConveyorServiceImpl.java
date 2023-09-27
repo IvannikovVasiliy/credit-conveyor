@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Validated
@@ -23,13 +25,27 @@ public class ConveyorServiceImpl implements ConveyorService {
                 loanApplication.getAmount(), loanApplication.getTerm(), loanApplication.getFirstName(), loanApplication.getLastName(), loanApplication.getMiddleName(), loanApplication.getEmail(), loanApplication.getBirthdate(), loanApplication.getPassportSeries(), loanApplication.getPassportNumber());
 
         BigDecimal amountRequest = loanApplication.getAmount();
-        BigDecimal monthlyPayment = amountRequest.divide(BigDecimal.valueOf(Constants.COUNT_MONTHS));
+        BigDecimal monthlyPayment = amountRequest.divide(
+                BigDecimal.valueOf(loanApplication.getTerm()), Constants.COUNT_DIGITS_AFTER_COMMA, RoundingMode.DOWN
+        );
 
-        BigDecimal rate2 = Constants.BASE_RATE.add(BigDecimal.valueOf(-1));
-        BigDecimal totalAmount3 = loanApplication.getAmount().add(BigDecimal.valueOf(Constants.INSURANCE_PRICE));
-        BigDecimal rate3 = Constants.BASE_RATE.add(BigDecimal.valueOf(-5));
+        BigDecimal sale2 = BigDecimal.valueOf(-Constants.RATE_SALE_FOR_SALARY_CLIENTS);
+        BigDecimal rate2 = Constants.BASE_RATE.add(sale2);
 
-        List<LoanOfferDTO> loanOffers = List.of(
+        BigDecimal insurancePrice = loanApplication.getAmount()
+                .divide(BigDecimal.valueOf(Constants.INSURANCE_CONSTANT_DENOMINATOR))
+                .multiply(BigDecimal.valueOf(loanApplication.getTerm()))
+                .add(BigDecimal.valueOf(Constants.INSURANCE_CONSTANT_ARGUMENT));
+        BigDecimal totalAmountWithInsurance = loanApplication
+                        .getAmount()
+                        .add(insurancePrice);
+        BigDecimal sale3 = BigDecimal.valueOf(-Constants.RATE_SALE_FOR_INSURANCE);
+        BigDecimal rate3 = Constants.BASE_RATE.add(sale3);
+
+        BigDecimal sale4 = BigDecimal.valueOf(-Constants.RATE_SALE_FOR_INSURANCE_AND_AGREEMENT_SALARY_TRANSACTION);
+        BigDecimal rate4 = Constants.BASE_RATE.add(sale4);
+
+        List<LoanOfferDTO> loanOffers = new ArrayList<>(List.of(
                 LoanOfferDTO
                         .builder()
                         .applicationId(Constants.APPLICATION_ID)
@@ -56,14 +72,29 @@ public class ConveyorServiceImpl implements ConveyorService {
                         .builder()
                         .applicationId(Constants.APPLICATION_ID)
                         .requestedAmount(amountRequest)
-                        .totalAmount(totalAmount3)
+                        .totalAmount(totalAmountWithInsurance)
                         .term(loanApplication.getTerm())
                         .monthlyPayment(monthlyPayment)
                         .rate(rate3)
                         .isInsuranceEnabled(true)
                         .isSalaryClient(false)
                         .build(),
-        );
+                LoanOfferDTO
+                        .builder()
+                        .applicationId(Constants.APPLICATION_ID)
+                        .requestedAmount(amountRequest)
+                        .totalAmount(totalAmountWithInsurance)
+                        .term(loanApplication.getTerm())
+                        .monthlyPayment(monthlyPayment)
+                        .rate(rate4)
+                        .isInsuranceEnabled(true)
+                        .isSalaryClient(true)
+                        .build()
+        ))
+                .stream()
+                .sorted((offer1, offer2) ->
+                        offer1.getRate().compareTo(offer2.getRate()))
+                .toList();
 
         return loanOffers;
     }

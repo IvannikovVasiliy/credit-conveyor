@@ -35,6 +35,6 @@ public class ConveyorController {
 
     @PostMapping("/calculation")
     public ResponseEntity<CreditDTO> validScoreCalcOfferParam(@RequestBody ScoringDataDTO scoringData) {
-
+        return null;
     }
 }

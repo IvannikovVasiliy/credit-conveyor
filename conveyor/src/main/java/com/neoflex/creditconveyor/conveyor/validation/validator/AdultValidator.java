@@ -1,15 +1,16 @@
 package com.neoflex.creditconveyor.conveyor.validation.validator;
 
+import com.neoflex.creditconveyor.conveyor.validation.constraint.AdultConstraint;
 import com.neoflex.creditconveyor.conveyor.validation.constraint.FirstLastMiddleNameConstraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.time.LocalDate;
 
-public class AdultValidator implements ConstraintValidator<FirstLastMiddleNameConstraint, LocalDate> {
+public class AdultValidator implements ConstraintValidator<AdultConstraint, LocalDate> {
 
     @Override
-    public void initialize(FirstLastMiddleNameConstraint constraintAnnotation) {
+    public void initialize(AdultConstraint constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 

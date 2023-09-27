@@ -15,6 +15,10 @@ public class FirstLastMiddleNameValidator implements ConstraintValidator<FirstLa
 
     @Override
     public boolean isValid(String str, ConstraintValidatorContext constraintValidatorContext) {
+        if (str == null) {
+            return true;
+        }
+
         String regex = "[a-zA-Z]*";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(str);
