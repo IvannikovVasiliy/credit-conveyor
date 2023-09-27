@@ -2,10 +2,14 @@ package com.neoflex.creditconveyor.conveyor.domain.dto;
 
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Gender;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.MartialStatus;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Getter
+@Setter
 public class ScoringDataDTO {
     private BigDecimal amount;
     private Integer term;
@@ -18,7 +22,7 @@ public class ScoringDataDTO {
     private String passportNumber;
     private LocalDate passportIssueDate;
     private String passportIssueBranch;
-    private MartialStatus maritalStatus;
+    private MartialStatus martialStatus;
     private Integer dependentAmount;
     private EmploymentDTO employment;
     private String account;

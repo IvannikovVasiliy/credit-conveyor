@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -25,23 +24,39 @@ public class ConveyorServiceImpl implements ConveyorService {
                 loanApplication.getAmount(), loanApplication.getTerm(), loanApplication.getFirstName(), loanApplication.getLastName(), loanApplication.getMiddleName(), loanApplication.getEmail(), loanApplication.getBirthdate(), loanApplication.getPassportSeries(), loanApplication.getPassportNumber());
 
         BigDecimal amountRequest = loanApplication.getAmount();
-        BigDecimal monthlyPayment = amountRequest.divide(
-                BigDecimal.valueOf(loanApplication.getTerm()), Constants.COUNT_DIGITS_AFTER_COMMA, RoundingMode.DOWN
-        );
-
-        BigDecimal sale2 = BigDecimal.valueOf(-Constants.RATE_SALE_FOR_SALARY_CLIENTS);
-        BigDecimal rate2 = Constants.BASE_RATE.add(sale2);
-
+        Integer term = loanApplication.getTerm();
         BigDecimal insurancePrice = loanApplication.getAmount()
                 .divide(BigDecimal.valueOf(Constants.INSURANCE_CONSTANT_DENOMINATOR))
                 .multiply(BigDecimal.valueOf(loanApplication.getTerm()))
                 .add(BigDecimal.valueOf(Constants.INSURANCE_CONSTANT_ARGUMENT));
-        BigDecimal totalAmountWithInsurance = loanApplication
-                        .getAmount()
-                        .add(insurancePrice);
+
+        BigDecimal totalAmount1 = amountRequest;
+        BigDecimal monthlyPayment1 = totalAmount1.divide(
+                BigDecimal.valueOf(term), Constants.COUNT_DIGITS_AFTER_COMMA, RoundingMode.DOWN
+        );
+
+        BigDecimal totalAmount2 = amountRequest;
+        BigDecimal monthlyPayment2 = totalAmount2.divide(
+                BigDecimal.valueOf(term), Constants.COUNT_DIGITS_AFTER_COMMA, RoundingMode.DOWN
+        );
+        BigDecimal sale2 = BigDecimal.valueOf(-Constants.RATE_SALE_FOR_SALARY_CLIENTS);
+        BigDecimal rate2 = Constants.BASE_RATE.add(sale2);
+
+        BigDecimal totalAmount3 = loanApplication
+                .getAmount()
+                .add(insurancePrice);
+        BigDecimal monthlyPayment3 = totalAmount3.divide(
+                BigDecimal.valueOf(term), Constants.COUNT_DIGITS_AFTER_COMMA, RoundingMode.DOWN
+        );
         BigDecimal sale3 = BigDecimal.valueOf(-Constants.RATE_SALE_FOR_INSURANCE);
         BigDecimal rate3 = Constants.BASE_RATE.add(sale3);
 
+        BigDecimal totalAmount4 = loanApplication
+                .getAmount()
+                .add(insurancePrice);
+        BigDecimal monthlyPayment4 = totalAmount4.divide(
+                BigDecimal.valueOf(term), Constants.COUNT_DIGITS_AFTER_COMMA, RoundingMode.DOWN
+        );
         BigDecimal sale4 = BigDecimal.valueOf(-Constants.RATE_SALE_FOR_INSURANCE_AND_AGREEMENT_SALARY_TRANSACTION);
         BigDecimal rate4 = Constants.BASE_RATE.add(sale4);
 
@@ -50,9 +65,9 @@ public class ConveyorServiceImpl implements ConveyorService {
                         .builder()
                         .applicationId(Constants.APPLICATION_ID)
                         .requestedAmount(amountRequest)
-                        .totalAmount(amountRequest)
+                        .totalAmount(totalAmount1)
                         .term(loanApplication.getTerm())
-                        .monthlyPayment(monthlyPayment)
+                        .monthlyPayment(monthlyPayment1)
                         .rate(Constants.BASE_RATE)
                         .isInsuranceEnabled(false)
                         .isSalaryClient(false)
@@ -61,9 +76,9 @@ public class ConveyorServiceImpl implements ConveyorService {
                         .builder()
                         .applicationId(Constants.APPLICATION_ID)
                         .requestedAmount(amountRequest)
-                        .totalAmount(amountRequest)
+                        .totalAmount(totalAmount2)
                         .term(loanApplication.getTerm())
-                        .monthlyPayment(monthlyPayment)
+                        .monthlyPayment(monthlyPayment2)
                         .rate(rate2)
                         .isInsuranceEnabled(false)
                         .isSalaryClient(true)
@@ -72,9 +87,9 @@ public class ConveyorServiceImpl implements ConveyorService {
                         .builder()
                         .applicationId(Constants.APPLICATION_ID)
                         .requestedAmount(amountRequest)
-                        .totalAmount(totalAmountWithInsurance)
+                        .totalAmount(totalAmount3)
                         .term(loanApplication.getTerm())
-                        .monthlyPayment(monthlyPayment)
+                        .monthlyPayment(monthlyPayment3)
                         .rate(rate3)
                         .isInsuranceEnabled(true)
                         .isSalaryClient(false)
@@ -83,9 +98,9 @@ public class ConveyorServiceImpl implements ConveyorService {
                         .builder()
                         .applicationId(Constants.APPLICATION_ID)
                         .requestedAmount(amountRequest)
-                        .totalAmount(totalAmountWithInsurance)
+                        .totalAmount(totalAmount4)
                         .term(loanApplication.getTerm())
-                        .monthlyPayment(monthlyPayment)
+                        .monthlyPayment(monthlyPayment4)
                         .rate(rate4)
                         .isInsuranceEnabled(true)
                         .isSalaryClient(true)
@@ -96,6 +111,10 @@ public class ConveyorServiceImpl implements ConveyorService {
                         offer1.getRate().compareTo(offer2.getRate()))
                 .toList();
 
+        log.debug("Response calculate offers. loanOffers={}", loanOffers);
+
         return loanOffers;
     }
+
+
 }
