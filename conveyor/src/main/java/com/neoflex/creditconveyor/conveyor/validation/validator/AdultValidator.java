@@ -1,12 +1,16 @@
 package com.neoflex.creditconveyor.conveyor.validation.validator;
 
+import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
+import com.neoflex.creditconveyor.conveyor.error.exception.ResourceNotFoundException;
+import com.neoflex.creditconveyor.conveyor.utils.DatesUtil;
 import com.neoflex.creditconveyor.conveyor.validation.constraint.AdultConstraint;
-import com.neoflex.creditconveyor.conveyor.validation.constraint.FirstLastMiddleNameConstraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 
+@Slf4j
 public class AdultValidator implements ConstraintValidator<AdultConstraint, LocalDate> {
 
     @Override
@@ -15,20 +19,15 @@ public class AdultValidator implements ConstraintValidator<AdultConstraint, Loca
     }
 
     @Override
-    public boolean isValid(LocalDate date, ConstraintValidatorContext constraintValidatorContext) {
-        LocalDate now = LocalDate.now();
-        LocalDate birthday = LocalDate.of(2001, 9, 20);
+    public boolean isValid(LocalDate birthday, ConstraintValidatorContext constraintValidatorContext) {
+        log.debug("Request, validation birthday. birthday={}", birthday);
 
-        int years = now.getYear() - birthday.getYear();
-
-        if (birthday.getMonthValue() > now.getMonthValue()) {
-            years--;
-        } else if (birthday.getMonthValue() == now.getMonthValue()) {
-            if (birthday.getDayOfMonth() > now.getDayOfMonth()) {
-                years--;
-            }
+        if (null == birthday) {
+            throw new ResourceNotFoundException("Invalid value. Birthday shouldn't be null");
         }
+        Integer years = DatesUtil.getYears(birthday);
 
-        return years >= 18;
+        log.debug("Response, validation birthday. years={}", years);
+        return years >= Constants.AGE_ADULT;
     }
 }

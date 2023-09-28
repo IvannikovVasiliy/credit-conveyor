@@ -1,5 +1,6 @@
 package com.neoflex.creditconveyor.conveyor.domain.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 public class CreditDTO {
       private BigDecimal amount;
       private Integer term;
