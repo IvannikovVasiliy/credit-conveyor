@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyor.conveyor.validation.validator;
 
 import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
-import com.neoflex.creditconveyor.conveyor.error.exception.BirthdayNotFoundException;
+import com.neoflex.creditconveyor.conveyor.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyor.conveyor.utils.DatesUtil;
 import com.neoflex.creditconveyor.conveyor.validation.constraint.AdultConstraint;
 import jakarta.validation.ConstraintValidator;
@@ -23,7 +23,7 @@ public class AdultValidator implements ConstraintValidator<AdultConstraint, Loca
         log.debug("Request, validation birthday. birthday={}", birthday);
 
         if (null == birthday) {
-            throw new BirthdayNotFoundException("Invalid value. Birthday shouldn't be null");
+            throw new ResourceNotFoundException("Invalid value. Birthday shouldn't be null");
         }
         Integer years = DatesUtil.getYears(birthday);
 

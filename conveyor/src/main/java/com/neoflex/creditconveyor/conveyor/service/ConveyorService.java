@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface ConveyorService {
     List<LoanOfferDTO> createLoanOffer(@Valid LoanApplicationRequestDTO loanApplicationRequest);
-    CreditDTO validAndScoreAndCalcOffer(ScoringDataDTO scoringData);
+    CreditDTO validAndScoreAndCalcOffer(@Valid ScoringDataDTO scoringData);
 }

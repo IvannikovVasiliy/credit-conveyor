@@ -2,7 +2,7 @@ package com.neoflex.creditconveyor.conveyor.advice;
 
 import com.neoflex.creditconveyor.conveyor.domain.constants.StatusConstants;
 import com.neoflex.creditconveyor.conveyor.domain.dto.MessageInfoDto;
-import com.neoflex.creditconveyor.conveyor.error.exception.BirthdayNotFoundException;
+import com.neoflex.creditconveyor.conveyor.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyor.conveyor.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyor.conveyor.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyor.conveyor.error.validation.Violation;
@@ -33,9 +33,9 @@ public class GlobalErrorHandler {
 //        return new ErrorResponseValidation(violations);
 //    }
 
-    @ExceptionHandler(BirthdayNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public MessageInfoDto handlePaymentNotFound(BirthdayNotFoundException paymentNotFound) {
+    public MessageInfoDto handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
         messageInfo.setRespCode(StatusConstants.BAD_REQUEST);
         messageInfo.setMessage(paymentNotFound.getMessage());
         return messageInfo;

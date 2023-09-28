@@ -38,6 +38,7 @@ public class Constants {
     public static final Integer COUNT_MONTHS = 12;
 
     public static final Integer ACCURACY = 10;
+    public static final Integer ACCURACY_DEBT_PAYMENT = 2;
 
     public static final Integer COUNT_DAYS_IN_LEAP_YEAR = 366;
     public static final Integer COUNT_DAYS_IN_NON_LEAP_YEAR = 365;

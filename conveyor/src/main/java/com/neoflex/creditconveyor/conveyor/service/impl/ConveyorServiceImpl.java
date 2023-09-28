@@ -123,8 +123,8 @@ public class ConveyorServiceImpl implements ConveyorService {
 
         CreditDTO creditDTO = CreditDTO.builder().build();
         calcRate(scoringData, creditDTO);
-        BigDecimal psk = calcTotalAmount(scoringData.getAmount(), creditDTO.getTerm());
         BigDecimal monthPayment = calcMonthlyPayment(scoringData.getTerm(), creditDTO.getRate(), scoringData.getAmount());
+        BigDecimal psk = calcTotalAmount(monthPayment, scoringData.getTerm());
         var paymentSchedules = doPaymentSchedule(scoringData, monthPayment, creditDTO.getRate());
 
         creditDTO.setAmount(scoringData.getAmount());
@@ -193,6 +193,7 @@ public class ConveyorServiceImpl implements ConveyorService {
                 scoringData.getAmount(), scoringData.getTerm(), scoringData.getFirstName(), scoringData.getLastName(), scoringData.getMiddleName(), scoringData.getGender(), scoringData.getBirthdate(), scoringData.getMartialStatus(), scoringData.getDependentAmount(), scoringData.getEmployment(), scoringData.getAccount(), scoringData.getPassportSeries(), scoringData.getPassportNumber(), scoringData.getPassportIssueDate(), scoringData.getPassportIssueBranch(), scoringData.getIsInsuranceEnabled(), scoringData.getIsSalaryClient());
 
         BigDecimal rate = Constants.BASE_RATE;
+        creditDTO.setRate(rate);
 
         if (MartialStatus.SELF_EMPLOYED.equals(scoringData.getMartialStatus())) {
             BigDecimal rateSelfEmployed = creditDTO.getRate().add(BigDecimal.valueOf(Constants.RATE_FOR_SELF_EMPLOYED));
@@ -245,7 +246,7 @@ public class ConveyorServiceImpl implements ConveyorService {
     private BigDecimal calcMonthlyPayment(Integer term, BigDecimal rate, BigDecimal amount) {
         log.debug("Input calculate monthly payment. term={}, rate={}, amount={}", term, rate, amount);
 
-        BigDecimal monthRate = rate.divide(BigDecimal.valueOf(12)).divide(BigDecimal.valueOf(100));
+        BigDecimal monthRate = rate.divide(BigDecimal.valueOf(12), Constants.ACCURACY, RoundingMode.DOWN).divide(BigDecimal.valueOf(100));
         BigDecimal exp = monthRate.add(BigDecimal.ONE).pow(term);
         BigDecimal indexAnnuity = monthRate
                 .multiply(exp)
@@ -264,21 +265,20 @@ public class ConveyorServiceImpl implements ConveyorService {
         BigDecimal remainder = scoringData.getAmount();
         LocalDate date = LocalDate.now();
         for (int i = 0; i < scoringData.getTerm(); i++) {
-            date = date.plusMonths(1);
             int countDaysOfYear = date.isLeapYear() ? Constants.COUNT_DAYS_IN_LEAP_YEAR : Constants.COUNT_DAYS_IN_NON_LEAP_YEAR;
 
             BigDecimal debtPayment = remainder
-                    .multiply(rate
-                            .add(BigDecimal.valueOf(Constants.MAX_PERCENT))
-                            .divide(BigDecimal.valueOf(Constants.MAX_PERCENT)))
+                    .multiply(rate.divide(BigDecimal.valueOf(Constants.MAX_PERCENT)))
                     .multiply(BigDecimal.valueOf(date.getMonth().length(date.isLeapYear())))
-                    .divide(BigDecimal.valueOf(countDaysOfYear));
+                    .divide(BigDecimal.valueOf(countDaysOfYear), Constants.ACCURACY_DEBT_PAYMENT);
 
             BigDecimal interestPayment = monthPayment.subtract(debtPayment);
             BigDecimal remainingDebt = remainder.subtract(interestPayment);
+            remainder = remainder.subtract(interestPayment);
 
+            date = date.plusMonths(1);
             PaymentScheduleElement currentPaymentSchedule =
-                    new PaymentScheduleElement(i, date, monthPayment, interestPayment , debtPayment, remainingDebt);
+                    new PaymentScheduleElement(i+1, date, monthPayment, interestPayment , debtPayment, remainingDebt);
             paymentScheduleElements.add(currentPaymentSchedule);
         }
 
