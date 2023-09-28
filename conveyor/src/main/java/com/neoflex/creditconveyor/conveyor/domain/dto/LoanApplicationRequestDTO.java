@@ -15,6 +15,35 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class LoanApplicationRequestDTO {
+
+    public LoanApplicationRequestDTO(BigDecimal amount, Integer term,
+                                     String firstName, String lastName, String middleName,
+                                     String email, LocalDate birthdate, String passportSeries, String passportNumber) {
+        this.amount = amount;
+        this.term = term;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleName = middleName;
+        this.email = email;
+        this.birthdate = birthdate;
+        this.passportSeries = passportSeries;
+        this.passportNumber = passportNumber;
+    }
+
+    public LoanApplicationRequestDTO(BigDecimal amount, Integer term, String firstName, String lastName,
+                                     LocalDate birthdate, String passportSeries, String passportNumber) {
+        this.amount = amount;
+        this.term = term;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthdate = birthdate;
+        this.passportSeries = passportSeries;
+        this.passportNumber = passportNumber;
+    }
+
+    public LoanApplicationRequestDTO() {
+    }
+
     @NotNull
     @Min(10000)
     private BigDecimal amount;
@@ -38,9 +67,9 @@ public class LoanApplicationRequestDTO {
     private LocalDate birthdate;
 
     @NotNull
-    @Size(min = 4)
+    @Size(min = 4, max = 4)
     private String passportSeries;
     @NotNull
-    @Size(min = 6)
+    @Size(min = 6, max = 6)
     private String passportNumber;
 }

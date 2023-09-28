@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/conveyor")
+@RequestMapping("/v1/conveyor")
 public class ConveyorController {
 
     private final ConveyorService conveyorService;

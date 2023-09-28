@@ -3,6 +3,7 @@
   "term": 7,
   "firstName": "Vasiliy",
   "lastName": "Ivannikov",
+  "birthdate": "2000-01-01",
   "passportSeries": "1234",
   "passportNumber": "123456"
 }

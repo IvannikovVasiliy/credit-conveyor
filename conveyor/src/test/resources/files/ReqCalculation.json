@@ -1,0 +1,15 @@
+{
+  "amount": 10000,
+  "term": 7,
+  "firstName": "Ivan",
+  "lastName": "Ivanov",
+  "birthdate": "2000-01-01",
+  "dependentAmount": 1000,
+  "employment": {
+    "workExperienceTotal": 13,
+    "workExperienceCurrent": 4
+  },
+  "passportSeries": 1234,
+  "passportNumber": 123456,
+  "martialStatus": "OWNER_BUSINESS"
+}

@@ -1,0 +1,67 @@
+{
+  "amount": 10000,
+  "term": 7,
+  "monthlyPayment": 1505.7709170000,
+  "rate": 16,
+  "psk": 10540.3964190000,
+  "isInsuranceEnabled": null,
+  "isSalaryClient": null,
+  "paymentSchedule": [
+    {
+      "number": 1,
+      "date": "2023-10-28",
+      "totalPayment": 1505.7709170000,
+      "interestPayment": 1374.2609170000,
+      "debtPayment": 131.51,
+      "remainingDebt": 8625.7390830000
+    },
+    {
+      "number": 2,
+      "date": "2023-11-28",
+      "totalPayment": 1505.7709170000,
+      "interestPayment": 1388.555394118684,
+      "debtPayment": 117.215522881316,
+      "remainingDebt": 7237.183688881316
+    },
+    {
+      "number": 3,
+      "date": "2023-12-28",
+      "totalPayment": 1505.7709170000,
+      "interestPayment": 1410.59699451608132,
+      "debtPayment": 95.17392248391868,
+      "remainingDebt": 5826.58669436523468
+    },
+    {
+      "number": 4,
+      "date": "2024-01-28",
+      "totalPayment": 1505.7709170000,
+      "interestPayment": 1426.5931909615025643,
+      "debtPayment": 79.1777260384974357,
+      "remainingDebt": 4399.9935034037321157
+    },
+    {
+      "number": 5,
+      "date": "2024-02-28",
+      "totalPayment": 1505.7709170000,
+      "interestPayment": 1446.142589740758165863,
+      "debtPayment": 59.628327259241834137,
+      "remainingDebt": 2953.850913662973949837
+    },
+    {
+      "number": 6,
+      "date": "2024-03-28",
+      "totalPayment": 1505.7709170000,
+      "interestPayment": 1468.32318956995574008949,
+      "debtPayment": 37.44772743004425991051,
+      "remainingDebt": 1485.52772409301820974751
+    },
+    {
+      "number": 7,
+      "date": "2024-04-28",
+      "totalPayment": 1505.7709170000,
+      "interestPayment": 1485.6391751652968024034217,
+      "debtPayment": 20.1317418347031975965783,
+      "remainingDebt": -0.1114510722785926559117
+    }
+  ]
+}

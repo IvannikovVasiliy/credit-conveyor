@@ -12,6 +12,15 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class EmploymentDTO {
+
+    public EmploymentDTO(Integer workExperienceTotal, Integer workExperienceCurrent) {
+        this.workExperienceTotal = workExperienceTotal;
+        this.workExperienceCurrent = workExperienceCurrent;
+    }
+
+    public EmploymentDTO() {
+    }
+
     private EmploymentStatus employmentStatus;
     private String employerINN;
     private BigDecimal salary;

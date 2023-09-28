@@ -7,6 +7,7 @@ import com.neoflex.creditconveyor.conveyor.domain.enumeration.MartialStatus;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Position;
 import com.neoflex.creditconveyor.conveyor.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyor.conveyor.error.validation.Violation;
+import com.neoflex.creditconveyor.conveyor.schedule.PaymentSchedule;
 import com.neoflex.creditconveyor.conveyor.service.ConveyorService;
 import com.neoflex.creditconveyor.conveyor.utils.DatesUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -125,7 +126,7 @@ public class ConveyorServiceImpl implements ConveyorService {
         calcRate(scoringData, creditDTO);
         BigDecimal monthPayment = calcMonthlyPayment(scoringData.getTerm(), creditDTO.getRate(), scoringData.getAmount());
         BigDecimal psk = calcTotalAmount(monthPayment, scoringData.getTerm());
-        var paymentSchedules = doPaymentSchedule(scoringData, monthPayment, creditDTO.getRate());
+        var paymentSchedules = PaymentSchedule.createPaymentSchedule(scoringData, monthPayment, creditDTO.getRate());
 
         creditDTO.setAmount(scoringData.getAmount());
         creditDTO.setTerm(scoringData.getTerm());
@@ -147,10 +148,7 @@ public class ConveyorServiceImpl implements ConveyorService {
 
         boolean isMartialStatusUnemployed = MartialStatus.UNEMPLOYED.equals(scoringData.getMartialStatus());
         if (isMartialStatusUnemployed) {
-            violations.add(new Violation(
-                    scoringData.getMartialStatus().getClass().getName(),
-                    "Invalid value. Status shouldn't be UNEMPLOYED"
-            ));
+            violations.add(new Violation("martialStatus", "Invalid value. Status shouldn't be UNEMPLOYED"));
         }
 
         boolean isAmountTooMuch = scoringData
@@ -158,16 +156,16 @@ public class ConveyorServiceImpl implements ConveyorService {
                 .compareTo(BigDecimal.valueOf((long) scoringData.getDependentAmount()*Constants.COUNT_SALARIES)) > 0;
         if (isAmountTooMuch) {
             violations.add(new Violation(
-                    scoringData.getAmount().getClass().getName(),
-                    String.format("Invalid value. Amount should be less than %d salaries", Constants.COUNT_SALARIES)
-            ));
+                    "amount",
+                    String.format("Invalid value. Amount should be less than %d salaries", Constants.COUNT_SALARIES))
+            );
         }
 
         Integer age = DatesUtil.getYears(scoringData.getBirthdate());
         boolean isAgeInvalid = age < Constants.MIN_AGE || age > Constants.MAX_AGE;
         if (isAgeInvalid) {
             violations.add(new Violation(
-                    scoringData.getBirthdate().getClass().getName(),
+                    "birthdate",
                     String.format("Invalid value. Age should be more or equals than %d and less or equals then %d",
                             Constants.MIN_AGE, Constants.MAX_AGE)
             ));
@@ -178,7 +176,7 @@ public class ConveyorServiceImpl implements ConveyorService {
                 scoringData.getEmployment().getWorkExperienceCurrent() < Constants.MIN_VALID_CURRENT_EXPERIENCE;
         if (isExperienceSmall) {
             violations.add(new Violation(
-                    scoringData.getEmployment().getClass().getName(),
+                    "employment",
                     String.format("Invalid value. Total experience should be more or equals than %d. Current experience should be more or equals then %d",
                             Constants.MIN_VALID_TOTAL_EXPERIENCE, Constants.MIN_VALID_CURRENT_EXPERIENCE)
             ));
@@ -255,35 +253,5 @@ public class ConveyorServiceImpl implements ConveyorService {
 
         log.debug("Result monthPayment={}", monthPayment);
         return monthPayment;
-    }
-
-    private List<PaymentScheduleElement> doPaymentSchedule(ScoringDataDTO scoringData, BigDecimal monthPayment, BigDecimal rate) {
-        log.debug("Input calculateRate. scoringData: {amount:{}, term:{}, firstName:{}, lastName:{}, middleName:{}, gender:{}, birthdate:{}, martialStatus:{}, dependentAmount:{}, employment:{}, account:{},  passportSeries:{}, passportNumber:{}, passportIssueDate:{}, passportIssueBranch:{}, isInsuranceEnabled:{}, isSalaryClient:{}}; monthPayment={}, rate={}",
-                scoringData.getAmount(), scoringData.getTerm(), scoringData.getFirstName(), scoringData.getLastName(), scoringData.getMiddleName(), scoringData.getGender(), scoringData.getBirthdate(), scoringData.getMartialStatus(), scoringData.getDependentAmount(), scoringData.getEmployment(), scoringData.getAccount(), scoringData.getPassportSeries(), scoringData.getPassportNumber(), scoringData.getPassportIssueDate(), scoringData.getPassportIssueBranch(), scoringData.getIsInsuranceEnabled(), scoringData.getIsSalaryClient(), monthPayment, rate);
-
-        List<PaymentScheduleElement> paymentScheduleElements = new ArrayList<>();
-        BigDecimal remainder = scoringData.getAmount();
-        LocalDate date = LocalDate.now();
-        for (int i = 0; i < scoringData.getTerm(); i++) {
-            int countDaysOfYear = date.isLeapYear() ? Constants.COUNT_DAYS_IN_LEAP_YEAR : Constants.COUNT_DAYS_IN_NON_LEAP_YEAR;
-
-            BigDecimal debtPayment = remainder
-                    .multiply(rate.divide(BigDecimal.valueOf(Constants.MAX_PERCENT)))
-                    .multiply(BigDecimal.valueOf(date.getMonth().length(date.isLeapYear())))
-                    .divide(BigDecimal.valueOf(countDaysOfYear), Constants.ACCURACY_DEBT_PAYMENT);
-
-            BigDecimal interestPayment = monthPayment.subtract(debtPayment);
-            BigDecimal remainingDebt = remainder.subtract(interestPayment);
-            remainder = remainder.subtract(interestPayment);
-
-            date = date.plusMonths(1);
-            PaymentScheduleElement currentPaymentSchedule =
-                    new PaymentScheduleElement(i+1, date, monthPayment, interestPayment , debtPayment, remainingDebt);
-            paymentScheduleElements.add(currentPaymentSchedule);
-        }
-
-        log.debug("result doPaymentSchedule. paymentScheduleElements: {}", paymentScheduleElements);
-
-        return paymentScheduleElements;
     }
 }
