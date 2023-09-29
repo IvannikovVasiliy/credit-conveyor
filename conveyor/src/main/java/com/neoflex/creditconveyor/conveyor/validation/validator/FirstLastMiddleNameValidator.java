@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FirstLastMiddleNameValidator implements ConstraintValidator<FirstLastMiddleNameConstraint, String> {
+
     @Override
     public void initialize(FirstLastMiddleNameConstraint constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
