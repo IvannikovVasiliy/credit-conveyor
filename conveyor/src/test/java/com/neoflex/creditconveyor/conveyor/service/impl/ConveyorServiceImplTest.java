@@ -1,11 +1,11 @@
 package com.neoflex.creditconveyor.conveyor.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
 import com.neoflex.creditconveyor.conveyor.domain.dto.*;
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.Gender;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.MartialStatus;
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.Position;
 import com.neoflex.creditconveyor.conveyor.error.exception.ValidationAndScoringAndCalculationOfferException;
-import com.neoflex.creditconveyor.conveyor.error.validation.Violation;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,10 +18,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -30,8 +30,6 @@ class ConveyorServiceImplTest {
 
     @Autowired
     private ConveyorServiceImpl conveyorService;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void createLoanOfferTest() {
@@ -66,14 +64,35 @@ class ConveyorServiceImplTest {
 
     @Test
     public void validAndScoreAndCalcOffer() throws URISyntaxException, IOException {
-        ScoringDataDTO scoringDataRequest = new ScoringDataDTO(BigDecimal.valueOf(10000), 7, "Ivan", "Ivanov",
-                LocalDate.of(2000, 01, 01), "1234", "123456",
-                MartialStatus.OWNER_BUSINESS, 1000, new EmploymentDTO(13, 4));
-        ScoringDataDTO scoringDataUnemployedRequest = new ScoringDataDTO(BigDecimal.valueOf(10000), 7, "Ivan", "Ivanov",
-                LocalDate.of(2000, 01, 01), "1234", "123456",
-                MartialStatus.UNEMPLOYED, 1000, new EmploymentDTO(13, 4));
+        ScoringDataDTO scoringOwnerBusinessRequest = ScoringDataDTO
+                .builder()
+                .amount(BigDecimal.valueOf(10000))
+                .term(7)
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .birthdate(LocalDate.of(2000, 01, 01))
+                .passportSeries("1234")
+                .passportNumber("123456")
+                .martialStatus(MartialStatus.OWNER_BUSINESS)
+                .dependentAmount(1000)
+                .employment(new EmploymentDTO(13, 4))
+                .build();
 
-        CreditDTO expectedCredit = CreditDTO.builder()
+        ScoringDataDTO scoringDataUnemployedRequest = ScoringDataDTO
+                .builder()
+                .amount(BigDecimal.valueOf(10000)).term(7)
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .birthdate(LocalDate.of(2000, 01, 01))
+                .passportSeries("1234")
+                .passportNumber("123456")
+                .martialStatus(MartialStatus.UNEMPLOYED)
+                .dependentAmount(1000)
+                .employment(new EmploymentDTO(13, 4))
+                .build();
+
+        CreditDTO expectedCredit = CreditDTO
+                .builder()
                 .amount(BigDecimal.valueOf(10000))
                 .term(7)
                 .monthlyPayment(BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN))
@@ -81,7 +100,7 @@ class ConveyorServiceImplTest {
                 .psk(BigDecimal.valueOf(10540.396419).setScale(Constants.ACCURACY, RoundingMode.DOWN))
                 .build();
 
-        CreditDTO responseCredit = conveyorService.validAndScoreAndCalcOffer(scoringDataRequest);
+        CreditDTO responseCredit = conveyorService.validAndScoreAndCalcOffer(scoringOwnerBusinessRequest);
 
         List<PaymentScheduleElement> paymentScheduleElementsExpected = List.of(
                 new PaymentScheduleElement(1, LocalDate.now().plusMonths(1), BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1374.260917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(131.51).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(8625.739083).setScale(Constants.ACCURACY, RoundingMode.DOWN)),
@@ -105,15 +124,30 @@ class ConveyorServiceImplTest {
 
     @Test
     public void refuseCreditThrowExceptionTest() {
-        ScoringDataDTO scoringDataUnemployed = new ScoringDataDTO(BigDecimal.valueOf(10000), 7, "Ivan", "Ivanov",
-                LocalDate.of(2000, 01, 01), "1234", "123456",
-                MartialStatus.UNEMPLOYED, 1000, new EmploymentDTO(13, 4));
-        ScoringDataDTO scoringDataSmallSalary = new ScoringDataDTO(BigDecimal.valueOf(10000), 7, "Ivan", "Ivanov",
-                LocalDate.of(2000, 01, 01), "1234", "123456",
-                MartialStatus.SELF_EMPLOYED, 100, new EmploymentDTO(13, 4));
-        ScoringDataDTO scoringDataExperienceSmall = new ScoringDataDTO(BigDecimal.valueOf(10000), 7, "Ivan", "Ivanov",
-                LocalDate.of(2000, 01, 01), "1234", "123456",
-                MartialStatus.SELF_EMPLOYED, 100, new EmploymentDTO(1, 1));
+        ScoringDataDTO scoringDataSmallSalary = ScoringDataDTO
+                .builder()
+                .amount(BigDecimal.valueOf(10000)).term(7)
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .birthdate(LocalDate.of(2000, 01, 01))
+                .passportSeries("1234")
+                .passportNumber("123456")
+                .martialStatus(MartialStatus.SELF_EMPLOYED)
+                .dependentAmount(100)
+                .employment(new EmploymentDTO(13, 4))
+                .build();
+        ScoringDataDTO scoringDataExperienceSmall = ScoringDataDTO
+                .builder()
+                .amount(BigDecimal.valueOf(10000)).term(7)
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .birthdate(LocalDate.of(2000, 01, 01))
+                .passportSeries("1234")
+                .passportNumber("123456")
+                .martialStatus(MartialStatus.SELF_EMPLOYED)
+                .dependentAmount(1000)
+                .employment(new EmploymentDTO(1, 1))
+                .build();
 
         assertThrows(ValidationAndScoringAndCalculationOfferException.class, () ->
                 conveyorService.validAndScoreAndCalcOffer(scoringDataExperienceSmall));
@@ -121,33 +155,29 @@ class ConveyorServiceImplTest {
                 conveyorService.validAndScoreAndCalcOffer(scoringDataSmallSalary));
         assertThrows(ValidationAndScoringAndCalculationOfferException.class, () ->
                 conveyorService.validAndScoreAndCalcOffer(scoringDataExperienceSmall));
+    }
 
-//        List<Violation> violationsExpected = new ArrayList<>();
-//        Violation unemployedViolation = new Violation("martialStatus", "Invalid value. Status shouldn't be UNEMPLOYED");
-//        violationsExpected.add(unemployedViolation);
-//        Violation amountViolation = new Violation(
-//                "amount",
-//                String.format("Invalid value. Amount should be less than %d salaries", Constants.COUNT_SALARIES)
-//        );
-//        violationsExpected.add(amountViolation);
-//        Violation birthdateViolation = new Violation(
-//                "birthdate",
-//                String.format("Invalid value. Age should be more or equals than %d and less or equals then %d",
-//                        Constants.MIN_AGE, Constants.MAX_AGE)
-//        );
-//        violationsExpected.add(birthdateViolation);
-//        Violation employmentViolation =  new Violation(
-//                "employment",
-//                String.format("Invalid value. Total experience should be more or equals than %d. Current experience should be more or equals then %d",
-//                        Constants.MIN_VALID_TOTAL_EXPERIENCE, Constants.MIN_VALID_CURRENT_EXPERIENCE)
-//        );
-//
-//        List<Violation> violationsResponse = conveyorService
-//
-//        assertTrue(violations.contains(unemployedViolation));
-//        assertTrue(violations.contains(amountViolation));
-//        assertTrue(violations.contains(birthdateViolation));
-//        assertTrue(violations.contains(employmentViolation));
-//        assertEquals(violations.size(), 4);
+    @Test
+    public void calcRateTest() {
+        ScoringDataDTO scoringDataDTO = ScoringDataDTO
+                .builder()
+                .martialStatus(MartialStatus.SELF_EMPLOYED)
+                .employment(new EmploymentDTO(Position.AVERAGE_MANAGER, 36, 12))
+                .gender(Gender.FEMALE)
+                .birthdate(LocalDate.of(1980, 01, 01))
+                .dependentAmount(1000)
+                .passportSeries("1234")
+                .passportNumber("123456")
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .amount(BigDecimal.valueOf(10000))
+                .term(6)
+                .build();
+
+        BigDecimal expectedRate = BigDecimal.valueOf(6);
+        CreditDTO creditResponse = conveyorService.validAndScoreAndCalcOffer(scoringDataDTO);
+        BigDecimal responseRate = creditResponse.getRate();
+
+        assertEquals(expectedRate, responseRate);
     }
 }

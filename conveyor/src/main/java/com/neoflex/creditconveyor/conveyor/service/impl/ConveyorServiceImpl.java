@@ -1,7 +1,10 @@
 package com.neoflex.creditconveyor.conveyor.service.impl;
 
 import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
-import com.neoflex.creditconveyor.conveyor.domain.dto.*;
+import com.neoflex.creditconveyor.conveyor.domain.dto.CreditDTO;
+import com.neoflex.creditconveyor.conveyor.domain.dto.LoanApplicationRequestDTO;
+import com.neoflex.creditconveyor.conveyor.domain.dto.LoanOfferDTO;
+import com.neoflex.creditconveyor.conveyor.domain.dto.ScoringDataDTO;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Gender;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.MartialStatus;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Position;
@@ -16,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,7 +125,7 @@ public class ConveyorServiceImpl implements ConveyorService {
         }
 
         CreditDTO creditDTO = CreditDTO.builder().build();
-        calcRate(scoringData, creditDTO);
+        creditDTO.setRate(calcRate(scoringData));
         BigDecimal monthPayment = calcMonthlyPayment(scoringData.getTerm(), creditDTO.getRate(), scoringData.getAmount());
         BigDecimal psk = calcTotalAmount(monthPayment, scoringData.getTerm());
         var paymentSchedules = PaymentSchedule.createPaymentSchedule(scoringData, monthPayment, creditDTO.getRate());
@@ -186,54 +188,53 @@ public class ConveyorServiceImpl implements ConveyorService {
         return violations;
     }
 
-    private void calcRate(ScoringDataDTO scoringData, CreditDTO creditDTO) {
+    private BigDecimal calcRate(ScoringDataDTO scoringData) {
         log.debug("Input calculateRate. scoringData: {amount:{}, term:{}, firstName:{}, lastName:{}, middleName:{}, gender:{}, birthdate:{}, martialStatus:{}, dependentAmount:{}, employment:{}, account:{},  passportSeries:{}, passportNumber:{}, passportIssueDate:{}, passportIssueBranch:{}, isInsuranceEnabled:{}, isSalaryClient:{}}",
                 scoringData.getAmount(), scoringData.getTerm(), scoringData.getFirstName(), scoringData.getLastName(), scoringData.getMiddleName(), scoringData.getGender(), scoringData.getBirthdate(), scoringData.getMartialStatus(), scoringData.getDependentAmount(), scoringData.getEmployment(), scoringData.getAccount(), scoringData.getPassportSeries(), scoringData.getPassportNumber(), scoringData.getPassportIssueDate(), scoringData.getPassportIssueBranch(), scoringData.getIsInsuranceEnabled(), scoringData.getIsSalaryClient());
 
         BigDecimal rate = Constants.BASE_RATE;
-        creditDTO.setRate(rate);
 
         if (MartialStatus.SELF_EMPLOYED.equals(scoringData.getMartialStatus())) {
-            BigDecimal rateSelfEmployed = creditDTO.getRate().add(BigDecimal.valueOf(Constants.RATE_FOR_SELF_EMPLOYED));
-            creditDTO.setRate(rateSelfEmployed);
+            BigDecimal rateSelfEmployed = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_SELF_EMPLOYED));
+            rate = rateSelfEmployed;
         }
         if (MartialStatus.OWNER_BUSINESS.equals(scoringData.getMartialStatus())) {
-            BigDecimal rateOwnerBusiness = creditDTO.getRate().add(BigDecimal.valueOf(Constants.RATE_FOR_OWNER_BUSINESS));
-            creditDTO.setRate(rateOwnerBusiness);
+            BigDecimal rateOwnerBusiness = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_OWNER_BUSINESS));
+            rate = rateOwnerBusiness;
         }
 
         if (Position.AVERAGE_MANAGER.equals(scoringData.getEmployment().getPosition())) {
-            BigDecimal rateAverageManager = creditDTO.getRate().add(BigDecimal.valueOf(Constants.RATE_FOR_AVERAGE_MANAGER));
-            creditDTO.setRate(rateAverageManager);
+            BigDecimal rateAverageManager = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_AVERAGE_MANAGER));
+            rate = rateAverageManager;
         }
         if (Position.TOP_MANAGER.equals(scoringData.getEmployment().getPosition())) {
-            BigDecimal rateTopManager = creditDTO.getRate().add(BigDecimal.valueOf(Constants.RATE_FOR_TOP_MANAGER));
-            creditDTO.setRate(rateTopManager);
+            BigDecimal rateTopManager = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_TOP_MANAGER));
+            rate = rateTopManager;
         }
 
         if (Gender.FEMALE.equals(scoringData.getGender())) {
             int age = DatesUtil.getYears(scoringData.getBirthdate());
             if (age >= Constants.MIN_AGE_SALE_FEMALE && age < Constants.MAX_AGE_SALE_FEMALE) {
-                BigDecimal rateFemale = creditDTO.getRate().add(BigDecimal.valueOf(Constants.RATE_SALE_FOR_FEMALE));
-                creditDTO.setRate(rateFemale);
+                BigDecimal rateFemale = rate.add(BigDecimal.valueOf(Constants.RATE_SALE_FOR_FEMALE));
+                rate = rateFemale;
             }
         }
         if (Gender.MALE.equals(scoringData.getGender())) {
             int age = DatesUtil.getYears(scoringData.getBirthdate());
             if (age >= Constants.MIN_AGE_SALE_MALE && age < Constants.MAX_AGE_SALE_MALE) {
-                BigDecimal rateMale = creditDTO.getRate().add(BigDecimal.valueOf(Constants.RATE_SALE_FOR_MALE));
-                creditDTO.setRate(rateMale);
+                BigDecimal rateMale = rate.add(BigDecimal.valueOf(Constants.RATE_SALE_FOR_MALE));
+                rate = rateMale;
             }
         }
         if (!Gender.MALE.equals(scoringData.getGender())) {
             if (!Gender.FEMALE.equals(scoringData.getGender())) {
-                BigDecimal rateUnbinary = creditDTO.getRate().add(BigDecimal.valueOf(Constants.RATE_FOR_UNBINARY_GENDER));
-                creditDTO.setRate(rateUnbinary);
+                BigDecimal rateUnbinary = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_UNBINARY_GENDER));
+                rate = rateUnbinary;
             }
         }
 
-        log.debug("Input calculateRate. scoringData: {amount:{}, term:{}, firstName:{}, lastName:{}, middleName:{}, gender:{}, birthdate:{}, martialStatus:{}, dependentAmount:{}, employment:{}, account:{},  passportSeries:{}, passportNumber:{}, passportIssueDate:{}, passportIssueBranch:{}, isInsuranceEnabled:{}, isSalaryClient:{}}, rate={}",
-                scoringData.getAmount(), scoringData.getTerm(), scoringData.getFirstName(), scoringData.getLastName(), scoringData.getMiddleName(), scoringData.getGender(), scoringData.getBirthdate(), scoringData.getMartialStatus(), scoringData.getDependentAmount(), scoringData.getEmployment(), scoringData.getAccount(), scoringData.getPassportSeries(), scoringData.getPassportNumber(), scoringData.getPassportIssueDate(), scoringData.getPassportIssueBranch(), scoringData.getIsInsuranceEnabled(), scoringData.getIsSalaryClient(), creditDTO.getRate());
+        log.debug("Output rate={}", rate);
+        return rate;
     }
 
     private BigDecimal calcTotalAmount(BigDecimal monthPayment, Integer term) {

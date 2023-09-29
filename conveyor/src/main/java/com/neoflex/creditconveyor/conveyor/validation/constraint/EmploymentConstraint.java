@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyor.conveyor.validation.constraint;
 
-import com.neoflex.creditconveyor.conveyor.validation.validator.AdultValidator;
 import com.neoflex.creditconveyor.conveyor.validation.validator.EmploymentValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

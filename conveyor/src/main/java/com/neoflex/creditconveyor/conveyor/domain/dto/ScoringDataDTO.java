@@ -8,6 +8,7 @@ import com.neoflex.creditconveyor.conveyor.validation.constraint.FirstLastMiddle
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,24 +17,8 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@Builder
 public class ScoringDataDTO {
-    public ScoringDataDTO(BigDecimal amount, Integer term, String firstName, String lastName, LocalDate birthdate,
-                          String passportSeries, String passportNumber, MartialStatus martialStatus,
-                          Integer dependentAmount, EmploymentDTO employment) {
-        this.amount = amount;
-        this.term = term;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthdate = birthdate;
-        this.passportSeries = passportSeries;
-        this.passportNumber = passportNumber;
-        this.martialStatus = martialStatus;
-        this.dependentAmount = dependentAmount;
-        this.employment = employment;
-    }
-
-    public ScoringDataDTO() {
-    }
 
     @NotNull
     @Min(10000)

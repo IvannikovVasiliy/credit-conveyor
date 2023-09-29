@@ -1,9 +1,7 @@
 package com.neoflex.creditconveyor.conveyor.validation.validator;
 
-import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
 import com.neoflex.creditconveyor.conveyor.domain.dto.EmploymentDTO;
 import com.neoflex.creditconveyor.conveyor.error.exception.ResourceNotFoundException;
-import com.neoflex.creditconveyor.conveyor.utils.DatesUtil;
 import com.neoflex.creditconveyor.conveyor.validation.constraint.EmploymentConstraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

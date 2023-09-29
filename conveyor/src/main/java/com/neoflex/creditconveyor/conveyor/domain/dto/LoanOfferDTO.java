@@ -1,6 +1,7 @@
 package com.neoflex.creditconveyor.conveyor.domain.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
