@@ -1,23 +1,22 @@
-package com.neoflex.creditconveyer.deal.domain.entity;
+package com.neoflex.creditconveyer.deal.domain.jsonb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neoflex.creditconveyer.deal.domain.enumeration.EmploymentPosition;
 import com.neoflex.creditconveyer.deal.domain.enumeration.EmploymentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.UUID;
 
-@Entity
-@Table(name = "passport")
 @Getter
 @Setter
-public class PassportEntity {
+public class EmploymentJsonb implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "passport_id")
-    private Long id;
+    @JsonProperty("employment_id")
+    private UUID employmentId = UUID.randomUUID();
 
     @Enumerated(value = EnumType.STRING)
     private EmploymentStatus status;

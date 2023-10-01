@@ -1,10 +1,14 @@
 package com.neoflex.creditconveyer.deal.domain.entity;
 
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
+import com.neoflex.creditconveyer.deal.domain.jsonb.PaymentScheduleJsonb;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -18,19 +22,31 @@ public class CreditEntity {
     @Column(name = "credit_id")
     private Long id;
 
+    @NotNull
     private BigDecimal amount;
+    @NotNull
     private Integer term;
+    @NotNull
     private BigDecimal monthlyPayment;
+    @NotNull
     private BigDecimal rate;
+    @NotNull
     private BigDecimal psk;
 
-//    @Column(name = "payment_schedule")
-//    private jsonb paymentSchedule;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @NotNull
+    @Column(name = "payment_schedule")
+    private PaymentScheduleJsonb paymentSchedule;
 
+    @NotNull
     private Boolean insuranceEnable;
+    @NotNull
     @Column(name = "salary_client")
     private Boolean salaryClient;
 
     @Column(name = "credit_status")
     private CreditStatus creditStatus;
+
+    @OneToOne(mappedBy = "credit", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    private ApplicationEntity application;
 }

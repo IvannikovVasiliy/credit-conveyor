@@ -7,7 +7,7 @@ servers:
 tags:
   - name: deal
 paths:
-  /deal/application:
+  /v1/deal/application:
     post:
       tags:
         - deal
@@ -28,7 +28,7 @@ paths:
                 format: List<LoanOfferDTO>
                 items:
                   $ref: '#/components/schemas/LoanOfferDTO'
-  /deal/offer:
+  /v1/deal/offer:
     put:
       tags:
         - deal
@@ -42,7 +42,7 @@ paths:
       responses:
         '200':
           description: successful operation
-  /deal/calculate/{applicationId}:
+  /v1/deal/calculate/{applicationId}:
     put:
       tags:
         - deal
@@ -55,6 +55,11 @@ paths:
           schema:
             type: integer
             format: long
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinishRegistrationRequestDTO'
       responses:
         '200':
           description: successful operation
@@ -80,7 +85,7 @@ components:
           type: string
           example: qwerty@gmail.com
         birthdate:
-          type: string
+          type: object
           format: LocalDate
           example: 2000-01-01
         passportSeries:
@@ -114,3 +119,71 @@ components:
           type: boolean
         isSalaryClient:
           type: boolean
+    FinishRegistrationRequestDTO:
+      type: object
+      format: FinishRegistrationRequestDTO
+      properties:
+        gender:
+          type: number
+          format: BigDecimal
+        maritalStatus:
+          type: object
+          format: MartialStatus
+        dependentAmount:
+          type: integer
+        passportIssueDate:
+          type: object
+          format: LocalDate
+        passportIssueBranch:
+          type: string
+        employment:
+          type: object
+          format: EmploymentDTO
+        account:
+          type: string
+    EmploymentDTO:
+      type: object
+      format: EmploymentDTO
+      properties:
+        employmentStatus:
+          type: object
+          format: EmploymentStatus
+        employerINN:
+          type: string
+        salary:
+          type: number
+          format: BigDecimal
+        position:
+          type: object
+          format: EmploymentPosition
+        workExperienceTotal:
+          type: integer
+        workExperienceCurrent:
+          type: integer
+    Gender:
+      type: string
+      enum:
+        - MALE
+        - FEMALE
+        - NON_BINARY
+    MartialStatus:
+      type: string
+      enum:
+        - MARRIED
+        - DIVORCED
+        - SINGLE
+        - WIDOW_WIDOWER
+    EmploymentStatus:
+      type: string
+      enum:
+        - UNEMPLOYED
+        - EMPLOYED
+        - SELF_EMPLOYED
+        - BUSINESS_OWNER
+    EmploymentPosition:
+      type: string
+      enum:
+        - WORKER
+        - MID_MANAGER
+        - TOP_MANAGER
+        - OWNER

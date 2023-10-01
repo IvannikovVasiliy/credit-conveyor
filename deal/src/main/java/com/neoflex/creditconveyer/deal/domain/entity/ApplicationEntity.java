@@ -1,10 +1,15 @@
 package com.neoflex.creditconveyer.deal.domain.entity;
 
 import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
+import com.neoflex.creditconveyer.deal.domain.jsonb.AppliedOfferJsonb;
+import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity
@@ -18,26 +23,38 @@ public class ApplicationEntity {
     @Column(name = "application_id")
     private Long id;
 
-    @Column(name = "client_id")
-    private Long clientId;
-    @Column(name = "credit_id")
-    private Long creditId;
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @NotNull
+    @JoinColumn(name = "client_id")
+    private ClientEntity client;
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @NotNull
+    @JoinColumn(name = "credit_id")
+    private CreditEntity credit;
 
     @Enumerated(EnumType.STRING)
-    private ApplicationStatus applicationStatus;
+    @NotNull
+    @Column(insertable = false, updatable = false)
+    private ApplicationStatus status;
 
     @Column(name = "creation_date")
+    @NotNull
     private Timestamp creationDate;
 
-//    @Column(name = "applied_offer")
-//    private Jsonb appliedOffer;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @NotNull
+    @Column(name = "applied_offer")
+    private AppliedOfferJsonb appliedOffer;
 
     @Column(name = "sign_date")
+    @NotNull
     private Timestamp signDate;
 
     @Column(name = "ses_code")
     private Integer sesCode;
 
-//    @Column(name = "status_history")
-//    private jsonb statusHistory;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @NotNull
+    @Column(name = "status_history")
+    private StatusHistoryJsonb statusHistory;
 }

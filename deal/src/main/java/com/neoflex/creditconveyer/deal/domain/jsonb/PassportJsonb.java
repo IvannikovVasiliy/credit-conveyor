@@ -1,22 +1,20 @@
-package com.neoflex.creditconveyer.deal.domain.entity;
+package com.neoflex.creditconveyer.deal.domain.jsonb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Size;
 import java.sql.Date;
+import java.util.UUID;
 
-@Entity
-@Table(name = "employment")
 @Getter
 @Setter
-public class EmploymentEntity {
+public class PassportJsonb {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "passport_id")
-    private Long id;
+    @JsonProperty("passport_id")
+    private UUID passportId;
 
     @Size(min = 4, max = 4)
     private String series;
