@@ -1,5 +1,7 @@
 package com.neoflex.creditconveyer.deal.domain.dto;
 
+import com.neoflex.creditconveyer.deal.validation.constraint.FirstLastMiddleNameConstraint;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
