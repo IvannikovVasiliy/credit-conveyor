@@ -11,7 +11,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Entity

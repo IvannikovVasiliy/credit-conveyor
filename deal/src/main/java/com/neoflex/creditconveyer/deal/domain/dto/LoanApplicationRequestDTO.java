@@ -2,12 +2,16 @@ package com.neoflex.creditconveyer.deal.domain.dto;
 
 import com.neoflex.creditconveyer.deal.validation.constraint.FirstLastMiddleNameConstraint;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.neoflex.creditconveyer.deal.validation.constraint.AdultConstraint;
 
 @Getter
 @Setter
