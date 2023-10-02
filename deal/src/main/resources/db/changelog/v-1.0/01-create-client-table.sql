@@ -6,8 +6,8 @@ create table client (
     , birth_date date not null
     , email varchar(64)
     , gender varchar(50)
-    , martial_status varchar(25) not null
-    , dependence_amount integer not null
+    , martial_status varchar(25)
+    , dependence_amount integer
     , passport_id jsonb not null
     , employment_id jsonb not null
     , account varchar(50)

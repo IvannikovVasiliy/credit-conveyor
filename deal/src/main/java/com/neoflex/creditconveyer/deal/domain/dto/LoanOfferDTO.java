@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class LoanOfferDTO   {
-    private BigDecimal applicationId;
+    private Long applicationId;
     private BigDecimal requestedAmount;
     private BigDecimal totalAmount;
     private Integer term;

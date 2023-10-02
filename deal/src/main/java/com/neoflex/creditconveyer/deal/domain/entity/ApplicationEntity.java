@@ -28,12 +28,10 @@ public class ApplicationEntity {
     @JoinColumn(name = "client_id")
     private ClientEntity client;
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
-    @NotNull
     @JoinColumn(name = "credit_id")
     private CreditEntity credit;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     @Column(insertable = false, updatable = false)
     private ApplicationStatus status;
 
@@ -42,19 +40,16 @@ public class ApplicationEntity {
     private Timestamp creationDate;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @NotNull
     @Column(name = "applied_offer")
     private AppliedOfferJsonb appliedOffer;
 
     @Column(name = "sign_date")
-    @NotNull
     private Timestamp signDate;
 
     @Column(name = "ses_code")
     private Integer sesCode;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @NotNull
     @Column(name = "status_history")
     private StatusHistoryJsonb statusHistory;
 }
