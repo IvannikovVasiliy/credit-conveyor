@@ -37,8 +37,6 @@ public class ScoringDataDTO {
     private String middleName;
 
     private Gender gender;
-
-    @AdultConstraint
     private LocalDate birthdate;
 
     @NotNull
