@@ -8,6 +8,7 @@ import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ChangeType;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
 import com.neoflex.creditconveyer.deal.domain.jsonb.PassportJsonb;
+import com.neoflex.creditconveyer.deal.domain.jsonb.PaymentScheduleElementJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
@@ -156,6 +157,7 @@ public class DealServiceImpl implements DealService {
                 .isInsuranceEnabled(application.getAppliedOffer().getIsInsuranceEnabled())
                 .isSalaryClient(application.getAppliedOffer().getIsSalaryClient())
                 .build();
+
         CreditDTO creditDto = feignService.validAndScoreAndCalcOffer(scoringData);
         CreditEntity credit = new CreditEntity();
         credit.setAmount(creditDto.getAmount());
@@ -163,9 +165,19 @@ public class DealServiceImpl implements DealService {
         credit.setMonthlyPayment(creditDto.getMonthlyPayment());
         credit.setRate(creditDto.getRate());
         credit.setPsk(creditDto.getPsk());
-        credit.setPaymentSchedule(creditDto.getPaymentSchedule());
+        //credit.setPaymentSchedule(creditDto.getPaymentSchedule());
         credit.setInsuranceEnable(creditDto.getIsInsuranceEnabled());
         credit.setSalaryClient(creditDto.getIsSalaryClient());
+        if (null == creditDto.getIsInsuranceEnabled()) {
+            credit.setInsuranceEnable(false);
+        } else {
+            credit.setInsuranceEnable(creditDto.getIsInsuranceEnabled());
+        }
+        if (null == creditDto.getIsSalaryClient()) {
+            credit.setSalaryClient(false);
+        } else {
+            credit.setSalaryClient(creditDto.getIsSalaryClient());
+        }
         credit.setCreditStatus(CreditStatus.CALCULATED);
         credit.setApplication(application);
         creditRepository.save(credit);

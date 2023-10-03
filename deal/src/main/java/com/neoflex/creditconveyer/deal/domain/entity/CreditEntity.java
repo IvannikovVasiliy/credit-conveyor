@@ -2,6 +2,7 @@ package com.neoflex.creditconveyer.deal.domain.entity;
 
 import com.neoflex.creditconveyer.deal.domain.dto.PaymentScheduleElement;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
+import com.neoflex.creditconveyer.deal.domain.jsonb.PaymentScheduleElementJsonb;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +38,7 @@ public class CreditEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     @NotNull
     @Column(name = "payment_schedule")
-    private List<PaymentScheduleElement> paymentSchedule;
+    private List<PaymentScheduleElementJsonb> paymentSchedule;
 
     @NotNull
     private Boolean insuranceEnable;

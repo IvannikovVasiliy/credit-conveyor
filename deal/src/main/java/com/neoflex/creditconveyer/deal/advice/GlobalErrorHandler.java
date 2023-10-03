@@ -5,6 +5,7 @@ import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
 import com.neoflex.creditconveyer.deal.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
+import com.neoflex.creditconveyer.deal.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.deal.error.validation.Violation;
 import lombok.extern.slf4j.Slf4j;
@@ -75,5 +76,14 @@ public class GlobalErrorHandler {
         log.debug("Output handleApplicationIsPreapprovalException. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
                 messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
         return messageInfo;
+    }
+
+    @ExceptionHandler(ValidationAndScoringAndCalculationOfferException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public ErrorResponseValidation handleValidationAndScoringAndCalculationOfferException(
+            ValidationAndScoringAndCalculationOfferException offer
+    ) {
+        log.debug("Input handleValidationAndScoringAndCalculationOfferException. offer: {}", offer.getViolations());
+        return new ErrorResponseValidation(offer.getViolations());
     }
 }
