@@ -60,7 +60,7 @@ public class GlobalErrorHandler {
     }
 
     @ExceptionHandler(ValidationAndScoringAndCalculationOfferException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseValidation handleValidationAndScoringAndCalculationOfferException(
             ValidationAndScoringAndCalculationOfferException offer
     ) {
