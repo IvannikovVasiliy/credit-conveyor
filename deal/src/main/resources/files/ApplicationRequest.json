@@ -1,0 +1,9 @@
+{
+  "amount": 10000,
+  "term": 7,
+  "birthdate": "2005-01-01",
+  "firstName": "Ivan",
+  "lastName": "Ivannikov",
+  "passportSeries": "1234",
+  "passportNumber": "123456"
+}

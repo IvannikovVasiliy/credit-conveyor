@@ -1,13 +1,13 @@
 create table application (
     application_id bigserial
-    , client_id bigserial not null
-    , credit_id bigserial
-    , status varchar(40)
+    , client_id bigint not null
+    , credit_id bigint
+    , status varchar(40) not null
     , creation_date timestamp not null
     , applied_offer jsonb
     , sign_date timestamp
     , ses_code integer
-    , status_history jsonb
+    , status_history jsonb not null
 );
 
 GO

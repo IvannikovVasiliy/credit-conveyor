@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyer.deal.domain.entity;
 
+import com.neoflex.creditconveyer.deal.domain.dto.PaymentScheduleElement;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
-import com.neoflex.creditconveyer.deal.domain.jsonb.PaymentScheduleJsonb;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,7 @@ import org.hibernate.type.SqlTypes;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "credit")
@@ -36,7 +37,7 @@ public class CreditEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     @NotNull
     @Column(name = "payment_schedule")
-    private PaymentScheduleJsonb paymentSchedule;
+    private List<PaymentScheduleElement> paymentSchedule;
 
     @NotNull
     private Boolean insuranceEnable;
@@ -44,6 +45,7 @@ public class CreditEntity {
     @Column(name = "salary_client")
     private Boolean salaryClient;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "credit_status")
     private CreditStatus creditStatus;
 

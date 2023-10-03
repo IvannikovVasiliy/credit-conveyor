@@ -12,7 +12,6 @@ import org.hibernate.type.SqlTypes;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "client")
@@ -41,12 +40,10 @@ public class ClientEntity {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    @Enumerated
-    @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "martial_status")
     private MartialStatus martialStatus;
 
-    @NotNull
     @Column(name = "dependent_amount")
     private Integer dependentAmount;
 
@@ -55,7 +52,6 @@ public class ClientEntity {
     @Column(name = "passport_id")
     private PassportJsonb passport;
     @JdbcTypeCode(SqlTypes.JSON)
-    @NotNull
     @Column(name = "employment_id")
     private EmploymentJsonb employment;
 

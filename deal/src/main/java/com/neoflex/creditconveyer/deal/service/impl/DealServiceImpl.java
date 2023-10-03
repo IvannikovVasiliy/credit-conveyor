@@ -1,36 +1,45 @@
 package com.neoflex.creditconveyer.deal.service.impl;
 
-import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationRequestDTO;
-import com.neoflex.creditconveyer.deal.domain.dto.LoanOfferDTO;
+import com.neoflex.creditconveyer.deal.domain.dto.*;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
+import com.neoflex.creditconveyer.deal.domain.entity.CreditEntity;
+import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
+import com.neoflex.creditconveyer.deal.domain.enumeration.ChangeType;
+import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
 import com.neoflex.creditconveyer.deal.domain.jsonb.PassportJsonb;
+import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
+import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.feign.FeignService;
+import com.neoflex.creditconveyer.deal.repository.ApplicationRepository;
+import com.neoflex.creditconveyer.deal.repository.ClientRepository;
+import com.neoflex.creditconveyer.deal.repository.CreditRepository;
 import com.neoflex.creditconveyer.deal.service.DealService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 public class DealServiceImpl implements DealService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     private final FeignService feignService;
+    private final ClientRepository clientRepository;
+    private final ApplicationRepository applicationRepository;
+    private final CreditRepository creditRepository;
 
     @Override
     @Transactional
@@ -50,12 +59,20 @@ public class DealServiceImpl implements DealService {
         client.setEmail(loanApplicationRequest.getEmail());
         client.setBirthdate(Date.valueOf(loanApplicationRequest.getBirthdate()));
         client.setPassport(passport);
-        entityManager.persist(client);
 
         ApplicationEntity application = new ApplicationEntity();
         application.setClient(client);
+        application.setStatus(ApplicationStatus.PREAPPROVAL);
         application.setCreationDate(Timestamp.valueOf(LocalDateTime.now()));
-        entityManager.persist(application);
+
+        StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();
+        statusHistory.setStatus(ApplicationStatus.PREAPPROVAL.name());
+        statusHistory.setTime(Timestamp.valueOf(LocalDateTime.now()));
+        statusHistory.setChangeType(ChangeType.AUTOMATIC);
+        application.setStatusHistory(List.of(statusHistory));
+
+        clientRepository.save(client);
+        applicationRepository.save(application);
 
         List<LoanOfferDTO> loanOffers = new ArrayList<>();
         try {
@@ -75,5 +92,84 @@ public class DealServiceImpl implements DealService {
         log.info("Response. loanOffers={}", loanOffers);
 
         return loanOffers;
+    }
+
+    @Override
+    @Transactional
+    public void chooseOffer(LoanOfferDTO loanOffer) {
+        log.debug("Request chooseOffer. loanOffer={applicationId: {}, requestedAmount: {}, totalAmount: {}, term: {}, monthlyPayment: {}, rate: {}, isInsuranceEnabled: {}, isSalaryClient: {}}",
+                loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
+
+        ApplicationEntity application = applicationRepository
+                .findById(loanOffer.getApplicationId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", loanOffer.getApplicationId())));
+        application.setStatus(ApplicationStatus.APPROVED);
+        List<StatusHistoryJsonb> statusHistories = application.getStatusHistory();
+        StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();
+        statusHistory.setStatus(ApplicationStatus.APPROVED.name());
+        statusHistory.setTime(Timestamp.valueOf(LocalDateTime.now()));
+        statusHistory.setChangeType(ChangeType.AUTOMATIC);
+        statusHistories.add(statusHistory);
+        application.setStatusHistory(statusHistories);
+        application.setAppliedOffer(loanOffer);
+        applicationRepository.save(application);
+
+        log.info("Response chooseOffer");
+    }
+
+    @Override
+    //@Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void finishRegistrationAndCalcAmountCredit(Long applicationId, FinishRegistrationRequestDTO finishRegistration) {
+        log.debug("Request finishRegistrationAndCalcAmountCredit. applicationId={}, finishRegistration={ gender: {}, martialStatus: {}, dependentAmount: {}, passportIssueDate: {}, passportIssueBranch: {}, employment: { employmentStatus: [}, employerINN: {}, salary: {}, position: {}, workExperienceTotal: {}, workExperienceCurrent: {} } }",
+                applicationId, finishRegistration.getGender(), finishRegistration.getMaritalStatus(), finishRegistration.getDependentAmount(), finishRegistration.getPassportIssueDate(), finishRegistration.getPassportIssueBranch(), finishRegistration.getEmployment().getEmploymentStatus(), finishRegistration.getEmployment().getEmployerINN(), finishRegistration.getEmployment().getPosition(), finishRegistration.getEmployment().getWorkExperienceTotal(), finishRegistration.getEmployment().getWorkExperienceCurrent());
+
+        ApplicationEntity application = applicationRepository
+                .findById(applicationId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", applicationId)));
+        ClientEntity client = application.getClient();
+        System.out.println("client " + client.toString());
+
+        LocalDate birthdate = client
+                .getBirthdate()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        ScoringDataDTO scoringData = ScoringDataDTO
+                .builder()
+                .amount(application.getAppliedOffer().getRequestedAmount())
+                .term(application.getAppliedOffer().getTerm())
+                .firstName(client.getFirstName())
+                .lastName(client.getLastName())
+                .middleName(client.getMiddleName())
+                .gender(finishRegistration.getGender())
+                .birthdate(birthdate)
+                .passportSeries(client.getPassport().getSeries())
+                .passportNumber(client.getPassport().getNumber())
+                .passportIssueDate(finishRegistration.getPassportIssueDate())
+                .passportIssueBranch(finishRegistration.getPassportIssueBranch())
+                .martialStatus(finishRegistration.getMaritalStatus())
+                .dependentAmount(finishRegistration.getDependentAmount())
+                .employment(finishRegistration.getEmployment())
+                .account(finishRegistration.getAccount())
+                .isInsuranceEnabled(application.getAppliedOffer().getIsInsuranceEnabled())
+                .isSalaryClient(application.getAppliedOffer().getIsSalaryClient())
+                .build();
+        CreditDTO creditDto = feignService.validAndScoreAndCalcOffer(scoringData);
+        CreditEntity credit = new CreditEntity();
+        credit.setAmount(creditDto.getAmount());
+        credit.setTerm(creditDto.getTerm());
+        credit.setMonthlyPayment(creditDto.getMonthlyPayment());
+        credit.setRate(creditDto.getRate());
+        credit.setPsk(creditDto.getPsk());
+        credit.setPaymentSchedule(creditDto.getPaymentSchedule());
+        credit.setInsuranceEnable(creditDto.getIsInsuranceEnabled());
+        credit.setSalaryClient(creditDto.getIsSalaryClient());
+        credit.setCreditStatus(CreditStatus.CALCULATED);
+        credit.setApplication(application);
+        creditRepository.save(credit);
+
+        log.info("Response finishRegistrationAndCalcAmountCredit");
     }
 }

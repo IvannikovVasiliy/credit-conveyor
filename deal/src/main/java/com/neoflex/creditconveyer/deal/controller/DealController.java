@@ -1,9 +1,12 @@
 package com.neoflex.creditconveyer.deal.controller;
 
+import com.example.credit.application.api.V1Api;
 import com.neoflex.creditconveyer.deal.domain.dto.FinishRegistrationRequestDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.deal.service.DealService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,12 +19,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/v1/deal")
-public class DealController {
+public class DealController implements V1Api {
 
     private final DealService dealService;
 
     @PostMapping("/application")
-    public ResponseEntity<List<LoanOfferDTO>> postApplication(@RequestBody LoanApplicationRequestDTO loanApplication) {
+    public ResponseEntity<List<LoanOfferDTO>> postApplication(@Valid @RequestBody LoanApplicationRequestDTO loanApplication) {
         log.debug("Request postApplication. loanApplicationRequest={amount: {}, term:{}, firstName:{}, lastName:{}, middleName:{}, email:{}, birthdate:{}, passportSeries:{}, passportNumber:{}}",
                 loanApplication.getAmount(), loanApplication.getTerm(), loanApplication.getFirstName(), loanApplication.getLastName(), loanApplication.getMiddleName(), loanApplication.getEmail(), loanApplication.getBirthdate(), loanApplication.getPassportSeries(), loanApplication.getPassportNumber());
 
@@ -29,16 +32,30 @@ public class DealController {
 
         log.debug("Response postApplication. {}", loanOffers);
 
-        return new ResponseEntity(loanOffers, HttpStatus.OK);
+        return new ResponseEntity<>(loanOffers, HttpStatus.OK);
     }
 
-//    @PutMapping("/offer")
-//    public ResponseEntity<Void> putOffer(@RequestBody LoanOfferDTO loanOffer) {
-//
-//    }
-//
-//    @PutMapping("/calculate/{applicationId}")
-//    public ResponseEntity<Void> calculateByAppId(@PathVariable Long applicationId, @RequestBody FinishRegistrationRequestDTO) {
-//
-//    }
+    @PutMapping("/offer")
+    public ResponseEntity<Void> chooseOffer(@Valid @RequestBody LoanOfferDTO loanOffer) {
+        log.debug("Request chooseOffer. loanOffer={applicationId: {}, requestedAmount: {}, totalAmount: {}, term: {}, monthlyPayment: {}, rate: {}, isInsuranceEnabled: {}, isSalaryClient: {}}",
+                loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
+
+        dealService.chooseOffer(loanOffer);
+
+        log.info("Response chooseOffer");
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/calculate/{applicationId}")
+    public ResponseEntity<Void> calculateByAppId(@NotNull @PathVariable Long applicationId,
+                                                 @Valid @RequestBody FinishRegistrationRequestDTO finishRegistration) {
+        log.debug("Request calculateById. applicationId={}, finishRegistration={ gender: {}, martialStatus: {}, dependentAmount: {}, passportIssueDate: {}, passportIssueBranch: {}, employment: { employmentStatus: [}, employerINN: {}, salary: {}, position: {}, workExperienceTotal: {}, workExperienceCurrent: {} } }",
+                applicationId, finishRegistration.getGender(), finishRegistration.getMaritalStatus(), finishRegistration.getDependentAmount(), finishRegistration.getPassportIssueDate(), finishRegistration.getPassportIssueBranch(), finishRegistration.getEmployment().getEmploymentStatus(), finishRegistration.getEmployment().getEmployerINN(), finishRegistration.getEmployment().getPosition(), finishRegistration.getEmployment().getWorkExperienceTotal(), finishRegistration.getEmployment().getWorkExperienceCurrent());
+
+        dealService.finishRegistrationAndCalcAmountCredit(applicationId, finishRegistration);
+
+        log.info("Response calculateByAppId");
+
+        return ResponseEntity.ok().build();
+    }
 }

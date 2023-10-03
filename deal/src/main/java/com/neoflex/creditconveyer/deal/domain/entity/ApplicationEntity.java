@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyer.deal.domain.entity;
 
+import com.neoflex.creditconveyer.deal.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
-import com.neoflex.creditconveyer.deal.domain.jsonb.AppliedOfferJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,6 +11,7 @@ import org.hibernate.type.SqlTypes;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "application")
@@ -23,16 +24,16 @@ public class ApplicationEntity {
     @Column(name = "application_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @NotNull
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id", referencedColumnName = "client_id")
     private ClientEntity client;
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "credit_id")
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "credit_id", referencedColumnName = "credit_id")
     private CreditEntity credit;
 
     @Enumerated(EnumType.STRING)
-    @Column(insertable = false, updatable = false)
+    @NotNull
     private ApplicationStatus status;
 
     @Column(name = "creation_date")
@@ -41,7 +42,7 @@ public class ApplicationEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "applied_offer")
-    private AppliedOfferJsonb appliedOffer;
+    private LoanOfferDTO appliedOffer;
 
     @Column(name = "sign_date")
     private Timestamp signDate;
@@ -50,6 +51,7 @@ public class ApplicationEntity {
     private Integer sesCode;
 
     @JdbcTypeCode(SqlTypes.JSON)
+    @NotNull
     @Column(name = "status_history")
-    private StatusHistoryJsonb statusHistory;
+    private List<StatusHistoryJsonb> statusHistory;
 }
