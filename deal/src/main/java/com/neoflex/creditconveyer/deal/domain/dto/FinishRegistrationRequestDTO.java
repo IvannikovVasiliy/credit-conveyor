@@ -2,7 +2,7 @@ package com.neoflex.creditconveyer.deal.domain.dto;
 
 import com.neoflex.creditconveyer.deal.domain.enumeration.Gender;
 import com.neoflex.creditconveyer.deal.domain.enumeration.MartialStatus;
-import jakarta.validation.constraints.NotNull;
+import com.neoflex.creditconveyer.deal.validation.constraint.EmploymentConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +16,7 @@ public class FinishRegistrationRequestDTO {
     private Integer dependentAmount;
     private LocalDate passportIssueDate;
     private String passportIssueBranch;
-    @NotNull
+    @EmploymentConstraint
     private EmploymentDTO employment;
     private String account;
 }
