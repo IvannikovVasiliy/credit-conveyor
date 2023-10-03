@@ -131,11 +131,6 @@ public class DealServiceImpl implements DealService {
         ClientEntity client = application.getClient();
         System.out.println("client " + client.toString());
 
-        LocalDate birthdate = client
-                .getBirthdate()
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
         ScoringDataDTO scoringData = ScoringDataDTO
                 .builder()
                 .amount(application.getAppliedOffer().getRequestedAmount())
@@ -144,7 +139,7 @@ public class DealServiceImpl implements DealService {
                 .lastName(client.getLastName())
                 .middleName(client.getMiddleName())
                 .gender(finishRegistration.getGender())
-                .birthdate(birthdate)
+                .birthdate(client.getBirthdate().toLocalDate())
                 .passportSeries(client.getPassport().getSeries())
                 .passportNumber(client.getPassport().getNumber())
                 .passportIssueDate(finishRegistration.getPassportIssueDate())
