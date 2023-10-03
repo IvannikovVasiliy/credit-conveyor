@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyer.deal.advice;
 
-import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.deal.domain.constant.ErrorConstants;
+import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
 import com.neoflex.creditconveyer.deal.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
