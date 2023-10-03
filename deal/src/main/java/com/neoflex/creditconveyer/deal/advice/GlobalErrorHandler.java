@@ -2,6 +2,7 @@ package com.neoflex.creditconveyer.deal.advice;
 
 import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.deal.domain.dto.StatusConstants;
+import com.neoflex.creditconveyer.deal.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.deal.error.validation.Violation;
@@ -23,8 +24,13 @@ public class GlobalErrorHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public MessageInfoDto handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
+        log.debug("Input handlePaymentNotFound. paymentNotFound: {}", paymentNotFound.getMessage());
+
         messageInfo.setRespCode(StatusConstants.BAD_REQUEST);
         messageInfo.setMessage(paymentNotFound.getMessage());
+
+        log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
+                messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
         return messageInfo;
     }
 
@@ -40,5 +46,18 @@ public class GlobalErrorHandler {
 
         log.debug("Output handleMethodArgumentNotValid. response: {}", violations);
         return new ErrorResponseValidation(violations);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public MessageInfoDto handleBadRequest(BadRequestException e) {
+        log.debug("Input handleBadRequest. BadRequestException: {}", e.getMessage());
+
+        messageInfo.setRespCode(StatusConstants.BAD_REQUEST);
+        messageInfo.setMessage(e.getMessage());
+
+        log.debug("Output handleBadRequest. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
+                messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
+        return messageInfo;
     }
 }
