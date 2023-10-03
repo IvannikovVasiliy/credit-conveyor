@@ -36,8 +36,12 @@ public class GlobalErrorHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public MessageInfoDto handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
+        log.debug("Input handlePaymentNotFound. paymentNotFound: {}", paymentNotFound.getMessage());
         messageInfo.setRespCode(StatusConstants.BAD_REQUEST);
         messageInfo.setMessage(paymentNotFound.getMessage());
+
+        log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
+                messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
         return messageInfo;
     }
 
