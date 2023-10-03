@@ -52,7 +52,6 @@ public class ScoringDataDTO {
     private String passportIssueBranch;
     private MartialStatus martialStatus;
 
-    @NotNull
     private Integer dependentAmount;
 
     @EmploymentConstraint

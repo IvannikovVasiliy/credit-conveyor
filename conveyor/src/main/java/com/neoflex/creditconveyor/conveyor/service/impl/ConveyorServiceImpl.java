@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +129,9 @@ public class ConveyorServiceImpl implements ConveyorService {
         creditDTO.setRate(calcRate(scoringData));
         BigDecimal monthPayment = calcMonthlyPayment(scoringData.getTerm(), creditDTO.getRate(), scoringData.getAmount());
         BigDecimal psk = calcTotalAmount(monthPayment, scoringData.getTerm());
-        var paymentSchedules = PaymentSchedule.createPaymentSchedule(scoringData, monthPayment, creditDTO.getRate());
+
+        LocalDate date = LocalDate.now();
+        var paymentSchedules = PaymentSchedule.createPaymentSchedule(scoringData, monthPayment, creditDTO.getRate(), date);
 
         creditDTO.setAmount(scoringData.getAmount());
         creditDTO.setTerm(scoringData.getTerm());
@@ -155,7 +158,10 @@ public class ConveyorServiceImpl implements ConveyorService {
 
         boolean isAmountTooMuch = scoringData
                 .getAmount()
-                .compareTo(BigDecimal.valueOf((long) scoringData.getDependentAmount()*Constants.COUNT_SALARIES)) > 0;
+                .compareTo(scoringData
+                        .getEmployment()
+                        .getSalary()
+                        .multiply(BigDecimal.valueOf(Constants.COUNT_SALARIES))) > 0;
         if (isAmountTooMuch) {
             violations.add(new Violation(
                     "amount",
@@ -210,6 +216,11 @@ public class ConveyorServiceImpl implements ConveyorService {
         if (Position.TOP_MANAGER.equals(scoringData.getEmployment().getPosition())) {
             BigDecimal rateTopManager = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_TOP_MANAGER));
             rate = rateTopManager;
+        }
+
+        if (null != scoringData.getDependentAmount() && scoringData.getDependentAmount() > Constants.MAX_COUNT_DEPENDENT_AMOUNT) {
+            BigDecimal rateDependentAmount = rate.add(BigDecimal.valueOf(Constants.MAX_COUNT_DEPENDENT_AMOUNT));
+            rate = rateDependentAmount;
         }
 
         if (Gender.FEMALE.equals(scoringData.getGender())) {

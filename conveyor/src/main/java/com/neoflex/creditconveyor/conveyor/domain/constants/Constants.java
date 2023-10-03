@@ -22,6 +22,8 @@ public class Constants {
 
     public static final Integer COUNT_SALARIES = 20;
 
+    public static final Integer MAX_COUNT_DEPENDENT_AMOUNT = 1;
+
     public static final Integer AGE_ADULT = 18;
     public static final Integer MIN_AGE = 20;
     public static final Integer MAX_AGE = 60;

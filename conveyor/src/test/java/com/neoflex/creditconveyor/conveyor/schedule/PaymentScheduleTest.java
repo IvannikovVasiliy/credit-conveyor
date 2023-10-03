@@ -1,6 +1,7 @@
 package com.neoflex.creditconveyor.conveyor.schedule;
 
 import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
+import com.neoflex.creditconveyor.conveyor.domain.dto.CreditDTO;
 import com.neoflex.creditconveyor.conveyor.domain.dto.EmploymentDTO;
 import com.neoflex.creditconveyor.conveyor.domain.dto.PaymentScheduleElement;
 import com.neoflex.creditconveyor.conveyor.domain.dto.ScoringDataDTO;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 class PaymentScheduleTest {
 
@@ -28,22 +30,28 @@ class PaymentScheduleTest {
                 .passportSeries("1234")
                 .passportNumber("123456")
                 .martialStatus(MartialStatus.OWNER_BUSINESS)
-                .dependentAmount(1000)
-                .employment(new EmploymentDTO(13, 4))
+                .employment(EmploymentDTO
+                        .builder()
+                        .salary(BigDecimal.valueOf(1000))
+                        .workExperienceTotal(13)
+                        .workExperienceCurrent(4)
+                        .build())
                 .build();
 
         List<PaymentScheduleElement> paymentScheduleElementsExpected = List.of(
-                new PaymentScheduleElement(1, LocalDate.now().plusMonths(1), BigDecimal.valueOf(1505.770917), BigDecimal.valueOf(1374.260917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(131.51).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(8625.739083).setScale(Constants.ACCURACY, RoundingMode.DOWN)),
-                new PaymentScheduleElement(2, LocalDate.now().plusMonths(2), BigDecimal.valueOf(1505.770917), BigDecimal.valueOf(1388.555394118684).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(117.2155228813), BigDecimal.valueOf(7237.1836888814).setScale(Constants.ACCURACY, RoundingMode.DOWN)),
-                new PaymentScheduleElement(3, LocalDate.now().plusMonths(3), BigDecimal.valueOf(1505.770917), BigDecimal.valueOf(1410.59699451608132).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(95.17392248391868).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(5826.5866943654)),
-                new PaymentScheduleElement(4, LocalDate.now().plusMonths(4), BigDecimal.valueOf(1505.770917), BigDecimal.valueOf(1426.5931909615025643).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(79.1777260385), BigDecimal.valueOf(4399.9935034039).setScale(Constants.ACCURACY, RoundingMode.DOWN)),
-                new PaymentScheduleElement(5, LocalDate.now().plusMonths(5), BigDecimal.valueOf(1505.770917), BigDecimal.valueOf(1446.142589740758165863).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(59.6283272592), BigDecimal.valueOf(2953.8509136632).setScale(Constants.ACCURACY, RoundingMode.DOWN)),
-                new PaymentScheduleElement(6, LocalDate.now().plusMonths(6), BigDecimal.valueOf(1505.770917), BigDecimal.valueOf(1468.32318956995574008949).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(37.4477274300).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1485.5277240933)),
-                new PaymentScheduleElement(7, LocalDate.now().plusMonths(7), BigDecimal.valueOf(1505.770917), BigDecimal.valueOf(1485.6391751652).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(20.1317418347), BigDecimal.valueOf(-0.1114510719))
+                new PaymentScheduleElement(1, LocalDate.now().plusMonths(1), BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1369.870917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(135.9).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(8630.129083).setScale(Constants.ACCURACY, RoundingMode.DOWN)),
+                new PaymentScheduleElement(2, LocalDate.now().plusMonths(2), BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1392.2788085112).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(113.4921084887), BigDecimal.valueOf(7237.8502744888).setScale(Constants.ACCURACY, RoundingMode.DOWN)),
+                new PaymentScheduleElement(3, LocalDate.now().plusMonths(3), BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1407.415472174).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(98.3554448259).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(5830.4348023148)),
+                new PaymentScheduleElement(4, LocalDate.now().plusMonths(4), BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1426.7573743238).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(79.0135426761), BigDecimal.valueOf(4403.6774279910).setScale(Constants.ACCURACY, RoundingMode.DOWN)),
+                new PaymentScheduleElement(5, LocalDate.now().plusMonths(5), BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1449.9428752899).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(55.82804171).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(2953.7345527011).setScale(Constants.ACCURACY, RoundingMode.DOWN)),
+                new PaymentScheduleElement(6, LocalDate.now().plusMonths(6), BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1465.7421645918).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(40.0287524081).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1487.9923881093)),
+                new PaymentScheduleElement(7, LocalDate.now().plusMonths(7), BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1486.2562627297).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(19.5146542702), BigDecimal.valueOf(1.7361253796)),
+                new PaymentScheduleElement(8, LocalDate.now().plusMonths(7), BigDecimal.valueOf(1.7361253796).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1.7361253796).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.ZERO, BigDecimal.ZERO)
         );
 
-        List<PaymentScheduleElement> paymentScheduleElementsResponse = PaymentSchedule
-                .createPaymentSchedule(scoringOwnerBusinessRequest, BigDecimal.valueOf(1505.7709170000), BigDecimal.valueOf(16));
+        LocalDate date = LocalDate.of(2023, 10, 3);
+        List<PaymentScheduleElement> paymentScheduleElementsResponse =
+                PaymentSchedule.createPaymentSchedule(scoringOwnerBusinessRequest, BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(16), date);
 
         assertEquals(paymentScheduleElementsExpected, paymentScheduleElementsResponse);
     }
