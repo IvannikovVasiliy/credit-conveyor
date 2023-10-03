@@ -135,7 +135,6 @@ public class DealServiceImpl implements DealService {
         }
 
         ClientEntity client = application.getClient();
-        System.out.println("client " + client.toString());
 
         ScoringDataDTO scoringData = ScoringDataDTO
                 .builder()
@@ -159,13 +158,15 @@ public class DealServiceImpl implements DealService {
                 .build();
 
         CreditDTO creditDto = feignService.validAndScoreAndCalcOffer(scoringData);
+        List<PaymentScheduleElementJsonb> payments = buildPaymentScheduleElementJsonb(creditDto.getPaymentSchedule());
+
         CreditEntity credit = new CreditEntity();
         credit.setAmount(creditDto.getAmount());
         credit.setTerm(creditDto.getTerm());
         credit.setMonthlyPayment(creditDto.getMonthlyPayment());
         credit.setRate(creditDto.getRate());
         credit.setPsk(creditDto.getPsk());
-        //credit.setPaymentSchedule(creditDto.getPaymentSchedule());
+        credit.setPaymentSchedule(payments);
         credit.setInsuranceEnable(creditDto.getIsInsuranceEnabled());
         credit.setSalaryClient(creditDto.getIsSalaryClient());
         if (null == creditDto.getIsInsuranceEnabled()) {
@@ -183,5 +184,15 @@ public class DealServiceImpl implements DealService {
         creditRepository.save(credit);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");
+    }
+
+    private List<PaymentScheduleElementJsonb> buildPaymentScheduleElementJsonb(List<PaymentScheduleElement> payments) {
+        log.debug("Input mapping PaymentScheduleElement into PaymentScheduleElementJsonb. payments={}", payments);
+
+        payments.stream().map(payment -> {
+            PaymentScheduleElementJsonb  paymentScheduleElementJsonb = new PaymentScheduleElementJsonb();
+            paymentScheduleElementJsonb.setNumber(payment.getNumber());
+            paymentScheduleElementJsonb.setDate(payment.getDate());
+        })
     }
 }

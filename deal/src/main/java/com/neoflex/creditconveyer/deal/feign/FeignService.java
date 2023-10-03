@@ -40,7 +40,6 @@ public class FeignService {
 
         CreditDTO creditResponse = conveyorFeignClient.validAndScoreAndCalcOffer(scoringData).getBody();
 
-//        try {
 //            List<Violation> violations = new ArrayList<>();
 //            var violationsResponse = (Map<String, List<Map<String, String>>>) credit;
 //            violationsResponse
@@ -57,15 +56,6 @@ public class FeignService {
 //
 //            log.debug("Error validAndScoreAndCalcOffer. violations:{}", violations);
 //            throw new ValidationAndScoringAndCalculationOfferException(violations);
-//        } catch (RuntimeException e) {
-//            Map<String, Object> mapResponse = (Map<String, Object>) credit;
-//            creditResponse.setAmount((BigDecimal) mapResponse.get("amount"));
-//            creditResponse.setTerm((Integer) mapResponse.get("term"));
-//            creditResponse.setMonthlyPayment((BigDecimal) mapResponse.get("monthlyPayment"));
-//            creditResponse.setRate((BigDecimal) mapResponse.get("rate"));
-//            creditResponse.setPsk((BigDecimal) mapResponse.get("psk"));
-//            creditResponse.setIsInsuranceEnabled((Boolean) mapResponse.get("isInsuranceEnabled"));
-//        }
 
         log.info("Response creditDTO={ amount: {}, term: {}, monthlyPayment: {}, rate: {}, psk: {}, isInsuranceEnabled: {}, isSalaryClient: {}, paymentSchedule: {} }",
                 creditResponse.getAmount(), creditResponse.getTerm(), creditResponse.getMonthlyPayment(), creditResponse.getRate(), creditResponse.getPsk(), creditResponse.getIsInsuranceEnabled(), creditResponse.getIsSalaryClient(), creditResponse.getPaymentSchedule());
