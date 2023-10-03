@@ -20,12 +20,15 @@ public class EmploymentValidator implements ConstraintValidator<EmploymentConstr
         log.debug("Request, validation EmploymentDTO");
 
         if (null == employment) {
+            log.error("Invalid value. Employment shouldn't be null");
             throw new ResourceNotFoundException("Invalid value. Employment shouldn't be null");
         }
         if (null == employment.getWorkExperienceTotal()) {
+            log.error("Invalid value. workExperienceTotal shouldn't be null");
             throw new ResourceNotFoundException("Invalid value. workExperienceTotal shouldn't be null");
         }
         if (null == employment.getWorkExperienceCurrent()) {
+            log.error("Invalid value. workExperienceCurrent shouldn't be null");
             throw new ResourceNotFoundException("Invalid value. workExperienceCurrent shouldn't be null");
         }
 

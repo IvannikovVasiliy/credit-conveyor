@@ -23,6 +23,7 @@ public class AdultValidator implements ConstraintValidator<AdultConstraint, Loca
         log.debug("Request, validation birthday. birthday={}", birthday);
 
         if (null == birthday) {
+            log.error("Invalid value. Birthday shouldn't be null");
             throw new ResourceNotFoundException("Invalid value. Birthday shouldn't be null");
         }
         Integer years = DatesUtil.getYears(birthday);
