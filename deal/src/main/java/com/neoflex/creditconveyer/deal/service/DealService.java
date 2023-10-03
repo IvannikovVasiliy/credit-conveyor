@@ -11,5 +11,5 @@ import java.util.List;
 public interface DealService {
     List<LoanOfferDTO> calculateCreditConditions(@Valid LoanApplicationRequestDTO loanApplicationRequest);
     void chooseOffer(@Valid LoanOfferDTO loanOffer);
-    void finishRegistrationAndCalcAmountCredit(@NotNull Long applicationId, FinishRegistrationRequestDTO finishRegistration);
+    void finishRegistrationAndCalcAmountCredit(@NotNull Long applicationId, @Valid FinishRegistrationRequestDTO finishRegistration);
 }

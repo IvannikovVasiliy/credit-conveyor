@@ -1,7 +1,8 @@
 package com.neoflex.creditconveyer.deal.advice;
 
 import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
-import com.neoflex.creditconveyer.deal.domain.dto.StatusConstants;
+import com.neoflex.creditconveyer.deal.domain.constant.ErrorConstants;
+import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
 import com.neoflex.creditconveyer.deal.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
@@ -19,14 +20,14 @@ import java.util.List;
 @Slf4j
 public class GlobalErrorHandler {
 
-    MessageInfoDto messageInfo = new MessageInfoDto(StatusConstants.DEFAULT_ERROR_CODE);
+    MessageInfoDto messageInfo = new MessageInfoDto(ErrorConstants.DEFAULT_ERROR_CODE);
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public MessageInfoDto handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
         log.debug("Input handlePaymentNotFound. paymentNotFound: {}", paymentNotFound.getMessage());
 
-        messageInfo.setRespCode(StatusConstants.BAD_REQUEST);
+        messageInfo.setRespCode(ErrorConstants.BAD_REQUEST);
         messageInfo.setMessage(paymentNotFound.getMessage());
 
         log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
@@ -53,10 +54,25 @@ public class GlobalErrorHandler {
     public MessageInfoDto handleBadRequest(BadRequestException e) {
         log.debug("Input handleBadRequest. BadRequestException: {}", e.getMessage());
 
-        messageInfo.setRespCode(StatusConstants.BAD_REQUEST);
+        messageInfo.setRespCode(ErrorConstants.BAD_REQUEST);
         messageInfo.setMessage(e.getMessage());
 
         log.debug("Output handleBadRequest. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
+                messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
+        return messageInfo;
+    }
+
+    @ExceptionHandler(ApplicationIsPreapprovalException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public MessageInfoDto handleApplicationIsPreapprovalException(ApplicationIsPreapprovalException e) {
+        log.debug("Input handleApplicationIsPreapprovalException. ApplicationIsPreapprovalException: {}",
+                e.getMessage());
+
+        messageInfo.setErrorCode(ErrorConstants.APPLICATION_PREAPPROVAL);
+        messageInfo.setRespCode(ErrorConstants.CONFLICT);
+        messageInfo.setMessage(e.getMessage());
+
+        log.debug("Output handleApplicationIsPreapprovalException. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
                 messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
         return messageInfo;
     }
