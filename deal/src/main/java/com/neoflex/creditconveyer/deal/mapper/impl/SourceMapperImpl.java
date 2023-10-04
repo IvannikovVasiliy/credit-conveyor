@@ -1,10 +1,12 @@
 package com.neoflex.creditconveyer.deal.mapper.impl;
 
 import com.neoflex.creditconveyer.deal.domain.dto.CreditDTO;
+import com.neoflex.creditconveyer.deal.domain.dto.EmploymentDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.PaymentScheduleElement;
 import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.CreditEntity;
+import com.neoflex.creditconveyer.deal.domain.jsonb.EmploymentJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.PassportJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.PaymentScheduleElementJsonb;
 import com.neoflex.creditconveyer.deal.mapper.SourceMapper;
@@ -69,6 +71,24 @@ public class SourceMapperImpl implements SourceMapper {
         creditEntity.setPaymentSchedule( paymentListToPaymentJsonbList( creditDTO.getPaymentSchedule() ) );
 
         return creditEntity;
+    }
+
+    @Override
+    public EmploymentJsonb sourceToEmploymentJsonb(EmploymentDTO employmentDTO) {
+        if ( employmentDTO == null ) {
+            return null;
+        }
+
+        EmploymentJsonb employmentJsonb = new EmploymentJsonb();
+
+        employmentJsonb.setStatus(employmentDTO.getEmploymentStatus());
+        employmentJsonb.setEmployerInn(employmentJsonb.getEmployerInn());
+        employmentJsonb.setSalary( employmentDTO.getSalary() );
+        employmentJsonb.setPosition( employmentDTO.getPosition() );
+        employmentJsonb.setWorkExperienceTotal( employmentDTO.getWorkExperienceTotal() );
+        employmentJsonb.setWorkExperienceCurrent( employmentDTO.getWorkExperienceCurrent() );
+
+        return employmentJsonb;
     }
 
     protected PaymentScheduleElementJsonb paymentToPaymentJsonb(PaymentScheduleElement paymentScheduleElement) {

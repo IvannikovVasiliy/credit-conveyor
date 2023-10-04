@@ -40,23 +40,6 @@ public class FeignService {
 
         CreditDTO creditResponse = conveyorFeignClient.validAndScoreAndCalcOffer(scoringData).getBody();
 
-//            List<Violation> violations = new ArrayList<>();
-//            var violationsResponse = (Map<String, List<Map<String, String>>>) credit;
-//            violationsResponse
-//                    .entrySet()
-//                    .iterator()
-//                    .next()
-//                    .getValue()
-//                    .forEach(map -> {
-//                        String fieldName = map.get("fieldName");
-//                        String message = map.get("message");
-//                        Violation violation = new Violation(fieldName, message);
-//                        violations.add(violation);
-//                    });
-//
-//            log.debug("Error validAndScoreAndCalcOffer. violations:{}", violations);
-//            throw new ValidationAndScoringAndCalculationOfferException(violations);
-
         log.info("Response creditDTO={ amount: {}, term: {}, monthlyPayment: {}, rate: {}, psk: {}, isInsuranceEnabled: {}, isSalaryClient: {}, paymentSchedule: {} }",
                 creditResponse.getAmount(), creditResponse.getTerm(), creditResponse.getMonthlyPayment(), creditResponse.getRate(), creditResponse.getPsk(), creditResponse.getIsInsuranceEnabled(), creditResponse.getIsSalaryClient(), creditResponse.getPaymentSchedule());
         return creditResponse;

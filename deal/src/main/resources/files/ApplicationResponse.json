@@ -1,6 +1,6 @@
 [
   {
-    "applicationId": 2,
+    "applicationId": 44,
     "requestedAmount": 10000,
     "totalAmount": 10133.7770310000,
     "term": 7,
@@ -10,7 +10,7 @@
     "isSalaryClient": true
   },
   {
-    "applicationId": 2,
+    "applicationId": 44,
     "requestedAmount": 10000,
     "totalAmount": 10167.3596570000,
     "term": 7,
@@ -20,7 +20,7 @@
     "isSalaryClient": false
   },
   {
-    "applicationId": 2,
+    "applicationId": 44,
     "requestedAmount": 10000,
     "totalAmount": 10302.2414950000,
     "term": 7,
@@ -30,7 +30,7 @@
     "isSalaryClient": true
   },
   {
-    "applicationId": 2,
+    "applicationId": 44,
     "requestedAmount": 10000,
     "totalAmount": 10336.0994380000,
     "term": 7,

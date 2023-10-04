@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/v1/deal")
-public class DealController implements V1Api {
+public class DealController/* implements V1Api*/ {
 
     private final DealService dealService;
 

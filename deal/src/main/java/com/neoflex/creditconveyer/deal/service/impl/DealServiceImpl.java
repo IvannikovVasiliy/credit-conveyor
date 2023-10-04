@@ -49,42 +49,24 @@ public class DealServiceImpl implements DealService {
         log.debug("Request calculateCreditConditions. loanApplicationRequest={ amount:{}, term:{}, firstName:{}, lastName={}, middleName={}, email: {}, birthdate; {}, passportSeries;{}, passportNumber: {} }",
                 loanApplicationRequest.getAmount(), loanApplicationRequest.getTerm(), loanApplicationRequest.getFirstName(), loanApplicationRequest.getLastName(), loanApplicationRequest.getMiddleName(), loanApplicationRequest.getEmail(), loanApplicationRequest.getBirthdate(), loanApplicationRequest.getPassportSeries(), loanApplicationRequest.getPassportNumber());
 
-        PassportJsonb passport = new PassportJsonb();
-        passport.setSeries(loanApplicationRequest.getPassportSeries());
-        passport.setNumber(loanApplicationRequest.getPassportNumber());
-
         ClientEntity client = sourceMapper.sourceToClientEntity(loanApplicationRequest);
-
-        ApplicationEntity application = new ApplicationEntity();
-        application.setClient(client);
-        application.setStatus(ApplicationStatus.PREAPPROVAL);
 
         StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();
         statusHistory.setStatus(ApplicationStatus.PREAPPROVAL.name());
         statusHistory.setTime(Timestamp.valueOf(LocalDateTime.now()));
         statusHistory.setChangeType(ChangeType.AUTOMATIC);
+
+        ApplicationEntity application = new ApplicationEntity();
+        application.setClient(client);
+        application.setStatus(ApplicationStatus.PREAPPROVAL);
         application.setStatusHistory(List.of(statusHistory));
 
         clientRepository.save(client);
         applicationRepository.save(application);
 
-        List<LoanOfferDTO> loanOffers = new ArrayList<>();
-        try {
-            loanOffers = feignService.createLoanOffer(loanApplicationRequest);
-        } catch (RuntimeException e) {
-            log.error(e.getMessage());
-            throw new RuntimeException(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        loanOffers = loanOffers
-                .stream()
-                .peek(loanOfferDTO -> loanOfferDTO.setApplicationId(application.getId()))
-                .toList();
+        List<LoanOfferDTO> loanOffers = createLoanOffers(loanApplicationRequest, application.getId());
 
         log.info("Response. loanOffers={}", loanOffers);
-
         return loanOffers;
     }
 
@@ -128,40 +110,12 @@ public class DealServiceImpl implements DealService {
             throw new ApplicationIsPreapprovalException(String.format("Status application is %s", ApplicationStatus.PREAPPROVAL));
         }
 
-        EmploymentJsonb employmentJsonb = new EmploymentJsonb();
-        employmentJsonb.setStatus(finishRegistration.getEmployment().getEmploymentStatus());
-        employmentJsonb.setEmployerInn(finishRegistration.getEmployment().getEmployerINN());
-        employmentJsonb.setSalary(finishRegistration.getEmployment().getSalary());
-        employmentJsonb.setPosition(finishRegistration.getEmployment().getPosition());
-        employmentJsonb.setWorkExperienceTotal(finishRegistration.getEmployment().getWorkExperienceTotal());
-        employmentJsonb.setWorkExperienceCurrent(finishRegistration.getEmployment().getWorkExperienceCurrent());
+        EmploymentJsonb employmentJsonb = sourceMapper.sourceToEmploymentJsonb(finishRegistration.getEmployment());
 
         ClientEntity clientEntity = application.getClient();
-        clientEntity.setGender(finishRegistration.getGender());
-        clientEntity.setDependentAmount(finishRegistration.getDependentAmount());
-        clientEntity.setEmployment(employmentJsonb);
-        clientEntity.setAccount(finishRegistration.getAccount());
+        setValuesIntoClientEntity(clientEntity, finishRegistration, employmentJsonb);
 
-        ScoringDataDTO scoringData = ScoringDataDTO
-                .builder()
-                .amount(application.getAppliedOffer().getRequestedAmount())
-                .term(application.getAppliedOffer().getTerm())
-                .firstName(clientEntity.getFirstName())
-                .lastName(clientEntity.getLastName())
-                .middleName(clientEntity.getMiddleName())
-                .gender(finishRegistration.getGender())
-                .birthdate(clientEntity.getBirthdate().toLocalDate())
-                .passportSeries(clientEntity.getPassport().getSeries())
-                .passportNumber(clientEntity.getPassport().getNumber())
-                .passportIssueDate(finishRegistration.getPassportIssueDate())
-                .passportIssueBranch(finishRegistration.getPassportIssueBranch())
-                .martialStatus(finishRegistration.getMaritalStatus())
-                .dependentAmount(finishRegistration.getDependentAmount())
-                .employment(finishRegistration.getEmployment())
-                .account(finishRegistration.getAccount())
-                .isInsuranceEnabled(application.getAppliedOffer().getIsInsuranceEnabled())
-                .isSalaryClient(application.getAppliedOffer().getIsSalaryClient())
-                .build();
+        ScoringDataDTO scoringData = buildScoringData(application, clientEntity, finishRegistration);
 
         CreditDTO creditDto = feignService.validAndScoreAndCalcOffer(scoringData);
 
@@ -186,5 +140,62 @@ public class DealServiceImpl implements DealService {
         creditRepository.save(creditEntity);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");
+    }
+
+    private List<LoanOfferDTO> createLoanOffers(LoanApplicationRequestDTO loanApplicationRequest, Long applicationId) {
+        log.debug("Input createLoanOffers. applicationId={}. loanApplicationRequest={ amount:{}, term:{}, firstName:{}, lastName={}, middleName={}, email: {}, birthdate; {}, passportSeries;{}, passportNumber: {} }",
+                applicationId, loanApplicationRequest.getAmount(), loanApplicationRequest.getTerm(), loanApplicationRequest.getFirstName(), loanApplicationRequest.getLastName(), loanApplicationRequest.getMiddleName(), loanApplicationRequest.getEmail(), loanApplicationRequest.getBirthdate(), loanApplicationRequest.getPassportSeries(), loanApplicationRequest.getPassportNumber());
+
+        List<LoanOfferDTO> loanOffers = new ArrayList<>();
+        try {
+            loanOffers = feignService.createLoanOffer(loanApplicationRequest);
+        } catch (RuntimeException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        loanOffers = loanOffers
+                .stream()
+                .peek(loanOfferDTO -> loanOfferDTO.setApplicationId(applicationId))
+                .toList();
+
+        log.info("Output createLoanOffers. loanOffers={}", loanOffers);
+        return loanOffers;
+    }
+
+    private void setValuesIntoClientEntity(ClientEntity clientEntity,
+                                           FinishRegistrationRequestDTO finishRegistration,
+                                           EmploymentJsonb employmentJsonb) {
+        clientEntity.setGender(finishRegistration.getGender());
+        clientEntity.setDependentAmount(finishRegistration.getDependentAmount());
+        clientEntity.setEmployment(employmentJsonb);
+        clientEntity.setAccount(finishRegistration.getAccount());
+    }
+
+    private ScoringDataDTO buildScoringData(ApplicationEntity application,
+                                            ClientEntity clientEntity,
+                                            FinishRegistrationRequestDTO finishRegistration) {
+        return ScoringDataDTO
+                .builder()
+                .amount(application.getAppliedOffer().getRequestedAmount())
+                .term(application.getAppliedOffer().getTerm())
+                .firstName(clientEntity.getFirstName())
+                .lastName(clientEntity.getLastName())
+                .middleName(clientEntity.getMiddleName())
+                .gender(finishRegistration.getGender())
+                .birthdate(clientEntity.getBirthdate().toLocalDate())
+                .passportSeries(clientEntity.getPassport().getSeries())
+                .passportNumber(clientEntity.getPassport().getNumber())
+                .passportIssueDate(finishRegistration.getPassportIssueDate())
+                .passportIssueBranch(finishRegistration.getPassportIssueBranch())
+                .martialStatus(finishRegistration.getMaritalStatus())
+                .dependentAmount(finishRegistration.getDependentAmount())
+                .employment(finishRegistration.getEmployment())
+                .account(finishRegistration.getAccount())
+                .isInsuranceEnabled(application.getAppliedOffer().getIsInsuranceEnabled())
+                .isSalaryClient(application.getAppliedOffer().getIsSalaryClient())
+                .build();
     }
 }
