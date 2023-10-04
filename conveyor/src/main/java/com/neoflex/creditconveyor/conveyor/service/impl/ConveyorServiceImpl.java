@@ -138,6 +138,7 @@ public class ConveyorServiceImpl implements ConveyorService {
         creditDTO.setMonthlyPayment(monthPayment);
         creditDTO.setPsk(psk);
         creditDTO.setIsInsuranceEnabled(scoringData.getIsInsuranceEnabled());
+        creditDTO.setIsSalaryClient(scoringData.getIsSalaryClient());
         creditDTO.setPaymentSchedule(paymentSchedules);
 
         log.debug("Output validAndScoreAndCalcOffer. creditDTO: {}", creditDTO);
