@@ -8,23 +8,23 @@ import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ChangeType;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
 import com.neoflex.creditconveyer.deal.domain.jsonb.PassportJsonb;
-import com.neoflex.creditconveyer.deal.domain.jsonb.PaymentScheduleElementJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.feign.FeignService;
+import com.neoflex.creditconveyer.deal.mapper.SourceMapper;
 import com.neoflex.creditconveyer.deal.repository.ApplicationRepository;
 import com.neoflex.creditconveyer.deal.repository.ClientRepository;
 import com.neoflex.creditconveyer.deal.repository.CreditRepository;
 import com.neoflex.creditconveyer.deal.service.DealService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ public class DealServiceImpl implements DealService {
     private final ClientRepository clientRepository;
     private final ApplicationRepository applicationRepository;
     private final CreditRepository creditRepository;
+    @Qualifier("sourceMapperImplementation") private final SourceMapper sourceMapper;
 
     @Override
     @Transactional
@@ -51,14 +52,7 @@ public class DealServiceImpl implements DealService {
         passport.setSeries(loanApplicationRequest.getPassportSeries());
         passport.setNumber(loanApplicationRequest.getPassportNumber());
 
-        ClientEntity client = new ClientEntity();
-        client.setLastName(loanApplicationRequest.getLastName());
-        client.setFirstName(loanApplicationRequest.getFirstName());
-        client.setMiddleName(loanApplicationRequest.getMiddleName());
-        client.setBirthdate(Date.valueOf(loanApplicationRequest.getBirthdate()));
-        client.setEmail(loanApplicationRequest.getEmail());
-        client.setBirthdate(Date.valueOf(loanApplicationRequest.getBirthdate()));
-        client.setPassport(passport);
+        ClientEntity client = sourceMapper.sourceToClientEntity(loanApplicationRequest);
 
         ApplicationEntity application = new ApplicationEntity();
         application.setClient(client);
@@ -158,41 +152,12 @@ public class DealServiceImpl implements DealService {
                 .build();
 
         CreditDTO creditDto = feignService.validAndScoreAndCalcOffer(scoringData);
-        List<PaymentScheduleElementJsonb> payments = buildPaymentScheduleElementJsonb(creditDto.getPaymentSchedule());
 
-        CreditEntity credit = new CreditEntity();
-        credit.setAmount(creditDto.getAmount());
-        credit.setTerm(creditDto.getTerm());
-        credit.setMonthlyPayment(creditDto.getMonthlyPayment());
-        credit.setRate(creditDto.getRate());
-        credit.setPsk(creditDto.getPsk());
-        credit.setPaymentSchedule(payments);
-        credit.setInsuranceEnable(creditDto.getIsInsuranceEnabled());
-        credit.setSalaryClient(creditDto.getIsSalaryClient());
-        if (null == creditDto.getIsInsuranceEnabled()) {
-            credit.setInsuranceEnable(false);
-        } else {
-            credit.setInsuranceEnable(creditDto.getIsInsuranceEnabled());
-        }
-        if (null == creditDto.getIsSalaryClient()) {
-            credit.setSalaryClient(false);
-        } else {
-            credit.setSalaryClient(creditDto.getIsSalaryClient());
-        }
-        credit.setCreditStatus(CreditStatus.CALCULATED);
-        credit.setApplication(application);
-        creditRepository.save(credit);
+        CreditEntity creditEntity = sourceMapper.sourceToCreditEntity(creditDto);
+        creditEntity.setCreditStatus(CreditStatus.CALCULATED);
+        creditEntity.setApplication(application);
+        creditRepository.save(creditEntity);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");
-    }
-
-    private List<PaymentScheduleElementJsonb> buildPaymentScheduleElementJsonb(List<PaymentScheduleElement> payments) {
-        log.debug("Input mapping PaymentScheduleElement into PaymentScheduleElementJsonb. payments={}", payments);
-
-        payments.stream().map(payment -> {
-            PaymentScheduleElementJsonb  paymentScheduleElementJsonb = new PaymentScheduleElementJsonb();
-            paymentScheduleElementJsonb.setNumber(payment.getNumber());
-            paymentScheduleElementJsonb.setDate(payment.getDate());
-        })
     }
 }
