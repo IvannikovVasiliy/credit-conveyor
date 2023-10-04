@@ -169,7 +169,17 @@ public class DealServiceImpl implements DealService {
         creditEntity.setCreditStatus(CreditStatus.CALCULATED);
         creditEntity.setApplication(application);
 
+        List<StatusHistoryJsonb> statusHistories = application.getStatusHistory();
+        StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();
+        statusHistory.setStatus(ApplicationStatus.CC_APPROVED.name());
+        statusHistory.setTime(Timestamp.valueOf(LocalDateTime.now()));
+        statusHistory.setChangeType(ChangeType.MANUAL);
+        statusHistories.add(statusHistory);
+
         application.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
+        application.setCredit(creditEntity);
+        application.setStatus(ApplicationStatus.CC_APPROVED);
+        application.setStatusHistory(statusHistories);
 
         clientRepository.save(clientEntity);
         applicationRepository.save(application);
