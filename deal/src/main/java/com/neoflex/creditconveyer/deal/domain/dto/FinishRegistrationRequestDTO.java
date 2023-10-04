@@ -15,10 +15,12 @@ public class FinishRegistrationRequestDTO {
     @NotNull
     private Gender gender;
     private MartialStatus maritalStatus;
+    @NotNull
     private Integer dependentAmount;
     private LocalDate passportIssueDate;
     private String passportIssueBranch;
     @EmploymentConstraint
     private EmploymentDTO employment;
+    @NotNull
     private String account;
 }

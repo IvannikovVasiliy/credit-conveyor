@@ -1,0 +1,11 @@
+{
+  "gender": "MALE",
+  "dependentAmount": 0,
+  "employment": {
+    "employmentStatus": "EMPLOYED",
+    "salary": 1000,
+    "workExperienceTotal": 12,
+    "workExperienceCurrent": 4
+  },
+  "account": "1"
+}

@@ -42,7 +42,6 @@ public class SourceMapperImpl implements SourceMapper {
         clientEntity.setEmail( loanApplicationRequest.getEmail() );
 
         PassportJsonb passport = new PassportJsonb();
-        passport.setPassportId(UUID.randomUUID());
         passport.setSeries(loanApplicationRequest.getPassportSeries());
         passport.setNumber(loanApplicationRequest.getPassportNumber());
         clientEntity.setPassport(passport);

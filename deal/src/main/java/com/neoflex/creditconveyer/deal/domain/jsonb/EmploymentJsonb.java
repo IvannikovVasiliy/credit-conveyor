@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neoflex.creditconveyer.deal.domain.enumeration.EmploymentPosition;
 import com.neoflex.creditconveyer.deal.domain.enumeration.EmploymentStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,7 @@ public class EmploymentJsonb implements Serializable {
     private UUID employmentId = UUID.randomUUID();
 
     @Enumerated(value = EnumType.STRING)
+    @NotNull
     private EmploymentStatus status;
 
     @Column(name = "employer_inn")
@@ -28,7 +30,9 @@ public class EmploymentJsonb implements Serializable {
     private EmploymentPosition position;
 
     @Column(name = "work_experience_total")
+    @NotNull
     private Integer workExperienceTotal;
     @Column(name = "work_experience_current")
+    @NotNull
     private Integer workExperienceCurrent;
 }

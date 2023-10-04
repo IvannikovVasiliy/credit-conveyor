@@ -1,8 +1,10 @@
 {
-  "applicationId": 2,
+  "applicationId": 41,
   "requestedAmount": 10000,
   "totalAmount": 10000,
   "term": 7,
   "monthlyPayment": 1,
-  "rate": 1
+  "rate": 1,
+  "isInsuranceEnabled": false,
+  "isSalaryClient": false
 }

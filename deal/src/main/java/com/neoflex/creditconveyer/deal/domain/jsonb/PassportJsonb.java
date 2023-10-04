@@ -16,7 +16,7 @@ public class PassportJsonb {
 
     @JsonProperty("passport_id")
     @NotNull
-    private UUID passportId;
+    private UUID passportId = UUID.randomUUID();
 
     @Size(min = 4, max = 4)
     @NotNull

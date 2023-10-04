@@ -7,6 +7,7 @@ import com.neoflex.creditconveyer.deal.domain.entity.CreditEntity;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ChangeType;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
+import com.neoflex.creditconveyer.deal.domain.jsonb.EmploymentJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.PassportJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
@@ -127,19 +128,31 @@ public class DealServiceImpl implements DealService {
             throw new ApplicationIsPreapprovalException(String.format("Status application is %s", ApplicationStatus.PREAPPROVAL));
         }
 
-        ClientEntity client = application.getClient();
+        EmploymentJsonb employmentJsonb = new EmploymentJsonb();
+        employmentJsonb.setStatus(finishRegistration.getEmployment().getEmploymentStatus());
+        employmentJsonb.setEmployerInn(finishRegistration.getEmployment().getEmployerINN());
+        employmentJsonb.setSalary(finishRegistration.getEmployment().getSalary());
+        employmentJsonb.setPosition(finishRegistration.getEmployment().getPosition());
+        employmentJsonb.setWorkExperienceTotal(finishRegistration.getEmployment().getWorkExperienceTotal());
+        employmentJsonb.setWorkExperienceCurrent(finishRegistration.getEmployment().getWorkExperienceCurrent());
+
+        ClientEntity clientEntity = application.getClient();
+        clientEntity.setGender(finishRegistration.getGender());
+        clientEntity.setDependentAmount(finishRegistration.getDependentAmount());
+        clientEntity.setEmployment(employmentJsonb);
+        clientEntity.setAccount(finishRegistration.getAccount());
 
         ScoringDataDTO scoringData = ScoringDataDTO
                 .builder()
                 .amount(application.getAppliedOffer().getRequestedAmount())
                 .term(application.getAppliedOffer().getTerm())
-                .firstName(client.getFirstName())
-                .lastName(client.getLastName())
-                .middleName(client.getMiddleName())
+                .firstName(clientEntity.getFirstName())
+                .lastName(clientEntity.getLastName())
+                .middleName(clientEntity.getMiddleName())
                 .gender(finishRegistration.getGender())
-                .birthdate(client.getBirthdate().toLocalDate())
-                .passportSeries(client.getPassport().getSeries())
-                .passportNumber(client.getPassport().getNumber())
+                .birthdate(clientEntity.getBirthdate().toLocalDate())
+                .passportSeries(clientEntity.getPassport().getSeries())
+                .passportNumber(clientEntity.getPassport().getNumber())
                 .passportIssueDate(finishRegistration.getPassportIssueDate())
                 .passportIssueBranch(finishRegistration.getPassportIssueBranch())
                 .martialStatus(finishRegistration.getMaritalStatus())
@@ -158,6 +171,7 @@ public class DealServiceImpl implements DealService {
 
         application.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
 
+        clientRepository.save(clientEntity);
         applicationRepository.save(application);
         creditRepository.save(creditEntity);
 
