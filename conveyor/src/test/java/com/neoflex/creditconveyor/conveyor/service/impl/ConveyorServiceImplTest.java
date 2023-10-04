@@ -2,6 +2,7 @@ package com.neoflex.creditconveyor.conveyor.service.impl;
 
 import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
 import com.neoflex.creditconveyor.conveyor.domain.dto.*;
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentStatus;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Gender;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.MartialStatus;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentPosition;
@@ -36,6 +37,8 @@ class ConveyorServiceImplTest {
     public static void init() {
         employment = EmploymentDTO
                 .builder()
+                .employmentStatus(EmploymentStatus.BUSINESS_OWNER)
+                .position(EmploymentPosition.WORKER)
                 .salary(BigDecimal.valueOf(1000))
                 .workExperienceTotal(13)
                 .workExperienceCurrent(4)
@@ -83,11 +86,14 @@ class ConveyorServiceImplTest {
                 .term(7)
                 .firstName("Ivan")
                 .lastName("Ivanov")
+                .gender(Gender.NON_BINARY)
                 .birthdate(LocalDate.of(2000, 01, 01))
                 .passportSeries("1234")
                 .passportNumber("123456")
-                .martialStatus(MartialStatus.OWNER_BUSINESS)
+                .martialStatus(MartialStatus.SINGLE)
                 .employment(employment)
+                .isInsuranceEnabled(false)
+                .isSalaryClient(false)
                 .build();
 
         ScoringDataDTO scoringDataUnemployedRequest = ScoringDataDTO
@@ -95,11 +101,19 @@ class ConveyorServiceImplTest {
                 .amount(BigDecimal.valueOf(10000)).term(7)
                 .firstName("Ivan")
                 .lastName("Ivanov")
+                .gender(Gender.MALE)
                 .birthdate(LocalDate.of(2000, 01, 01))
                 .passportSeries("1234")
                 .passportNumber("123456")
-                .martialStatus(MartialStatus.UNEMPLOYED)
-                .employment(employment)
+                .martialStatus(MartialStatus.SINGLE)
+                .employment(EmploymentDTO
+                        .builder()
+                        .employmentStatus(EmploymentStatus.UNEMPLOYED)
+                        .workExperienceTotal(0)
+                        .workExperienceCurrent(0)
+                        .build())
+                .isSalaryClient(false)
+                .isInsuranceEnabled(false)
                 .build();
 
         CreditDTO expectedCredit = CreditDTO
@@ -109,6 +123,8 @@ class ConveyorServiceImplTest {
                 .monthlyPayment(BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN))
                 .rate(BigDecimal.valueOf(16))
                 .psk(BigDecimal.valueOf(10540.396419).setScale(Constants.ACCURACY, RoundingMode.DOWN))
+                .isSalaryClient(false)
+                .isInsuranceEnabled(false)
                 .build();
 
         CreditDTO responseCredit = conveyorService.validAndScoreAndCalcOffer(scoringOwnerBusinessRequest);
@@ -126,33 +142,41 @@ class ConveyorServiceImplTest {
                 .amount(BigDecimal.valueOf(10000)).term(7)
                 .firstName("Ivan")
                 .lastName("Ivanov")
+                .gender(Gender.MALE)
                 .birthdate(LocalDate.of(2000, 01, 01))
                 .passportSeries("1234")
                 .passportNumber("123456")
-                .martialStatus(MartialStatus.SELF_EMPLOYED)
+                .martialStatus(MartialStatus.SINGLE)
                 .employment(EmploymentDTO
                         .builder()
+                        .employmentStatus(EmploymentStatus.EMPLOYED)
                         .salary(BigDecimal.valueOf(100))
                         .workExperienceTotal(13)
                         .workExperienceCurrent(4)
                         .build())
+                .isSalaryClient(false)
+                .isInsuranceEnabled(false)
                 .build();
         ScoringDataDTO scoringDataExperienceSmall = ScoringDataDTO
                 .builder()
                 .amount(BigDecimal.valueOf(10000)).term(7)
                 .firstName("Ivan")
                 .lastName("Ivanov")
+                .gender(Gender.MALE)
                 .birthdate(LocalDate.of(2000, 01, 01))
                 .passportSeries("1234")
                 .passportNumber("123456")
-                .martialStatus(MartialStatus.SELF_EMPLOYED)
+                .martialStatus(MartialStatus.SINGLE)
                 .dependentAmount(1000)
                 .employment(EmploymentDTO
                         .builder()
+                        .employmentStatus(EmploymentStatus.EMPLOYED)
                         .salary(BigDecimal.valueOf(1000))
                         .workExperienceCurrent(1)
                         .workExperienceTotal(1)
                         .build())
+                .isSalaryClient(false)
+                .isInsuranceEnabled(false)
                 .build();
 
         assertThrows(ValidationAndScoringAndCalculationOfferException.class, () ->
@@ -167,10 +191,11 @@ class ConveyorServiceImplTest {
     public void calcRateTest() {
         ScoringDataDTO scoringDataDTO = ScoringDataDTO
                 .builder()
-                .martialStatus(MartialStatus.SELF_EMPLOYED)
+                .martialStatus(MartialStatus.MARRIED)
                 .employment(EmploymentDTO
                         .builder()
-                        .position(EmploymentPosition.AVERAGE_MANAGER)
+                        .employmentStatus(EmploymentStatus.BUSINESS_OWNER)
+                        .position(EmploymentPosition.TOP_MANAGER)
                         .salary(BigDecimal.valueOf(100_000))
                         .workExperienceTotal(36)
                         .workExperienceCurrent(12)
@@ -179,13 +204,17 @@ class ConveyorServiceImplTest {
                 .birthdate(LocalDate.of(1980, 01, 01))
                 .passportSeries("1234")
                 .passportNumber("123456")
+                .dependentAmount(2)
                 .firstName("Ivan")
                 .lastName("Ivanov")
+                .gender(Gender.MALE)
                 .amount(BigDecimal.valueOf(10000))
                 .term(6)
+                .isInsuranceEnabled(false)
+                .isSalaryClient(false)
                 .build();
 
-        BigDecimal expectedRate = BigDecimal.valueOf(6);
+        BigDecimal expectedRate = BigDecimal.valueOf(4);
         CreditDTO creditResponse = conveyorService.validAndScoreAndCalcOffer(scoringDataDTO);
         BigDecimal responseRate = creditResponse.getRate();
 

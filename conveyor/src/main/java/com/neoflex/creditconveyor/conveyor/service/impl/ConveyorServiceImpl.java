@@ -158,17 +158,24 @@ public class ConveyorServiceImpl implements ConveyorService {
             violations.add(new Violation("martialStatus", "Invalid value. Status shouldn't be UNEMPLOYED"));
         }
 
-        boolean isAmountTooMuch = scoringData
-                .getAmount()
-                .compareTo(scoringData
-                        .getEmployment()
-                        .getSalary()
-                        .multiply(BigDecimal.valueOf(Constants.COUNT_SALARIES))) > 0;
-        if (isAmountTooMuch) {
+        if (null == scoringData.getEmployment().getSalary()) {
             violations.add(new Violation(
-                    "amount",
+                    "salary",
                     String.format("Invalid value. Amount should be less than %d salaries", Constants.COUNT_SALARIES))
             );
+        } else {
+            boolean isAmountTooMuch = scoringData
+                    .getAmount()
+                    .compareTo(scoringData
+                            .getEmployment()
+                            .getSalary()
+                            .multiply(BigDecimal.valueOf(Constants.COUNT_SALARIES))) > 0;
+            if (isAmountTooMuch) {
+                violations.add(new Violation(
+                        "amount",
+                        String.format("Invalid value. Amount should be less than %d salaries", Constants.COUNT_SALARIES))
+                );
+            }
         }
 
         Integer age = DatesUtil.getYears(scoringData.getBirthdate());
