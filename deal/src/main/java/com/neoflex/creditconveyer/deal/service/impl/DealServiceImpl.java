@@ -155,6 +155,10 @@ public class DealServiceImpl implements DealService {
         CreditEntity creditEntity = sourceMapper.sourceToCreditEntity(creditDto);
         creditEntity.setCreditStatus(CreditStatus.CALCULATED);
         creditEntity.setApplication(application);
+
+        application.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
+
+        applicationRepository.save(application);
         creditRepository.save(creditEntity);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");

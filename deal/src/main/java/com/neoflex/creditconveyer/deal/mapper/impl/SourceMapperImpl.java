@@ -64,16 +64,8 @@ public class SourceMapperImpl implements SourceMapper {
         creditEntity.setRate( creditDTO.getRate() );
         creditEntity.setPsk( creditDTO.getPsk() );
 
-        if (null == creditDTO.getIsInsuranceEnabled()) {
-            creditEntity.setInsuranceEnable(false);
-        } else {
-            creditEntity.setInsuranceEnable(creditDTO.getIsInsuranceEnabled());
-        }
-        if (null == creditDTO.getIsSalaryClient()) {
-            creditEntity.setInsuranceEnable(false);
-        } else {
-            creditEntity.setInsuranceEnable(creditDTO.getIsSalaryClient());
-        }
+        creditEntity.setInsuranceEnable(creditDTO.getIsInsuranceEnabled());
+        creditEntity.setSalaryClient(creditDTO.getIsSalaryClient());
 
         creditEntity.setPaymentSchedule( paymentListToPaymentJsonbList( creditDTO.getPaymentSchedule() ) );
 
