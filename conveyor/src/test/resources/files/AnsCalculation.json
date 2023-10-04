@@ -1,73 +1,73 @@
 {
   "amount": 10000,
   "term": 7,
-  "monthlyPayment": 1505.7709170000,
-  "rate": 16,
-  "psk": 10540.3964190000,
+  "monthlyPayment": 1491.1431540000,
+  "rate": 13,
+  "psk": 10438.0020780000,
   "isInsuranceEnabled": null,
   "isSalaryClient": null,
   "paymentSchedule": [
     {
       "number": 1,
-      "date": "2023-11-03",
-      "totalPayment": 1505.7709170000,
-      "interestPayment": 1369.8709170000,
-      "debtPayment": 135.9000000000,
-      "remainingDebt": 8630.1290830000
+      "date": "2023-11-04",
+      "totalPayment": 1491.1431540000,
+      "interestPayment": 1380.7231540000,
+      "debtPayment": 110.4200000000,
+      "remainingDebt": 8619.2768460000
     },
     {
       "number": 2,
-      "date": "2023-12-03",
-      "totalPayment": 1505.7709170000,
-      "interestPayment": 1392.2788085112,
-      "debtPayment": 113.4921084887,
-      "remainingDebt": 7237.8502744888
+      "date": "2023-12-04",
+      "totalPayment": 1491.1431540000,
+      "interestPayment": 1399.0467712619,
+      "debtPayment": 92.0963827380,
+      "remainingDebt": 7220.2300747381
     },
     {
       "number": 3,
-      "date": "2024-01-03",
-      "totalPayment": 1505.7709170000,
-      "interestPayment": 1407.4154721740,
-      "debtPayment": 98.3554448259,
-      "remainingDebt": 5830.4348023148
+      "date": "2024-01-04",
+      "totalPayment": 1491.1431540000,
+      "interestPayment": 1411.4239013939,
+      "debtPayment": 79.7192526060,
+      "remainingDebt": 5808.8061733442
     },
     {
       "number": 4,
-      "date": "2024-02-03",
-      "totalPayment": 1505.7709170000,
-      "interestPayment": 1426.7573743238,
-      "debtPayment": 79.0135426761,
-      "remainingDebt": 4403.6774279910
+      "date": "2024-02-04",
+      "totalPayment": 1491.1431540000,
+      "interestPayment": 1427.1828018727,
+      "debtPayment": 63.9603521272,
+      "remainingDebt": 4381.6233714715
     },
     {
       "number": 5,
-      "date": "2024-03-03",
-      "totalPayment": 1505.7709170000,
-      "interestPayment": 1449.9428752899,
-      "debtPayment": 55.8280417100,
-      "remainingDebt": 2953.7345527011
+      "date": "2024-03-04",
+      "totalPayment": 1491.1431540000,
+      "interestPayment": 1446.0100389441,
+      "debtPayment": 45.1331150558,
+      "remainingDebt": 2935.6133325274
     },
     {
       "number": 6,
-      "date": "2024-04-03",
-      "totalPayment": 1505.7709170000,
-      "interestPayment": 1465.7421645918,
-      "debtPayment": 40.0287524081,
-      "remainingDebt": 1487.9923881093
+      "date": "2024-04-04",
+      "totalPayment": 1491.1431540000,
+      "interestPayment": 1458.8193241363,
+      "debtPayment": 32.3238298636,
+      "remainingDebt": 1476.7940083911
     },
     {
       "number": 7,
-      "date": "2024-05-03",
-      "totalPayment": 1505.7709170000,
-      "interestPayment": 1486.2562627297,
-      "debtPayment": 19.5146542702,
-      "remainingDebt": 1.7361253796
+      "date": "2024-05-04",
+      "totalPayment": 1491.1431540000,
+      "interestPayment": 1475.4068244023,
+      "debtPayment": 15.7363295976,
+      "remainingDebt": 1.3871839888
     },
     {
       "number": 8,
-      "date": "2024-05-03",
-      "totalPayment": 1.7361253796,
-      "interestPayment": 1.7361253796,
+      "date": "2024-05-04",
+      "totalPayment": 1.3871839888,
+      "interestPayment": 1.3871839888,
       "debtPayment": 0,
       "remainingDebt": 0
     }

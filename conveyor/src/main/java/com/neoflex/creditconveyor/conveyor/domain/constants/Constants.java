@@ -18,7 +18,7 @@ public class Constants {
     public static final Integer RATE_FOR_TOP_MANAGER = -4;
     public static final Integer RATE_SALE_FOR_FEMALE = -3;
     public static final Integer RATE_SALE_FOR_MALE = -3;
-    public static final Integer RATE_FOR_UNBINARY_GENDER = 3;
+    public static final Integer RATE_FOR_NONBINARY_GENDER = 3;
 
     public static final Integer COUNT_SALARIES = 20;
 

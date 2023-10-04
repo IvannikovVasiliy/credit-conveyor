@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -238,11 +237,9 @@ public class ConveyorServiceImpl implements ConveyorService {
                 rate = rateMale;
             }
         }
-        if (!Gender.MALE.equals(scoringData.getGender())) {
-            if (!Gender.FEMALE.equals(scoringData.getGender())) {
-                BigDecimal rateUnbinary = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_UNBINARY_GENDER));
-                rate = rateUnbinary;
-            }
+        if (Gender.NON_BINARY.equals(scoringData.getGender())) {
+            BigDecimal rateNonbinary = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_NONBINARY_GENDER));
+            rate = rateNonbinary;
         }
 
         log.debug("Output rate={}", rate);
