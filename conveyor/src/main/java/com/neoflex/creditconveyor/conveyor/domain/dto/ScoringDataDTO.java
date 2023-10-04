@@ -57,6 +57,9 @@ public class ScoringDataDTO {
     private EmploymentDTO employment;
 
     private String account;
+
+    @NotNull
     private Boolean isInsuranceEnabled;
+    @NotNull
     private Boolean isSalaryClient;
 }
