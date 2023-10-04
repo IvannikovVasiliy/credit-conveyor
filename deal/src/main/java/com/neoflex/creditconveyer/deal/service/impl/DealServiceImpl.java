@@ -57,7 +57,6 @@ public class DealServiceImpl implements DealService {
         ApplicationEntity application = new ApplicationEntity();
         application.setClient(client);
         application.setStatus(ApplicationStatus.PREAPPROVAL);
-        application.setCreationDate(Timestamp.valueOf(LocalDateTime.now()));
 
         StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();
         statusHistory.setStatus(ApplicationStatus.PREAPPROVAL.name());

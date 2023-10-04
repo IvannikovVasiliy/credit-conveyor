@@ -29,7 +29,9 @@ public class LoanOfferDTO {
     @NotNull
     private BigDecimal rate;
 
+    @NotNull
     private Boolean isInsuranceEnabled;
+    @NotNull
     private Boolean isSalaryClient;
 }
 

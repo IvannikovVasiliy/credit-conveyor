@@ -6,6 +6,7 @@ import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -37,6 +38,7 @@ public class ApplicationEntity {
     private ApplicationStatus status;
 
     @Column(name = "creation_date")
+    @CreationTimestamp
     @NotNull
     private Timestamp creationDate;
 
