@@ -14,11 +14,13 @@ public class Constants {
     public static final Integer RATE_SALE_FOR_INSURANCE_AND_AGREEMENT_SALARY_TRANSACTION = 6;
     public static final Integer RATE_FOR_SELF_EMPLOYED = 1;
     public static final Integer RATE_FOR_OWNER_BUSINESS = 3;
-    public static final Integer RATE_FOR_AVERAGE_MANAGER = -2;
+    public static final Integer RATE_FOR_MID_MANAGER = -2;
     public static final Integer RATE_FOR_TOP_MANAGER = -4;
     public static final Integer RATE_SALE_FOR_FEMALE = -3;
     public static final Integer RATE_SALE_FOR_MALE = -3;
     public static final Integer RATE_FOR_NONBINARY_GENDER = 3;
+    public static final Integer RATE_FOR_MARRIED = -3;
+    public static final Integer RATE_FOR_DIVORCED = 1;
 
     public static final Integer COUNT_SALARIES = 20;
 

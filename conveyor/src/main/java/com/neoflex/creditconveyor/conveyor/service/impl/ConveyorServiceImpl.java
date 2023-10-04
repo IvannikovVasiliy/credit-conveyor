@@ -5,9 +5,10 @@ import com.neoflex.creditconveyor.conveyor.domain.dto.CreditDTO;
 import com.neoflex.creditconveyor.conveyor.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyor.conveyor.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyor.conveyor.domain.dto.ScoringDataDTO;
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentStatus;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Gender;
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentPosition;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.MartialStatus;
-import com.neoflex.creditconveyor.conveyor.domain.enumeration.Position;
 import com.neoflex.creditconveyor.conveyor.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyor.conveyor.error.validation.Violation;
 import com.neoflex.creditconveyor.conveyor.schedule.PaymentSchedule;
@@ -152,8 +153,8 @@ public class ConveyorServiceImpl implements ConveyorService {
 
         List<Violation> violations = new ArrayList<>();
 
-        boolean isMartialStatusUnemployed = MartialStatus.UNEMPLOYED.equals(scoringData.getMartialStatus());
-        if (isMartialStatusUnemployed) {
+        boolean isUnemployed = EmploymentStatus.UNEMPLOYED.equals(scoringData.getEmployment().getEmploymentStatus());
+        if (isUnemployed) {
             violations.add(new Violation("martialStatus", "Invalid value. Status shouldn't be UNEMPLOYED"));
         }
 
@@ -201,22 +202,31 @@ public class ConveyorServiceImpl implements ConveyorService {
 
         BigDecimal rate = Constants.BASE_RATE;
 
-        if (MartialStatus.SELF_EMPLOYED.equals(scoringData.getMartialStatus())) {
+        if (EmploymentStatus.SELF_EMPLOYED.equals(scoringData.getEmployment().getEmploymentStatus())) {
             BigDecimal rateSelfEmployed = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_SELF_EMPLOYED));
             rate = rateSelfEmployed;
         }
-        if (MartialStatus.OWNER_BUSINESS.equals(scoringData.getMartialStatus())) {
+        if (EmploymentStatus.BUSINESS_OWNER.equals(scoringData.getEmployment().getEmploymentStatus())) {
             BigDecimal rateOwnerBusiness = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_OWNER_BUSINESS));
             rate = rateOwnerBusiness;
         }
 
-        if (Position.AVERAGE_MANAGER.equals(scoringData.getEmployment().getPosition())) {
-            BigDecimal rateAverageManager = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_AVERAGE_MANAGER));
+        if (EmploymentPosition.MID_MANAGER.equals(scoringData.getEmployment().getPosition())) {
+            BigDecimal rateAverageManager = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_MID_MANAGER));
             rate = rateAverageManager;
         }
-        if (Position.TOP_MANAGER.equals(scoringData.getEmployment().getPosition())) {
+        if (EmploymentPosition.TOP_MANAGER.equals(scoringData.getEmployment().getPosition())) {
             BigDecimal rateTopManager = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_TOP_MANAGER));
             rate = rateTopManager;
+        }
+
+        if (MartialStatus.MARRIED.equals(scoringData.getMartialStatus())) {
+            BigDecimal rateMarried = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_MARRIED));
+            rate = rateMarried;
+        }
+        if (MartialStatus.DIVORCED.equals(scoringData.getMartialStatus())) {
+            BigDecimal rateDivorced = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_DIVORCED));
+            rate = rateDivorced;
         }
 
         if (null != scoringData.getDependentAmount() && scoringData.getDependentAmount() > Constants.MAX_COUNT_DEPENDENT_AMOUNT) {

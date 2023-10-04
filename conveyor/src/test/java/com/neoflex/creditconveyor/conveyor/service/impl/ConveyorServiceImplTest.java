@@ -4,7 +4,7 @@ import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
 import com.neoflex.creditconveyor.conveyor.domain.dto.*;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Gender;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.MartialStatus;
-import com.neoflex.creditconveyor.conveyor.domain.enumeration.Position;
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentPosition;
 import com.neoflex.creditconveyor.conveyor.error.exception.ValidationAndScoringAndCalculationOfferException;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeAll;
@@ -170,7 +170,7 @@ class ConveyorServiceImplTest {
                 .martialStatus(MartialStatus.SELF_EMPLOYED)
                 .employment(EmploymentDTO
                         .builder()
-                        .position(Position.AVERAGE_MANAGER)
+                        .position(EmploymentPosition.AVERAGE_MANAGER)
                         .salary(BigDecimal.valueOf(100_000))
                         .workExperienceTotal(36)
                         .workExperienceCurrent(12)
