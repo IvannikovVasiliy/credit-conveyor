@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class ValidationAndScoringAndCalculationOfferException extends RuntimeException {
 
     public ValidationAndScoringAndCalculationOfferException(List<Violation> violations) {

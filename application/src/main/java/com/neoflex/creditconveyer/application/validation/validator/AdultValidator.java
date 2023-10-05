@@ -12,16 +12,16 @@ public class AdultValidator {
 
     private DatesUtil datesUtil = new DatesUtil();
 
-    public boolean isValid(LocalDate birthday) {
-        log.debug("Request, validation birthday. birthday={}", birthday);
+    public boolean isValid(LocalDate birthdate) {
+        log.debug("Request, validation birthdate. birthdate={}", birthdate);
 
-        if (null == birthday) {
-            log.error("Invalid value. Birthday shouldn't be null");
-            throw new ResourceNotFoundException("Invalid value. Birthday shouldn't be null");
+        if (null == birthdate) {
+            log.error("Invalid value. Birthdate shouldn't be null");
+            throw new ResourceNotFoundException("Invalid value. Birthdate shouldn't be null");
         }
-        Integer years = datesUtil.getYears(birthday);
+        Integer years = datesUtil.getYears(birthdate);
 
-        log.debug("Response, validation birthday. years={}", years);
+        log.debug("Response, validation birthdate. years={}", years);
         return years >= Constants.AGE_ADULT;
     }
 }

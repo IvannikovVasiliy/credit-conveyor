@@ -14,26 +14,18 @@ import java.time.LocalDate;
 @Setter
 public class LoanApplicationRequestDTO {
     @NotNull
-    @Min(10000)
     private BigDecimal amount;
     @NotNull
-    @Min(6)
     private Integer term;
-
     @NotNull
     private String firstName;
     @NotNull
     private String lastName;
     private String middleName;
-
     private String email;
-
     private LocalDate birthdate;
-
     @NotNull
-    @Size(min = 4, max = 4)
     private String passportSeries;
     @NotNull
-    @Size(min = 6, max = 6)
     private String passportNumber;
 }

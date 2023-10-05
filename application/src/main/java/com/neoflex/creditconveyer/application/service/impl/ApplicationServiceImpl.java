@@ -15,6 +15,7 @@ import com.neoflex.creditconveyer.application.validation.validator.MiddleNameVal
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 public class ApplicationServiceImpl implements ApplicationService {
 
@@ -32,14 +34,26 @@ public class ApplicationServiceImpl implements ApplicationService {
         log.debug("Input prescoringAndCalcPossibleConditions. loanApplication={amount: {}, term:{}, firstName:{}, lastName:{}, middleName:{}, email:{}, birthdate:{}, passportSeries:{}, passportNumber:{}}",
                 loanApplication.getAmount(), loanApplication.getTerm(), loanApplication.getFirstName(), loanApplication.getLastName(), loanApplication.getMiddleName(), loanApplication.getEmail(), loanApplication.getBirthdate(), loanApplication.getPassportSeries(), loanApplication.getPassportNumber());
 
-        boolean isSuccess = prescoring(loanApplication);
+        prescoring(loanApplication);
         List<LoanOfferDTO> loanOffers = dealFeignService.postDealApplication(loanApplication);
+        loanOffers.sort((loanOffer1, loanOffer2) -> loanOffer2.getRate().compareTo(loanOffer1.getRate()));
 
         log.debug("Output prescoringAndCalcPossibleConditions. loanOffers={}", loanOffers);
         return loanOffers;
     }
 
-    private boolean prescoring(LoanApplicationRequestDTO loanApplication) {
+    @Override
+    public void chooseOffer(LoanOfferDTO loanOffer) {
+        log.debug("Input chooseOffer. loanOffer={applicationId: {}, requestedAmount: {}, totalAmount: {}, term: {}, monthlyPayment: {}, rate: {}, isInsuranceEnabled: {}, isSalaryClient: {}}",
+                loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
+
+        enrichLoanOffer(loanOffer);
+        dealFeignService.putOffer(loanOffer);
+
+        log.debug("Output chooseOffer");
+    }
+
+    private void prescoring(LoanApplicationRequestDTO loanApplication) {
         log.debug("Input prescoring. loanApplication={amount: {}, term:{}, firstName:{}, lastName:{}, middleName:{}, email:{}, birthdate:{}, passportSeries:{}, passportNumber:{}}",
                 loanApplication.getAmount(), loanApplication.getTerm(), loanApplication.getFirstName(), loanApplication.getLastName(), loanApplication.getMiddleName(), loanApplication.getEmail(), loanApplication.getBirthdate(), loanApplication.getPassportSeries(), loanApplication.getPassportNumber());
 
@@ -63,25 +77,28 @@ public class ApplicationServiceImpl implements ApplicationService {
         boolean isNumberPassportValid =
                 loanApplication.getPassportNumber().length() == Constants.LENGTH_PASSPORT_NUMBER;
 
-        throwException(
+        List<Violation> violations = createViolations(
                 isFirstNameValid, isLastNameValid, isMiddleNameValid, isAmountValid, isTermValid,
                 isBirthdateValid, isEmailValid, isSeriesPassportValid, isNumberPassportValid
         );
+        if (violations.size() > 0) {
+            log.debug("Error prescoring. violations:{}", violations);
+            throw new ValidationAndScoringAndCalculationOfferException(violations);
+        }
 
         log.debug("Prescoring is valid. loanApplication={amount: {}, term:{}, firstName:{}, lastName:{}, middleName:{}, email:{}, birthdate:{}, passportSeries:{}, passportNumber:{}}",
                 loanApplication.getAmount(), loanApplication.getTerm(), loanApplication.getFirstName(), loanApplication.getLastName(), loanApplication.getMiddleName(), loanApplication.getEmail(), loanApplication.getBirthdate(), loanApplication.getPassportSeries(), loanApplication.getPassportNumber());
-        return true;
     }
 
-    private void throwException(boolean isFirstNameValid,
-                                boolean isLastNameValid,
-                                boolean isMiddleNameValid,
-                                boolean isAmountValid,
-                                boolean isTermValid,
-                                boolean isBirthdateValid,
-                                boolean isEmailValid,
-                                boolean isSeriesPassportValid,
-                                boolean isNumberPassportValid) {
+    private List<Violation> createViolations(boolean isFirstNameValid,
+                                  boolean isLastNameValid,
+                                  boolean isMiddleNameValid,
+                                  boolean isAmountValid,
+                                  boolean isTermValid,
+                                  boolean isBirthdateValid,
+                                  boolean isEmailValid,
+                                  boolean isSeriesPassportValid,
+                                  boolean isNumberPassportValid) {
         List<Violation> violations = new LinkedList<>();
         if (!isFirstNameValid) {
             Violation violation = new Violation("firstName", "Invalid value. Length should be between 2 and 30. Letters should be latin.");
@@ -96,8 +113,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             violations.add(violation);
         }
         if (!isAmountValid) {
-            String errorMessage = String.format("Invalid value. Minimal amount value is %d.", Constants.MIN_AMOUNT_CREDIT);
-            Violation violation = new Violation("amount", errorMessage);
+            Violation violation = new Violation("amount", "Invalid value. Minimal amount value is 10000");
             violations.add(violation);
         }
         if (!isTermValid) {
@@ -125,9 +141,21 @@ public class ApplicationServiceImpl implements ApplicationService {
             violations.add(violation);
         }
 
-        if (violations.size() > 0) {
-            log.debug("Error prescoring. violations:{}", violations);
-            throw new ValidationAndScoringAndCalculationOfferException(violations);
+        return violations;
+    }
+
+    private void enrichLoanOffer(LoanOfferDTO loanOffer) {
+        log.debug("Input enrichLoanOffer. loanOffer={applicationId: {}, requestedAmount: {}, totalAmount: {}, term: {}, monthlyPayment: {}, rate: {}, isInsuranceEnabled: {}, isSalaryClient: {}}",
+                loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
+
+        if (null == loanOffer.getIsSalaryClient()) {
+            loanOffer.setIsSalaryClient(false);
         }
+        if (null == loanOffer.getIsInsuranceEnabled()) {
+            loanOffer.setIsInsuranceEnabled(false);
+        }
+
+        log.debug("Output enrichLoanOffer. loanOffer={applicationId: {}, requestedAmount: {}, totalAmount: {}, term: {}, monthlyPayment: {}, rate: {}, isInsuranceEnabled: {}, isSalaryClient: {}}",
+                loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
     }
 }

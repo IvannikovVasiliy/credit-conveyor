@@ -50,7 +50,6 @@ components:
         - term
         - firstName
         - lastName
-        - birthdate
         - passportSeries
         - passportNumber
       type: object
@@ -58,12 +57,9 @@ components:
         amount:
           type: number
           format: BigDecimal
-          example: 10000
-          minimum: 10000
         term:
           type: integer
           example: 6
-          minimum: 6
         firstName:
           type: string
           example: Ivan
@@ -76,7 +72,6 @@ components:
         email:
           type: string
           example: qwerty@gmail.com
-          pattern: '[\w\.]{2,50}@[\w\.]{2,20}'
         birthdate:
           type: string
           format: date
@@ -84,13 +79,9 @@ components:
         passportSeries:
           type: string
           example: 1234
-          minimum: 4
-          maximum: 4
         passportNumber:
           type: string
           example: 123456
-          minimum: 6
-          maximum: 6
     LoanOfferDTO:
       required:
         - applicationId
@@ -99,8 +90,6 @@ components:
         - term
         - monthlyPayment
         - rate
-        - isInsuranceEnabled
-        - isSalaryClient
       type: object
       format: LoanOfferDTO
       properties:

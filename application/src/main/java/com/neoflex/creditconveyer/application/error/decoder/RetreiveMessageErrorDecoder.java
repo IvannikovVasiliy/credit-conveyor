@@ -2,9 +2,12 @@ package com.neoflex.creditconveyer.application.error.decoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoflex.creditconveyer.application.domain.dto.MessageInfoDto;
+import com.neoflex.creditconveyer.application.error.exception.BadRequestException;
+import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
 import feign.Response;
 import feign.codec.ErrorDecoder;
+import org.webjars.NotFoundException;
 
 import java.io.IOException;
 
@@ -22,33 +25,32 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
         }
 
         String error = null;
+        MessageInfoDto messageInfo = null;
+        ErrorResponseValidation errorResponse = null;
         ObjectMapper mapper = new ObjectMapper();
         try {
-            MessageInfoDto message = mapper.readValue(responseBytes, MessageInfoDto.class);
-            error = message.getMessage();
+            messageInfo = mapper.readValue(responseBytes, MessageInfoDto.class);
+            error = messageInfo.getMessage();
         } catch (Exception e) {
             try {
-                ErrorResponseValidation errorResponse = mapper.readValue(responseBytes, ErrorResponseValidation.class);
-                StringBuffer buffer = new StringBuffer();
-                errorResponse.getViolations()
-                        .forEach(violation -> {
-                            String violationString = String.format("The field: %s has error: %s;", violation.getFieldName(), violation.getMessage());
-                            buffer.append(violationString);
-                        });
-                error = buffer.toString();
+                errorResponse = mapper.readValue(responseBytes, ErrorResponseValidation.class);
             } catch (IOException ex) {
                 throw new RuntimeException(e.getMessage());
             }
         }
 
-//        switch (response.status()) {
-//            case 400:
-//                return new BadRequestException(null != error ? error : "Bad request");
-//            case 404:
-//                return new NotFoundException(null != error ? error : "Not Found");
-//            default:
-//                return errorDecoder.decode(methodKey, response);
-//        }
-        return null;
+        switch (response.status()) {
+            case 400:
+                if (null != messageInfo) {
+                    throw new BadRequestException(null != error ? error : "Bad request");
+                }
+                if (null != errorResponse) {
+                    throw new ValidationAndScoringAndCalculationOfferException(errorResponse.getViolations());
+                }
+            case 404:
+                return new NotFoundException(null != error ? error : "Not Found");
+            default:
+                return errorDecoder.decode(methodKey, response);
+        }
     }
 }
