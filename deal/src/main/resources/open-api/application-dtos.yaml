@@ -66,6 +66,14 @@ paths:
 components:
   schemas:
     LoanApplicationRequestDTO:
+      required:
+        - amount
+        - term
+        - firstName
+        - lastName
+        - birthdate
+        - passportSeries
+        - passportNumber
       type: object
       properties:
         amount:
@@ -81,6 +89,9 @@ components:
         lastName:
           type: string
           example: Ivanov
+        middleName:
+          type: string
+          example: Ivanovich
         email:
           type: string
           example: qwerty@gmail.com
@@ -95,6 +106,15 @@ components:
           type: string
           example: 123456
     LoanOfferDTO:
+      required:
+        - applicationId
+        - requestedAmount
+        - totalAmount
+        - term
+        - monthlyPayment
+        - rate
+        - isInsuranceEnabled
+        - isSalaryClient
       type: object
       format: LoanOfferDTO
       properties:
@@ -120,6 +140,11 @@ components:
         isSalaryClient:
           type: boolean
     FinishRegistrationRequestDTO:
+      required:
+        - gender
+        - dependentAmount
+        - employment
+        - account
       type: object
       format: FinishRegistrationRequestDTO
       properties:
