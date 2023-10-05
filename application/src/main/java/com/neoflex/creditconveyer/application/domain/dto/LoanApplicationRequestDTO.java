@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.application.domain.dto;
 
-import com.neoflex.creditconveyer.application.validation.constraint.AdultConstraint;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,18 +21,13 @@ public class LoanApplicationRequestDTO {
     private Integer term;
 
     @NotNull
-    @FirstLastMiddleNameConstraint
     private String firstName;
     @NotNull
-    @FirstLastMiddleNameConstraint
     private String lastName;
-    @FirstLastMiddleNameConstraint
     private String middleName;
 
-    @Email(regexp = "[\\w\\.]{2,50}@[\\w\\.]{2,20}")
     private String email;
 
-    @AdultConstraint
     private LocalDate birthdate;
 
     @NotNull
