@@ -13,17 +13,17 @@ import java.util.List;
 @RequestMapping("/v1/application")
 public class ApplicationController {
 
-    @PostMapping
-    public ResponseEntity<List<LoanOfferDTO>> postApplication(@RequestBody LoanApplicationRequestDTO loanApplication) {
-        log.debug("Request calculate offers. loanApplication={amount: {}, term:{}, firstName:{}, lastName:{}, middleName:{}, email:{}, birthdate:{}, passportSeries:{}, passportNumber:{}}",
-                loanApplication.getAmount(), loanApplication.getTerm(), loanApplication.getFirstName(), loanApplication.getLastName(), loanApplication.getMiddleName(), loanApplication.getEmail(), loanApplication.getBirthdate(), loanApplication.getPassportSeries(), loanApplication.getPassportNumber());
-
-
-        log.debug("Response calculate offers. loanOffers={}", loanOffers);
-    }
-
-    @PutMapping("/offer")
-    public ResponseEntity<Void> putOffer(@RequestBody LoanOfferDTO loanOffer) {
-
-    }
+//    @PostMapping
+//    public ResponseEntity<List<LoanOfferDTO>> postApplication(@RequestBody LoanApplicationRequestDTO loanApplication) {
+//        log.debug("Request calculate offers. loanApplication={amount: {}, term:{}, firstName:{}, lastName:{}, middleName:{}, email:{}, birthdate:{}, passportSeries:{}, passportNumber:{}}",
+//                loanApplication.getAmount(), loanApplication.getTerm(), loanApplication.getFirstName(), loanApplication.getLastName(), loanApplication.getMiddleName(), loanApplication.getEmail(), loanApplication.getBirthdate(), loanApplication.getPassportSeries(), loanApplication.getPassportNumber());
+//
+//
+//        log.debug("Response calculate offers. loanOffers={}", loanOffers);
+//    }
+//
+//    @PutMapping("/offer")
+//    public ResponseEntity<Void> putOffer(@RequestBody LoanOfferDTO loanOffer) {
+//
+//    }
 }
