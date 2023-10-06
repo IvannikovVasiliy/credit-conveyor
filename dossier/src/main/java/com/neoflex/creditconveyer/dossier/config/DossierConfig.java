@@ -1,5 +1,7 @@
 package com.neoflex.creditconveyer.dossier.config;
 
+import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.service.DossierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +26,7 @@ public class DossierConfig {
     @Value("${mail.password}")
     private String password;
 
-    private final
+    private final DossierService dossierService;
 
     @Bean
     public MailSender mailSender() throws IOException {
@@ -45,8 +47,9 @@ public class DossierConfig {
     }
 
     @Bean
-    public Consumer<> consumerBinding() {
-        return () ->
+    public Consumer<EmailMessage> consumerBinding() {
+        return emailMessage ->
+                dossierService.finishRegistration(emailMessage);
 
     }
 }
