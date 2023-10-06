@@ -1,4 +1,4 @@
-package com.neoflex.creditconveyer.deal.controller;
+package com.neoflex.creditconveyer.deal.controller.v1;
 
 import com.example.credit.application.api.V1Api;
 import com.neoflex.creditconveyer.deal.domain.dto.FinishRegistrationRequestDTO;
@@ -58,4 +58,6 @@ public class DealController/* implements V1Api*/ {
 
         return ResponseEntity.ok().build();
     }
+
+
 }
