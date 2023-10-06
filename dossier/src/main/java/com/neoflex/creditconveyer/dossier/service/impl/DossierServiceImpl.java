@@ -21,6 +21,7 @@ public class DossierServiceImpl implements DossierService {
 
     private final MailSender mailSender;
 
+    @Override
     public void finishRegistration(EmailMessage emailMessage) {
         log.debug("Input finishRegistration. emailMessage={ address: {}, theme: {}, applicationId: {} }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
