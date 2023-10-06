@@ -1,0 +1,20 @@
+server.port: 8083
+
+spring:
+  cloud:
+    function:
+      definition: consumerBinding
+    stream:
+      bindings:
+        consumerBinding-in-0:
+          destination: finish-registration
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
+
+mail:
+  host: smtp.gmail.com
+  port: 587
+  email: ivannikovvasiliya@gmail.com
+  password: cavyrqzlsmkglcpy
