@@ -12,15 +12,16 @@ import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.feign.FeignService;
+import com.neoflex.creditconveyer.deal.kafka.producer.EmailProducer;
 import com.neoflex.creditconveyer.deal.mapper.SourceMapper;
 import com.neoflex.creditconveyer.deal.repository.ApplicationRepository;
 import com.neoflex.creditconveyer.deal.repository.ClientRepository;
 import com.neoflex.creditconveyer.deal.repository.CreditRepository;
 import com.neoflex.creditconveyer.deal.service.DealService;
-import com.neoflex.creditconveyer.deal.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,16 +31,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service("dealSenderEmailServiceImpl")
+@Service("dealServiceSenderEmailImpl")
 @RequiredArgsConstructor
 @Slf4j
-public class DealSenderEmailServiceImpl implements DealService {
+public class DealServiceSenderEmailImpl implements DealService {
 
     private final FeignService feignService;
     private final ClientRepository clientRepository;
     private final ApplicationRepository applicationRepository;
     private final CreditRepository creditRepository;
     @Qualifier("sourceMapperImplementation") private final SourceMapper sourceMapper;
+    private final EmailProducer emailProducer;
 
     @Override
     @Transactional
@@ -69,25 +71,12 @@ public class DealSenderEmailServiceImpl implements DealService {
     }
 
     @Override
-    @Transactional
     public void chooseOffer(LoanOfferDTO loanOffer) {
         log.debug("Request chooseOffer. loanOffer={applicationId: {}, requestedAmount: {}, totalAmount: {}, term: {}, monthlyPayment: {}, rate: {}, isInsuranceEnabled: {}, isSalaryClient: {}}",
                 loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
 
-        ApplicationEntity application = applicationRepository
-                .findById(loanOffer.getApplicationId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", loanOffer.getApplicationId())));
-        application.setStatus(ApplicationStatus.APPROVED);
-        List<StatusHistoryJsonb> statusHistories = application.getStatusHistory();
-        StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();
-        statusHistory.setStatus(ApplicationStatus.APPROVED.name());
-        statusHistory.setTime(Timestamp.valueOf(LocalDateTime.now()));
-        statusHistory.setChangeType(ChangeType.AUTOMATIC);
-        statusHistories.add(statusHistory);
-        application.setStatusHistory(statusHistories);
-        application.setAppliedOffer(loanOffer);
-        applicationRepository.save(application);
+        ApplicationEntity application = saveApplication(loanOffer);
+        emailProducer.sendMessage( application);
 
         log.info("Response chooseOffer");
     }
@@ -122,10 +111,9 @@ public class DealSenderEmailServiceImpl implements DealService {
         creditEntity.setApplication(application);
 
         List<StatusHistoryJsonb> statusHistories = application.getStatusHistory();
-        StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();
-        statusHistory.setStatus(ApplicationStatus.CC_APPROVED.name());
-        statusHistory.setTime(Timestamp.valueOf(LocalDateTime.now()));
-        statusHistory.setChangeType(ChangeType.MANUAL);
+        StatusHistoryJsonb statusHistory = new StatusHistoryJsonb(
+                ApplicationStatus.CC_APPROVED.name(), Timestamp.valueOf(LocalDateTime.now()), ChangeType.MANUAL
+        );
         statusHistories.add(statusHistory);
 
         application.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
@@ -161,6 +149,25 @@ public class DealSenderEmailServiceImpl implements DealService {
 
         log.info("Output createLoanOffers. loanOffers={}", loanOffers);
         return loanOffers;
+    }
+
+    private ApplicationEntity saveApplication(LoanOfferDTO loanOffer) {
+        ApplicationEntity application = applicationRepository
+                .findById(loanOffer.getApplicationId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", loanOffer.getApplicationId())));
+        application.setStatus(ApplicationStatus.APPROVED);
+        List<StatusHistoryJsonb> statusHistories = application.getStatusHistory();
+        StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();
+        statusHistory.setStatus(ApplicationStatus.APPROVED.name());
+        statusHistory.setTime(Timestamp.valueOf(LocalDateTime.now()));
+        statusHistory.setChangeType(ChangeType.AUTOMATIC);
+        statusHistories.add(statusHistory);
+        application.setStatusHistory(statusHistories);
+        application.setAppliedOffer(loanOffer);
+        applicationRepository.save(application);
+
+        return application;
     }
 
     private void setValuesIntoClientEntity(ClientEntity clientEntity,

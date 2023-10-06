@@ -190,6 +190,17 @@ components:
           type: integer
         workExperienceCurrent:
           type: integer
+    EmailMessage:
+      type: object
+      format: EmailMessage
+      properties:
+        address:
+          type: string
+        theme:
+          $ref: '#/components/schemas/Theme'
+        applicationId:
+          type: integer
+          format: int64
     Gender:
       type: string
       enum:
@@ -217,4 +228,7 @@ components:
         - MID_MANAGER
         - TOP_MANAGER
         - OWNER
-    EmailMessage
+    Theme:
+      type: string
+      enum:
+        - EXAMPLE

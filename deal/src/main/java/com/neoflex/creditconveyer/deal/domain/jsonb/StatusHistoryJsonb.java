@@ -12,6 +12,15 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class StatusHistoryJsonb {
+    public StatusHistoryJsonb(String status, Timestamp time, ChangeType changeType) {
+        this.status = status;
+        this.time = time;
+        this.changeType = changeType;
+    }
+
+    public StatusHistoryJsonb() {
+    }
+
     private String status;
     private Timestamp time;
 
