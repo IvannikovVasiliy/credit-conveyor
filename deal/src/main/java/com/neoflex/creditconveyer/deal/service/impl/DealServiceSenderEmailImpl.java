@@ -1,5 +1,7 @@
 package com.neoflex.creditconveyer.deal.service.impl;
 
+import com.neoflex.creditconveyer.deal.domain.constant.Theme;
+import com.neoflex.creditconveyer.deal.domain.constant.TopicConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.*;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
@@ -76,7 +78,8 @@ public class DealServiceSenderEmailImpl implements DealService {
                 loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
 
         ApplicationEntity application = saveApplication(loanOffer);
-        emailProducer.sendMessage( application);
+        EmailMessage emailMessage = createEmailMessage(application);
+        emailProducer.sendMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, emailMessage);
 
         log.info("Response chooseOffer");
     }
@@ -168,6 +171,18 @@ public class DealServiceSenderEmailImpl implements DealService {
         applicationRepository.save(application);
 
         return application;
+    }
+
+    private EmailMessage createEmailMessage(ApplicationEntity application) {
+        EmailMessage emailMessage = new EmailMessage();
+        ClientEntity client = application.getClient();
+        emailMessage.setAddress(client.getEmail());
+        emailMessage.setTheme(Theme.EXAMPLE);
+        emailMessage.setApplicationId(application.getId());
+
+        log.debug("Output createEmailMessage. emailMessage={ address: {}, theme: {}, applicationId: {} }",
+                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
+        return emailMessage;
     }
 
     private void setValuesIntoClientEntity(ClientEntity clientEntity,
