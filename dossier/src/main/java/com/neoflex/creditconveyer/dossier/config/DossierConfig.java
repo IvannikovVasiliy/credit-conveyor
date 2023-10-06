@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.dossier.config;
 
-import com.neoflex.creditconveyer.dossier.utils.CommonUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 @Configuration
+@RequiredArgsConstructor
 public class DossierConfig {
 
     @Value("${mail.host}")
@@ -21,6 +23,8 @@ public class DossierConfig {
     private String email;
     @Value("${mail.password}")
     private String password;
+
+    private final
 
     @Bean
     public MailSender mailSender() throws IOException {
@@ -38,5 +42,11 @@ public class DossierConfig {
 
         mailSender.setJavaMailProperties(properties);
         return mailSender;
+    }
+
+    @Bean
+    public Consumer<> consumerBinding() {
+        return () ->
+
     }
 }
