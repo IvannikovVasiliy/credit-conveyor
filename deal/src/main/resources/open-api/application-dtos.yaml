@@ -217,3 +217,4 @@ components:
         - MID_MANAGER
         - TOP_MANAGER
         - OWNER
+    EmailMessage

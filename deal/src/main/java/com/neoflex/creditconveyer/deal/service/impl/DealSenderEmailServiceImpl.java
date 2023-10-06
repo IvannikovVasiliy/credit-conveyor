@@ -33,7 +33,7 @@ import java.util.List;
 @Service("dealSenderEmailServiceImpl")
 @RequiredArgsConstructor
 @Slf4j
-public class DealSenderEmailServiceImpl implements DealService, DocumentService {
+public class DealSenderEmailServiceImpl implements DealService {
 
     private final FeignService feignService;
     private final ClientRepository clientRepository;

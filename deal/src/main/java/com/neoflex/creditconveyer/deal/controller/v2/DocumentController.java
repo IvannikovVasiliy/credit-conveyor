@@ -2,6 +2,7 @@ package com.neoflex.creditconveyer.deal.controller.v2;
 
 import com.neoflex.creditconveyer.deal.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.deal.service.DealService;
+import com.neoflex.creditconveyer.deal.service.DocumentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,25 +13,26 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/v1/deal/document")
+@RequestMapping("/v2/deal")
 public class DocumentController {
 
     @Qualifier("dealSenderEmailServiceImpl") private final DealService dealService;
+    private final DocumentService documentService;
 
-//    @PostMapping("/document/{applicationId}/send")
-//    public ResponseEntity<> sendDocuments() {
-//
-//    }
-//
-//    @PostMapping("/document/{applicationId}/sign")
-//    public ResponseEntity<> signDocuments() {
-//
-//    }
-//
-//    @PostMapping("/document/{applicationId}/code")
-//    public ResponseEntity<> codeDocuments() {
-//
-//    }
+    @PostMapping("/document/{applicationId}/send")
+    public ResponseEntity<> sendDocuments() {
+
+    }
+
+    @PostMapping("/document/{applicationId}/sign")
+    public ResponseEntity<> signDocuments() {
+
+    }
+
+    @PostMapping("/document/{applicationId}/code")
+    public ResponseEntity<> codeDocuments() {
+
+    }
 
     @PutMapping("/offer")
     public ResponseEntity<Void> chooseOffer(@Valid @RequestBody LoanOfferDTO loanOffer) {
