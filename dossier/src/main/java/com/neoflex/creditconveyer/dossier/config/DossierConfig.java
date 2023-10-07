@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Configuration
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class DossierConfig {
     }
 
     @Bean
-    public Consumer<EmailMessage> consumerBinding() {
+    public Function<EmailMessage, > consumerBinding() {
         return emailMessage ->
                 dossierService.finishRegistration(emailMessage);
 
