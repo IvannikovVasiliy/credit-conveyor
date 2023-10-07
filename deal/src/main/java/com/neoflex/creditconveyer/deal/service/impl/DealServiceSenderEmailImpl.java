@@ -78,7 +78,7 @@ public class DealServiceSenderEmailImpl implements DealService {
                 loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
 
         ApplicationEntity application = saveApplication(loanOffer);
-        EmailMessage emailMessage = createEmailMessage(application);
+        EmailMessage emailMessage = createEmailMessage(application, Theme.FINISH_REGISTRATION);
         emailProducer.sendMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, emailMessage);
 
         log.info("Response chooseOffer");
@@ -128,7 +128,8 @@ public class DealServiceSenderEmailImpl implements DealService {
         applicationRepository.save(application);
         creditRepository.save(creditEntity);
 
-        emailProducer.sendMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, );
+        EmailMessage emailMessage = createEmailMessage(application, Theme.CREATE_DOCUMENTS);
+        emailProducer.sendMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, emailMessage);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");
     }
@@ -175,11 +176,11 @@ public class DealServiceSenderEmailImpl implements DealService {
         return application;
     }
 
-    private EmailMessage createEmailMessage(ApplicationEntity application) {
+    private EmailMessage createEmailMessage(ApplicationEntity application, Theme theme) {
         EmailMessage emailMessage = new EmailMessage();
         ClientEntity client = application.getClient();
         emailMessage.setAddress(client.getEmail());
-        emailMessage.setTheme(Theme.EXAMPLE);
+        emailMessage.setTheme(theme);
         emailMessage.setApplicationId(application.getId());
 
         log.debug("Output createEmailMessage. emailMessage={ address: {}, theme: {}, applicationId: {} }",
