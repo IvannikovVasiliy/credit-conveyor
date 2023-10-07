@@ -128,6 +128,8 @@ public class DealServiceSenderEmailImpl implements DealService {
         applicationRepository.save(application);
         creditRepository.save(creditEntity);
 
+        emailProducer.sendMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, );
+
         log.info("Response finishRegistrationAndCalcAmountCredit");
     }
 
