@@ -6,6 +6,7 @@ import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.feign.DealFeignService;
 import com.neoflex.creditconveyer.dossier.repository.DocumentRepository;
+import com.neoflex.creditconveyer.dossier.feign.DealFeignService;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -23,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
+import java.util.Vector;
 
 @Service
 @RequiredArgsConstructor
