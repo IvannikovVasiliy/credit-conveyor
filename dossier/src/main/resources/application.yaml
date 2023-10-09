@@ -18,3 +18,13 @@ mail:
   port: 587
   email: ivannikovvasiliya@gmail.com
   password: cavyrqzlsmkglcpy
+
+sftp:
+  host: 172.18.9.135
+  port: 22
+  user: ubuntu
+  password: ivannikov
+  locationFiles: /var/sftp/Files
+
+application:
+  finishRegistration: \u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u0438\u0435\u0020\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438\u0020\u0437\u0430\u044f\u0432\u043a\u0438\u0020\u0441\u0020\u0438\u0434\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440\u043e\u043c\u003d%applicationId%
