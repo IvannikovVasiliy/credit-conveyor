@@ -84,7 +84,7 @@ public class DealServiceSenderEmailImpl implements DealService {
                 .theme(Theme.FINISH_REGISTRATION)
                 .applicationId(application.getId())
                 .build();
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, emailMessage);
+        emailProducer.sendEmailMessage(TopicConstants.TOPIC_SEND_DOCUMENTS, emailMessage);
 
         log.info("Response chooseOffer");
     }
