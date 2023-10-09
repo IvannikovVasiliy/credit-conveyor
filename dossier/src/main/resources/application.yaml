@@ -3,11 +3,13 @@ server.port: 8083
 spring:
   cloud:
     function:
-      definition: consumerFinishRegistrationBinding
+      definition: consumerFinishRegistrationBinding;consumerCreateDocumentsBinding
     stream:
       bindings:
         consumerFinishRegistrationBinding-in-0:
           destination: finish-registration
+        consumerCreateDocumentsBinding-in-0:
+          destination: create-documents
       kafka:
         binder:
           brokers:
