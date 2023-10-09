@@ -5,6 +5,7 @@ import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.repository.DocumentRepository;
+import com.neoflex.creditconveyer.dossier.feign.DealFeignService;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -12,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,7 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
+import java.util.Vector;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +48,7 @@ public class DossierServiceImpl implements DossierService {
     private final DocumentRepository documentrepository;
     private final JavaMailSender mailSender;
     private final Session session;
+    private final DealFeignService dealFeignService;
 
     @Override
     public void finishRegistration(EmailMessage emailMessage) {
@@ -81,7 +85,7 @@ public class DossierServiceImpl implements DossierService {
 
             String questionnaire = questionnaireText.replace("%applicationId%", emailMessage.getApplicationId().toString());
             ByteArrayInputStream questionnaireInputStream = new ByteArrayInputStream(questionnaire.getBytes());
-            String questionnaireName = UUID.randomUUID().toString()+" questionnaire "+emailMessage.getApplicationId()
+            String questionnaireName = UUID.randomUUID()+" questionnaire "+emailMessage.getApplicationId();
             channelSftp.put(questionnaireInputStream, questionnaireName);
 
             StringBuilder paymentScheduleBuilder = new StringBuilder(paymentScheduleText);
@@ -114,23 +118,44 @@ public class DossierServiceImpl implements DossierService {
     }
 
     @Override
+    @Transactional
     public void sendDocuments(EmailMessage emailMessage) {
+        log.debug("Input sendDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} }",
+                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
 
+        dealFeignService.updateStatus(emailMessage.getApplicationId());
+
+        DocumentEntity documentEntity = documentrepository.findById(emailMessage.getApplicationId()).orElseThrow(() -> new RuntimeException("gvd"));
+
+        try {
+            Channel channel = session.openChannel("sftp");
+            channel.connect();
+            ChannelSftp channelSftp = (ChannelSftp) channel;
+            channelSftp.cd(locationFiles);
+
+            InputStream inputStream = channelSftp.get(documentEntity.getLoanAgreementName());
+
+            MimeMessage message = mailSender.createMimeMessage();
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(emailMessage.getAddress());
+            helper.setFrom(email);
+            helper.setSubject(emailMessage.getTheme().name());
+            String text = createDocuments.replace("%applicationId%", emailMessage.getApplicationId().toString());
+            helper.setText(text);
+            helper.addAttachment("MyTestFile.txt", new ByteArrayResource(inputStream.readAllBytes()));
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }  catch (JSchException e) {
+            throw new RuntimeException(e);
+        } catch (SftpException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        log.debug("Output sendDocuments for applicationId={}", emailMessage.getApplicationId());
     }
-
-    //            MimeMessage message = mailSender.createMimeMessage();
-//            try {
-//                MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//                helper.setTo(creditEmailMessage.getAddress());
-//                helper.setFrom(email);
-//                helper.setSubject(creditEmailMessage.getTheme().name());
-//                helper.setText("Сформированные документы по кредиту с идентификатором заявки " + creditEmailMessage.getApplicationId());
-//                helper.addAttachment("MyTestFile.txt", new ByteArrayResource(content));
-//                mailSender.send(message);
-//            } catch (MessagingException e) {
-//                e.printStackTrace();
-//            }
-//
-//            SimpleMailMessage simpleMail = message;
-//            mailSender
 }

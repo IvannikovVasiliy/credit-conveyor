@@ -3,6 +3,7 @@ package com.neoflex.creditconveyer.dossier.config;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import jakarta.annotation.PreDestroy;
@@ -65,7 +66,7 @@ public class DossierConfig {
     }
 
     @Bean
-    public Consumer<EmailMessage> consumerCreateDocumentsBinding() {
+    public Consumer<CreditEmailMessage> consumerCreateDocumentsBinding() {
         return emailMessage ->
                 dossierService.createDocuments(emailMessage);
     }
