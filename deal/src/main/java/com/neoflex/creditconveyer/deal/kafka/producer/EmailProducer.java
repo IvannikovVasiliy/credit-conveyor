@@ -17,6 +17,7 @@ public class EmailProducer {
 
     private final KafkaTemplate<Long, EmailMessage> emailKafkaTemplate;
     private final KafkaTemplate<Long, CreditEmailMessage> creditEmailKafkaTemplate;
+    private final KafkaTemplate<String, EmailMessage> emailStrKafkaTemplate;
 
     public void sendEmailMessage(final String TOPIC, EmailMessage emailMessage) {
         CompletableFuture<SendResult<Long, EmailMessage>> future = emailKafkaTemplate.send(TOPIC, emailMessage.getApplicationId(), emailMessage);
@@ -43,6 +44,20 @@ public class EmailProducer {
             } else {
                 log.info("Sent message={ address: {}, theme: {}, applicationId: {}, credit: {} } with offset=={}",
                         emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), result.getRecordMetadata().offset());
+            }
+        });
+    }
+
+    public void sendStrEmailMessage(final String TOPIC, EmailMessage emailMessage) {
+        CompletableFuture<SendResult<String, EmailMessage>> future = emailStrKafkaTemplate.send(TOPIC, emailMessage.getApplicationId().toString(), emailMessage);
+
+        future.whenCompleteAsync((result, exception) -> {
+            if (null != exception) {
+                log.error("error. Unable to send message with key={} message={ address: {}, theme: {}, applicationId: {} } due to : {}",
+                        emailMessage.getApplicationId(), emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), exception.getMessage());
+            } else {
+                log.info("Sent message={ address: {}, theme: {}, applicationId: {} } with offset=={}",
+                        emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(),  result.getRecordMetadata().offset());
             }
         });
     }
