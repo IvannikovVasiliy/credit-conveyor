@@ -36,4 +36,10 @@ public class DossierConfig {
         return emailMessage ->
                 dossierService.createDocuments(emailMessage);
     }
+
+    @Bean
+    public Consumer<EmailMessage> consumerSendDocumentsBinding() {
+        return emailMessage ->
+                dossierService.sendDocuments(emailMessage);
+    }
 }
