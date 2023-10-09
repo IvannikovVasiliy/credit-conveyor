@@ -1,17 +1,26 @@
 package com.neoflex.creditconveyer.dossier.service.impl;
 
 import com.jcraft.jsch.*;
+import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
+import com.neoflex.creditconveyer.dossier.repository.DocumentRepository;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
-import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +33,17 @@ public class DossierServiceImpl implements DossierService {
     private String locationFiles;
     @Value("${application.finishRegistration}")
     private String textFinishRegistration;
+    @Value("${application.createDocuments}")
+    private String createDocuments;
+    @Value("${application.loanAgreementText}")
+    private String loanAgreementText;
+    @Value("${application.questionnaireText}")
+    private String questionnaireText;
+    @Value("${application.paymentScheduleText}")
+    private String paymentScheduleText;
 
-    private final MailSender mailSender;
+    private final DocumentRepository documentrepository;
+    private final JavaMailSender mailSender;
     private final Session session;
 
     @Override
@@ -40,10 +58,13 @@ public class DossierServiceImpl implements DossierService {
         simpleMailMessage.setText(textFinishRegistration.replace("%applicationId%", emailMessage.getApplicationId().toString()));
 
         mailSender.send(simpleMailMessage);
+
+        log.debug("Output finishRegistration for applicationId={}", emailMessage.getApplicationId());
     }
 
     @Override
-    public void createDocuments(EmailMessage emailMessage) {
+    @Transactional
+    public void createDocuments(CreditEmailMessage emailMessage) {
         log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
 
@@ -53,13 +74,63 @@ public class DossierServiceImpl implements DossierService {
             ChannelSftp channelSftp = (ChannelSftp) channel;
             channelSftp.cd(locationFiles);
 
-            String text =
-            ByteArrayInputStream bytesInputStream = new ByteArrayInputStream();
-            channelSftp.put()
+            String loanAgreement = loanAgreementText.replace("%applicationId%", emailMessage.getApplicationId().toString());
+            ByteArrayInputStream loanAgreementInputStream = new ByteArrayInputStream(loanAgreement.getBytes());
+            String loanAgreementName = UUID.randomUUID().toString()+" loan agreement "+emailMessage.getApplicationId();
+            channelSftp.put(loanAgreementInputStream, loanAgreementName);
+
+            String questionnaire = questionnaireText.replace("%applicationId%", emailMessage.getApplicationId().toString());
+            ByteArrayInputStream questionnaireInputStream = new ByteArrayInputStream(questionnaire.getBytes());
+            String questionnaireName = UUID.randomUUID().toString()+" questionnaire "+emailMessage.getApplicationId()
+            channelSftp.put(questionnaireInputStream, questionnaireName);
+
+            StringBuilder paymentScheduleBuilder = new StringBuilder(paymentScheduleText);
+            emailMessage
+                    .getCredit()
+                    .getPaymentSchedule()
+                    .forEach(paymentScheduleElement -> paymentScheduleBuilder.append(paymentScheduleElement));
+            ByteArrayInputStream paymentScheduleInputStream = new ByteArrayInputStream(paymentScheduleBuilder.toString().getBytes());
+            String paymentScheduleName = UUID.randomUUID()+" payment schedule "+emailMessage.getApplicationId();
+            channelSftp.put(paymentScheduleInputStream, paymentScheduleName);
+
+            DocumentEntity documentEntity = new DocumentEntity(loanAgreementName, questionnaireName, paymentScheduleName);
+            documentrepository.save(documentEntity);
+
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(emailMessage.getAddress());
+            simpleMailMessage.setFrom(email);
+            simpleMailMessage.setSubject(emailMessage.getTheme().name());
+            simpleMailMessage.setText(createDocuments.replace("%applicationId%", emailMessage.getApplicationId().toString()));
+            mailSender.send(simpleMailMessage);
         } catch (JSchException e) {
+            log.error("Error send documents for applicationId={}", emailMessage.getApplicationId());
             throw new RuntimeException(e);
         } catch (SftpException e) {
+            log.error("Error send documents for applicationId={}", emailMessage.getApplicationId());
             throw new RuntimeException(e);
         }
+
+        log.debug("Output createDocuments for applicationId={}", emailMessage.getApplicationId());
     }
+
+    @Override
+    public void sendDocuments(EmailMessage emailMessage) {
+
+    }
+
+    //            MimeMessage message = mailSender.createMimeMessage();
+//            try {
+//                MimeMessageHelper helper = new MimeMessageHelper(message, true);
+//                helper.setTo(creditEmailMessage.getAddress());
+//                helper.setFrom(email);
+//                helper.setSubject(creditEmailMessage.getTheme().name());
+//                helper.setText("Сформированные документы по кредиту с идентификатором заявки " + creditEmailMessage.getApplicationId());
+//                helper.addAttachment("MyTestFile.txt", new ByteArrayResource(content));
+//                mailSender.send(message);
+//            } catch (MessagingException e) {
+//                e.printStackTrace();
+//            }
+//
+//            SimpleMailMessage simpleMail = message;
+//            mailSender
 }
