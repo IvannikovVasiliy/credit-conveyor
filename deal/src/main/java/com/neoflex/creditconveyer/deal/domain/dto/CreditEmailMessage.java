@@ -8,9 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class EmailMessage {
+public class CreditEmailMessage {
     private String address;
     private Theme theme;
     private Long applicationId;
+    private CreditDTO credit;
 }
-

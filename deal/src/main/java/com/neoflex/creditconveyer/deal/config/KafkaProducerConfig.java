@@ -1,5 +1,6 @@
 package com.neoflex.creditconveyer.deal.config;
 
+import com.neoflex.creditconveyer.deal.domain.dto.CreditEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongSerializer;
@@ -21,7 +22,7 @@ public class KafkaProducerConfig {
     private String bootstrapAddress;
 
     @Bean
-    public ProducerFactory<Long, EmailMessage> producerFactory() {
+    public ProducerFactory<Long, EmailMessage> emailMessageProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
@@ -30,7 +31,21 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<Long, EmailMessage> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public ProducerFactory<Long, CreditEmailMessage> emailCreditMessageProducerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<Long, EmailMessage> emailKafkaTemplate() {
+        return new KafkaTemplate<>(emailMessageProducerFactory());
+    }
+
+    @Bean
+    public KafkaTemplate<Long, CreditEmailMessage> creditEmailKafkaTemplate() {
+        return new KafkaTemplate<>(emailCreditMessageProducerFactory());
     }
 }

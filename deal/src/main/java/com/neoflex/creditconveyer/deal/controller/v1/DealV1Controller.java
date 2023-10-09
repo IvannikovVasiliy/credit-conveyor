@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyer.deal.controller.v1;
 
-import com.example.credit.application.api.V1Api;
 import com.neoflex.creditconveyer.deal.domain.dto.FinishRegistrationRequestDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanOfferDTO;
@@ -9,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/v1/deal")
-public class DealController/* implements V1Api*/ {
+public class DealV1Controller/* implements V1Api*/ {
 
+    @Qualifier("dealServiceImpl")
     private final DealService dealService;
 
     @PostMapping("/application")

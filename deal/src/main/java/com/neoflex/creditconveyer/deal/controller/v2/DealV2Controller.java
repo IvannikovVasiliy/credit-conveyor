@@ -20,9 +20,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/v2/deal")
-public class DealController {
+public class DealV2Controller {
 
-    @Qualifier("dealServiceSenderEmailImpl") private final DealService dealService;
+    @Qualifier("dealServiceSenderEmailImpl")
+    private final DealService dealService;
 
     @PostMapping("/application")
     public ResponseEntity<List<LoanOfferDTO>> postApplication(@Valid @RequestBody LoanApplicationRequestDTO loanApplication) {

@@ -23,7 +23,6 @@ import com.neoflex.creditconveyer.deal.service.DealService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,8 +77,14 @@ public class DealServiceSenderEmailImpl implements DealService {
                 loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
 
         ApplicationEntity application = saveApplication(loanOffer);
-        EmailMessage emailMessage = createEmailMessage(application, Theme.FINISH_REGISTRATION);
-        emailProducer.sendMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, emailMessage);
+        ClientEntity client = application.getClient();
+        EmailMessage emailMessage = EmailMessage
+                .builder()
+                .address(client.getEmail())
+                .theme(Theme.FINISH_REGISTRATION)
+                .applicationId(application.getId())
+                .build();
+        emailProducer.sendEmailMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, emailMessage);
 
         log.info("Response chooseOffer");
     }
@@ -128,8 +133,15 @@ public class DealServiceSenderEmailImpl implements DealService {
         applicationRepository.save(application);
         creditRepository.save(creditEntity);
 
-        EmailMessage emailMessage = createEmailMessage(application, Theme.CREATE_DOCUMENTS);
-        emailProducer.sendMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, emailMessage);
+        ClientEntity client = application.getClient();
+        CreditEmailMessage creditEmailMessage = CreditEmailMessage
+                .builder()
+                .address(client.getEmail())
+                .theme(Theme.CREATE_DOCUMENTS)
+                .applicationId(application.getId())
+                .credit(creditDto)
+                .build();
+        emailProducer.sendCreditEmailMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, creditEmailMessage);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");
     }
@@ -174,18 +186,6 @@ public class DealServiceSenderEmailImpl implements DealService {
         applicationRepository.save(application);
 
         return application;
-    }
-
-    private EmailMessage createEmailMessage(ApplicationEntity application, Theme theme) {
-        EmailMessage emailMessage = new EmailMessage();
-        ClientEntity client = application.getClient();
-        emailMessage.setAddress(client.getEmail());
-        emailMessage.setTheme(theme);
-        emailMessage.setApplicationId(application.getId());
-
-        log.debug("Output createEmailMessage. emailMessage={ address: {}, theme: {}, applicationId: {} }",
-                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
-        return emailMessage;
     }
 
     private void setValuesIntoClientEntity(ClientEntity clientEntity,
