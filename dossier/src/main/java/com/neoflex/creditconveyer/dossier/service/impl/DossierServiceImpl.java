@@ -12,6 +12,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -30,7 +31,7 @@ import java.util.Vector;
 @Slf4j
 public class DossierServiceImpl implements DossierService {
 
-    @Value("${email}")
+    @Value("${mail.email}")
     private String email;
     @Value("${sftp.locationFiles}")
     private String locationFiles;

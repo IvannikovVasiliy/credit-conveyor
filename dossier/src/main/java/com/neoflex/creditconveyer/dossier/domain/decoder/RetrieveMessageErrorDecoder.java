@@ -44,5 +44,6 @@ public class RetrieveMessageErrorDecoder implements ErrorDecoder {
 //            default:
 //                return errorDecoder.decode(methodKey, response);
 //        }
+        return null;
     }
 }
