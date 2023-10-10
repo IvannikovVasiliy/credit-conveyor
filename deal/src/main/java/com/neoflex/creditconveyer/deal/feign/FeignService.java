@@ -28,7 +28,15 @@ public class FeignService {
         log.debug("Received loanApplicationRequest={ amount:{}, term:{}, firstName:{}, lastName={}, middleName={}, email: {}, birthdate; {}, passportSeries;{}, passportNumber: {} }",
                 loanApplicationRequest.getAmount(), loanApplicationRequest.getTerm(), loanApplicationRequest.getFirstName(), loanApplicationRequest.getLastName(), loanApplicationRequest.getMiddleName(), loanApplicationRequest.getEmail(), loanApplicationRequest.getBirthdate(), loanApplicationRequest.getPassportSeries(), loanApplicationRequest.getPassportNumber());
 
-        List<LoanOfferDTO> loanOffers = conveyorFeignClient.calculateOffers(loanApplicationRequest).getBody();
+        List<LoanOfferDTO> loanOffers = null;
+        try {
+            loanOffers = conveyorFeignClient.calculateOffers(loanApplicationRequest).getBody();
+        } catch (RuntimeException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         log.info("Response loanOffers={}", loanOffers);
         return loanOffers;

@@ -5,6 +5,7 @@ import com.neoflex.creditconveyer.deal.domain.dto.CreditDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.ScoringDataDTO;
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +17,8 @@ import java.util.List;
 public interface ConveyorFeignClient {
 
     @PostMapping("/offers")
-    ResponseEntity<List<LoanOfferDTO>> calculateOffers(@RequestBody LoanApplicationRequestDTO loanApplicationRequest);
+    ResponseEntity<List<LoanOfferDTO>> calculateOffers(@Valid @RequestBody LoanApplicationRequestDTO loanApplicationRequest);
 
     @PostMapping("/calculation")
-    ResponseEntity<CreditDTO> validAndScoreAndCalcOffer(ScoringDataDTO scoringData);
+    ResponseEntity<CreditDTO> validAndScoreAndCalcOffer(@Valid @RequestBody ScoringDataDTO scoringData);
 }

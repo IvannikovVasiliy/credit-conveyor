@@ -146,15 +146,7 @@ public class DealServiceImpl implements DealService {
         log.debug("Input createLoanOffers. applicationId={}. loanApplicationRequest={ amount:{}, term:{}, firstName:{}, lastName={}, middleName={}, email: {}, birthdate; {}, passportSeries;{}, passportNumber: {} }",
                 applicationId, loanApplicationRequest.getAmount(), loanApplicationRequest.getTerm(), loanApplicationRequest.getFirstName(), loanApplicationRequest.getLastName(), loanApplicationRequest.getMiddleName(), loanApplicationRequest.getEmail(), loanApplicationRequest.getBirthdate(), loanApplicationRequest.getPassportSeries(), loanApplicationRequest.getPassportNumber());
 
-        List<LoanOfferDTO> loanOffers = new ArrayList<>();
-        try {
-            loanOffers = feignService.createLoanOffer(loanApplicationRequest);
-        } catch (RuntimeException e) {
-            log.error(e.getMessage());
-            throw new RuntimeException(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<LoanOfferDTO> loanOffers = feignService.createLoanOffer(loanApplicationRequest);
 
         loanOffers = loanOffers
                 .stream()
