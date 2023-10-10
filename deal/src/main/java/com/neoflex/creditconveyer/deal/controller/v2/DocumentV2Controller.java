@@ -23,10 +23,15 @@ public class DocumentV2Controller {
         return ResponseEntity.ok().build();
     }
 
-//    @PostMapping("/{applicationId}/sign")
-//    public ResponseEntity<Void> signDocuments() {
-//
-//    }
+    @PostMapping("/{applicationId}/sign")
+    public ResponseEntity<Void> signDocuments(@PathVariable Long applicationId) {
+        log.debug("Request signDocuments. applicationId: {}", applicationId);
+
+        documentService.signDocuments(applicationId);
+
+        log.debug("Response signDocuments. OK");
+        return ResponseEntity.ok().build();
+    }
 //
 //    @PostMapping("/{applicationId}/code")
 //    public ResponseEntity<Void> codeDocuments() {
