@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(value = "dealFeign", url = "${dealService.hostPort}/v1/deal", configuration = DecoderConfiguration.class)
+@FeignClient(value = "dealFeign", url = "${dealService.hostPort}", configuration = DecoderConfiguration.class)
 public interface DealFeignClient {
 
-    @PostMapping("/application")
+    @PostMapping("/v1/deal/application")
     ResponseEntity<List<LoanOfferDTO>> calculateOffers(@Valid @RequestBody LoanApplicationRequestDTO loanApplicationRequest);
-    @PutMapping("/offer")
+    @PutMapping("/v2/deal/offer")
     ResponseEntity<Void> postOffer(@Valid @RequestBody LoanOfferDTO loanOffer);
 }
