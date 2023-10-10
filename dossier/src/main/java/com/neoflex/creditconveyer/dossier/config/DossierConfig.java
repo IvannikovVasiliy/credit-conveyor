@@ -29,7 +29,7 @@ public class DossierConfig {
     }
 
     @Bean
-    public Consumer<EM2> consumerSendDocumentsBinding() {
+    public Consumer<EmailMessage> consumerSendDocumentsBinding() {
         return emailMessage ->
                 dossierService.sendDocuments(emailMessage);
     }

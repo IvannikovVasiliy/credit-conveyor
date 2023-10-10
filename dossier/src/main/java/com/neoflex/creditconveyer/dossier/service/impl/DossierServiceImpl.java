@@ -122,7 +122,7 @@ public class DossierServiceImpl implements DossierService {
 
     @Override
     @Transactional
-    public void sendDocuments(EM2 emailMessage) {
+    public void sendDocuments(EmailMessage emailMessage) {
         log.debug("Input sendDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
 
