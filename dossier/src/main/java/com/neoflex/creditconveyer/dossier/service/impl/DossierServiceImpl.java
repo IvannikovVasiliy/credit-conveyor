@@ -97,7 +97,7 @@ public class DossierServiceImpl implements DossierService {
             String paymentScheduleName = UUID.randomUUID()+" payment schedule "+emailMessage.getApplicationId();
             channelSftp.put(paymentScheduleInputStream, paymentScheduleName);
 
-            DocumentEntity documentEntity = new DocumentEntity(loanAgreementName, questionnaireName, paymentScheduleName);
+            DocumentEntity documentEntity = new DocumentEntity(emailMessage.getApplicationId(), loanAgreementName, questionnaireName, paymentScheduleName);
             documentrepository.save(documentEntity);
 
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();

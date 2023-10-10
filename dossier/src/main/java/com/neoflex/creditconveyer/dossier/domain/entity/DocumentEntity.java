@@ -11,7 +11,8 @@ import lombok.Setter;
 @Setter
 public class DocumentEntity {
 
-    public DocumentEntity(String loanAgreementName, String questionnaireName, String paymentScheduleName) {
+    public DocumentEntity(Long id, String loanAgreementName, String questionnaireName, String paymentScheduleName) {
+        this.id = id;
         this.loanAgreementName = loanAgreementName;
         this.questionnaireName = questionnaireName;
         this.paymentScheduleName = paymentScheduleName;
@@ -21,7 +22,6 @@ public class DocumentEntity {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "application_id")
     private Long id;
 
