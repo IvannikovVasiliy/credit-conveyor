@@ -7,16 +7,19 @@ import com.neoflex.creditconveyer.application.error.exception.ValidationAndScori
 import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
 import feign.Response;
 import feign.codec.ErrorDecoder;
+import lombok.extern.slf4j.Slf4j;
 import org.webjars.NotFoundException;
 
 import java.io.IOException;
 
+@Slf4j
 public class RetreiveMessageErrorDecoder implements ErrorDecoder {
 
     private final ErrorDecoder errorDecoder = new Default();
 
     @Override
     public Exception decode(String methodKey, Response response) {
+        log.debug("Input decode exception");
         byte[] responseBytes = null;
         try {
             responseBytes = response.body().asInputStream().readAllBytes();
@@ -48,7 +51,7 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
                     throw new ValidationAndScoringAndCalculationOfferException(errorResponse.getViolations());
                 }
             case 404:
-                return new NotFoundException(null != error ? error : "Not Found");
+                throw new NotFoundException(null != error ? error : "Not Found");
             default:
                 return errorDecoder.decode(methodKey, response);
         }
