@@ -27,8 +27,6 @@ public class AdminServiceImpl implements AdminService {
         applicationEntity.setStatus(ApplicationStatus.DOCUMENT_CREATED);
         applicationRepository.save(applicationEntity);
 
-        throw new RuntimeException("gfd");
-
-//        log.debug("Output updateStatusByApplicationId. Success");
+        log.debug("Output updateStatusByApplicationId. Success");
     }
 }
