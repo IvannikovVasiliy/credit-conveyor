@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.deal.service.impl;
 
-import com.neoflex.creditconveyer.deal.domain.constant.Theme;
+import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.domain.constant.TopicConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.*;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;

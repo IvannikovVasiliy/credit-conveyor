@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class VerifyCodeDTO {
     @NotNull
-    @Min(Constants.MIN_SIZE_SES_CODE)
-    @Max(Constants.MAX_SIZE_SES_CODE)
+    @Min(10000000)
+    @Max(99999999)
     private Integer sesCode;
 }

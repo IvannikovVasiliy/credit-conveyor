@@ -1,12 +1,12 @@
 package com.neoflex.creditconveyer.deal.service.impl;
 
-import com.neoflex.creditconveyer.deal.domain.constant.Theme;
 import com.neoflex.creditconveyer.deal.domain.constant.TopicConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.VerifyCodeDTO;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
+import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.error.exception.ErrorSesCodeException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.kafka.producer.EmailProducer;
