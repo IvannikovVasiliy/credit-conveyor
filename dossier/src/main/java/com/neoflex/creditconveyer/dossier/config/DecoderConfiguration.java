@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.dossier.config;
 
-import com.neoflex.creditconveyer.dossier.domain.decoder.RetrieveMessageErrorDecoder;
+import com.neoflex.creditconveyer.dossier.error.decoder.RetrieveMessageErrorDecoder;
 import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
