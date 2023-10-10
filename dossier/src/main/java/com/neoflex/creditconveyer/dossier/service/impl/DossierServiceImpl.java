@@ -11,6 +11,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
@@ -124,7 +125,9 @@ public class DossierServiceImpl implements DossierService {
 
         dealFeignService.updateStatus(emailMessage.getApplicationId());
 
-        DocumentEntity documentEntity = documentrepository.findById(emailMessage.getApplicationId()).orElseThrow(() -> new RuntimeException("gvd"));
+        DocumentEntity documentEntity = documentrepository
+                .findById(emailMessage.getApplicationId())
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", emailMessage.getApplicationId())));
 
         try {
             Channel channel = session.openChannel("sftp");
