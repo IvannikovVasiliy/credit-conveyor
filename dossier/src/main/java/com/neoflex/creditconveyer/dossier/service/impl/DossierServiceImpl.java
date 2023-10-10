@@ -2,19 +2,16 @@ package com.neoflex.creditconveyer.dossier.service.impl;
 
 import com.jcraft.jsch.*;
 import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
-import com.neoflex.creditconveyer.dossier.domain.dto.EM2;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.feign.DealFeignService;
 import com.neoflex.creditconveyer.dossier.repository.DocumentRepository;
-import com.neoflex.creditconveyer.dossier.feign.DealFeignService;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
-import java.util.Vector;
 
 @Service
 @RequiredArgsConstructor
