@@ -2,6 +2,7 @@ package com.neoflex.creditconveyer.dossier.config;
 
 import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,5 +32,17 @@ public class DossierConfig {
     public Consumer<EmailMessage> consumerSendDocumentsBinding() {
         return emailMessage ->
                 dossierService.sendDocuments(emailMessage);
+    }
+
+    @Bean
+    public Consumer<SesEmailMessage> consumerSendSesCodeBinding() {
+        return emailMessage ->
+                dossierService.sendSesCode(emailMessage);
+    }
+
+    @Bean
+    public Consumer<EmailMessage> consumerSendIssuedCreditBinding() {
+        return emailMessage ->
+                dossierService.sendIssuedCreditEmail(emailMessage);
     }
 }

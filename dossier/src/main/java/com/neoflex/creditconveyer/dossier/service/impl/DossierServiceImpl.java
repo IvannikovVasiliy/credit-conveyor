@@ -4,6 +4,7 @@ import com.jcraft.jsch.*;
 import com.neoflex.creditconveyer.dossier.domain.constant.PaymentConstants;
 import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.feign.DealFeignService;
 import com.neoflex.creditconveyer.dossier.repository.DocumentRepository;
@@ -46,6 +47,10 @@ public class DossierServiceImpl implements DossierService {
     private String questionnaireText;
     @Value("${application.paymentScheduleText}")
     private String paymentScheduleText;
+    @Value("${application.sesCodeText}")
+    private String sesCodeEmailText;
+    @Value("${application.issuedText}")
+    private String sesIssuedCreditText;
 
     private final DocumentRepository documentrepository;
     private final JavaMailSender mailSender;
@@ -172,5 +177,37 @@ public class DossierServiceImpl implements DossierService {
         }
 
         log.debug("Output sendDocuments for applicationId={}", emailMessage.getApplicationId());
+    }
+
+    @Override
+    public void sendSesCode(SesEmailMessage sesEmailMessage) {
+        log.debug("Input finishRegistration. sesEmailMessage={ address: {}, theme: {}, applicationId: {} }",
+                sesEmailMessage.getAddress(), sesEmailMessage.getTheme(), sesEmailMessage.getApplicationId());
+
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(sesEmailMessage.getAddress());
+        simpleMailMessage.setFrom(email);
+        simpleMailMessage.setSubject(sesEmailMessage.getTheme().name());
+        simpleMailMessage.setText(sesCodeEmailText.replace("%sesCode%", sesEmailMessage.getSesCode().toString()));
+
+        mailSender.send(simpleMailMessage);
+
+        log.debug("Output finishRegistration for applicationId={}", sesEmailMessage.getApplicationId());
+    }
+
+    @Override
+    public void sendIssuedCreditEmail(EmailMessage emailMessage) {
+        log.debug("Input sendIssuedCreditEmail. emailMessage={ address: {}, theme: {}, applicationId: {} }",
+                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
+
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(emailMessage.getAddress());
+        simpleMailMessage.setFrom(email);
+        simpleMailMessage.setSubject(emailMessage.getTheme().name());
+        simpleMailMessage.setText(sesIssuedCreditText.replace("%applicationId%", emailMessage.getApplicationId().toString()));
+
+        mailSender.send(simpleMailMessage);
+
+        log.debug("Output sendIssuedCreditEmail for applicationId={}", emailMessage.getApplicationId());
     }
 }
