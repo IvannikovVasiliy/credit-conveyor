@@ -36,7 +36,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         prescoring(loanApplication);
         List<LoanOfferDTO> loanOffers = dealFeignService.postDealApplication(loanApplication);
-        loanOffers.sort((loanOffer1, loanOffer2) -> loanOffer2.getRate().compareTo(loanOffer1.getRate()));
+        loanOffers.sort((loanOffer1, loanOffer2) ->
+                loanOffer2
+                        .getRate()
+                        .compareTo(loanOffer1.getRate()));
 
         log.debug("Output prescoringAndCalcPossibleConditions. loanOffers={}", loanOffers);
         return loanOffers;
