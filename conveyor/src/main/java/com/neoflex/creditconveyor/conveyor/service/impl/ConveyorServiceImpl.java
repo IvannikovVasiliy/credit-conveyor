@@ -36,10 +36,10 @@ public class ConveyorServiceImpl implements ConveyorService {
 
         BigDecimal amountRequest = loanApplication.getAmount();
         Integer term = loanApplication.getTerm();
-        BigDecimal insurancePrice = loanApplication.getAmount()
-                .divide(BigDecimal.valueOf(Constants.INSURANCE_CONSTANT_DENOMINATOR))
-                .multiply(BigDecimal.valueOf(loanApplication.getTerm()))
-                .add(BigDecimal.valueOf(Constants.INSURANCE_CONSTANT_ARGUMENT));
+//        BigDecimal insurancePrice = loanApplication.getAmount()
+//                .divide(BigDecimal.valueOf(Constants.INSURANCE_CONSTANT_DENOMINATOR))
+//                .multiply(BigDecimal.valueOf(loanApplication.getTerm()))
+//                .add(BigDecimal.valueOf(Constants.INSURANCE_CONSTANT_ARGUMENT));
 
         BigDecimal monthlyPayment1 = calcMonthlyPayment(term, Constants.BASE_RATE, amountRequest);
         BigDecimal totalAmount1 = calcTotalAmount(monthlyPayment1, term);
