@@ -4,6 +4,7 @@ import com.neoflex.creditconveyer.deal.domain.constant.Theme;
 import com.neoflex.creditconveyer.deal.domain.constant.TopicConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
+import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.kafka.producer.EmailProducer;
 import com.neoflex.creditconveyer.deal.repository.ApplicationRepository;
@@ -28,9 +29,10 @@ public class DocumentServiceImpl implements DocumentService {
                 .findById(applicationId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format("Application with id=%d not found", applicationId)));
+        ClientEntity client = application.getClient();
         EmailMessage emailMessage = EmailMessage
                 .builder()
-                .address(application.getClient().getEmail())
+                .address(client.getEmail())
                 .theme(Theme.SEND_DOCUMENTS)
                 .applicationId(applicationId)
                 .build();
