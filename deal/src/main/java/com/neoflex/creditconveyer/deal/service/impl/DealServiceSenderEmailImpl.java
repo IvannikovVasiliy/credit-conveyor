@@ -35,6 +35,7 @@ import java.util.List;
 @Service("dealServiceSenderEmailImpl")
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class DealServiceSenderEmailImpl implements DealService {
 
     private final FeignService feignService;
@@ -45,7 +46,6 @@ public class DealServiceSenderEmailImpl implements DealService {
     private final EmailProducer emailProducer;
 
     @Override
-    @Transactional
     public List<LoanOfferDTO> calculateCreditConditions(LoanApplicationRequestDTO loanApplicationRequest) {
         log.debug("Request calculateCreditConditions. loanApplicationRequest={ amount:{}, term:{}, firstName:{}, lastName={}, middleName={}, email: {}, birthdate; {}, passportSeries;{}, passportNumber: {} }",
                 loanApplicationRequest.getAmount(), loanApplicationRequest.getTerm(), loanApplicationRequest.getFirstName(), loanApplicationRequest.getLastName(), loanApplicationRequest.getMiddleName(), loanApplicationRequest.getEmail(), loanApplicationRequest.getBirthdate(), loanApplicationRequest.getPassportSeries(), loanApplicationRequest.getPassportNumber());
