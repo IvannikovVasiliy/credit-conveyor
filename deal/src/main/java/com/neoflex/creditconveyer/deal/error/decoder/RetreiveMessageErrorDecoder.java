@@ -3,10 +3,12 @@ package com.neoflex.creditconveyer.deal.error.decoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.deal.error.exception.BadRequestException;
+import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import com.neoflex.creditconveyer.deal.error.exception.NotFoundException;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -45,9 +47,9 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
 
         switch (response.status()) {
             case 400:
-                return new BadRequestException(null != error ? error : "Bad request");
+                throw new BadRequestException(null != error ? error : "Bad request");
             case 404:
-                return new NotFoundException(null != error ? error : "Not Found");
+                throw new ResourceNotFoundException(null != error ? error : "Not Found");
             default:
                 return errorDecoder.decode(methodKey, response);
         }
