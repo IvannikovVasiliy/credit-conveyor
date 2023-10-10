@@ -62,6 +62,19 @@ public class GlobalErrorHandler {
         return messageInfo;
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public MessageInfoDto handleRuntime(RuntimeException e) {
+        log.debug("Input handleRuntime. paymentNotFound: {}", e.getMessage());
+
+        messageInfo.setRespCode(ErrorConstants.NOT_FOUND);
+        messageInfo.setMessage(e.getMessage());
+
+        log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
+                messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
+        return messageInfo;
+    }
+
     @ExceptionHandler(ValidationAndScoringAndCalculationOfferException.class)
     @ResponseStatus(HttpStatus.OK)
     public ErrorResponseValidation handleValidationAndScoringAndCalculationOfferException(
