@@ -147,7 +147,6 @@ public class DealServiceImpl implements DealService {
                 applicationId, loanApplicationRequest.getAmount(), loanApplicationRequest.getTerm(), loanApplicationRequest.getFirstName(), loanApplicationRequest.getLastName(), loanApplicationRequest.getMiddleName(), loanApplicationRequest.getEmail(), loanApplicationRequest.getBirthdate(), loanApplicationRequest.getPassportSeries(), loanApplicationRequest.getPassportNumber());
 
         List<LoanOfferDTO> loanOffers = feignService.createLoanOffer(loanApplicationRequest);
-
         loanOffers = loanOffers
                 .stream()
                 .peek(loanOfferDTO -> loanOfferDTO.setApplicationId(applicationId))

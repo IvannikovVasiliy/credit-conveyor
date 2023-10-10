@@ -1,4 +1,4 @@
-package com.neoflex.creditconveyer.deal.domain.decoder;
+package com.neoflex.creditconveyer.deal.error.decoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
