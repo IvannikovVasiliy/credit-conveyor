@@ -7,9 +7,9 @@ import java.time.LocalDate;
 
 public class DatesUtil {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(DatesUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatesUtil.class);
 
-    public Integer getYears(LocalDate birthday) {
+    public static Integer getYears(LocalDate birthday) {
         LOGGER.debug("Input getYears. birthday={}", birthday);
 
         LocalDate now = LocalDate.now();
