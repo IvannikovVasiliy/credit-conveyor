@@ -2,6 +2,7 @@ package com.neoflex.creditconveyer.dossier.service.impl;
 
 import com.jcraft.jsch.*;
 import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.EM2;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.feign.DealFeignService;
@@ -121,7 +122,7 @@ public class DossierServiceImpl implements DossierService {
 
     @Override
     @Transactional
-    public void sendDocuments(EmailMessage emailMessage) {
+    public void sendDocuments(EM2 emailMessage) {
         log.debug("Input sendDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
 
