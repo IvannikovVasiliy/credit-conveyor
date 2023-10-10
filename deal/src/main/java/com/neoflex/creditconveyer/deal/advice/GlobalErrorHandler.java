@@ -49,7 +49,7 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public MessageInfoDto handleBadReqest(RuntimeException e) {
+    public MessageInfoDto handleRuntimeException(RuntimeException e) {
         log.debug("Input handleBadRequest. BadRequestException: {}", e.getMessage());
 
         messageInfo.setRespCode(ErrorConstants.BAD_REQUEST);
