@@ -67,7 +67,7 @@ public class GlobalErrorHandler {
     public MessageInfoDto handleRuntime(RuntimeException e) {
         log.debug("Input handleRuntime. paymentNotFound: {}", e.getMessage());
 
-        messageInfo.setRespCode(ErrorConstants.NOT_FOUND);
+        messageInfo.setRespCode(ErrorConstants.BAD_REQUEST);
         messageInfo.setMessage(e.getMessage());
 
         log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",

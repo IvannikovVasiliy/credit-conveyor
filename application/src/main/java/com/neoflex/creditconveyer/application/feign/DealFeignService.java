@@ -19,13 +19,13 @@ public class DealFeignService {
         log.debug("Received loanApplicationRequest={ amount:{}, term:{}, firstName:{}, lastName={}, middleName={}, email: {}, birthdate; {}, passportSeries;{}, passportNumber: {} }",
                 loanApplicationRequest.getAmount(), loanApplicationRequest.getTerm(), loanApplicationRequest.getFirstName(), loanApplicationRequest.getLastName(), loanApplicationRequest.getMiddleName(), loanApplicationRequest.getEmail(), loanApplicationRequest.getBirthdate(), loanApplicationRequest.getPassportSeries(), loanApplicationRequest.getPassportNumber());
 
-        List<LoanOfferDTO> loanOffers = null;
-        try {
-             loanOffers = dealFeignClient.calculateOffers(loanApplicationRequest).getBody();
-        } catch (RuntimeException e) {
-            log.error("Unhandled exception from service Deal");
-            throw new RuntimeException(e.getMessage());
-        }
+//        List<LoanOfferDTO> loanOffers = null;
+//        try {
+        List<LoanOfferDTO>  loanOffers = dealFeignClient.calculateOffers(loanApplicationRequest).getBody();
+//        } catch (RuntimeException e) {
+//            log.error("Unhandled exception from service Deal");
+//            throw new RuntimeException(e.getMessage());
+//        }
 
         log.info("Response loanOffers={}", loanOffers);
         return loanOffers;
