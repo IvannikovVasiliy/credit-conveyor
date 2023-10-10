@@ -47,19 +47,6 @@ public class GlobalErrorHandler {
         return new ErrorResponseValidation(violations);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public MessageInfoDto handleRuntimeException(RuntimeException e) {
-        log.debug("Input handleBadRequest. BadRequestException: {}", e.getMessage());
-
-        messageInfo.setRespCode(ErrorConstants.BAD_REQUEST);
-        messageInfo.setMessage(e.getMessage());
-
-        log.debug("Output handleBadRequest. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
-                messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
-        return messageInfo;
-    }
-
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public MessageInfoDto handleBadRequest(BadRequestException e) {
