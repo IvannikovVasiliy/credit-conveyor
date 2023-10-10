@@ -4,8 +4,10 @@ import com.neoflex.creditconveyer.deal.domain.constant.Theme;
 import com.neoflex.creditconveyer.deal.domain.constant.TopicConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
+import com.neoflex.creditconveyer.deal.domain.dto.VerifyCodeDTO;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
+import com.neoflex.creditconveyer.deal.error.exception.ErrorSesCodeException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.kafka.producer.EmailProducer;
 import com.neoflex.creditconveyer.deal.repository.ApplicationRepository;
@@ -65,5 +67,30 @@ public class DocumentServiceImpl implements DocumentService {
         emailProducer.sendSesCodeEmailMessage(TopicConstants.TOPIC_SIGN_DOCUMENTS, sesEmailMessage);
 
         log.debug("Output signDocuments. Success");
+    }
+
+    @Override
+    public void issuedCredit(Long applicationId, VerifyCodeDTO verifyCodeDTO) {
+        log.debug("Input issuedCredit. sesCode: {}", verifyCodeDTO.getSesCode());
+
+        ApplicationEntity application = applicationRepository
+                .findById(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", applicationId)));
+
+        if (!application.getSesCode().equals(verifyCodeDTO.getSesCode())) {
+            throw new ErrorSesCodeException("Conflict. SES code is wrong");
+        }
+
+        // .save(...)
+
+        EmailMessage emailMessage = EmailMessage
+                .builder()
+                .address(application.getClient().getEmail())
+                .theme(Theme.CREDIT_ISSUED)
+                .applicationId(applicationId)
+                .build();
+        emailProducer.sendEmailMessage(TopicConstants.TOPIC_CREDIT_ISSUED, emailMessage);
+
+        log.debug("Output issuedCredit. sesCode: {}", verifyCodeDTO.getSesCode());
     }
 }

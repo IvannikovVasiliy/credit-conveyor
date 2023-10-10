@@ -2,10 +2,7 @@ package com.neoflex.creditconveyer.deal.advice;
 
 import com.neoflex.creditconveyer.deal.domain.constant.ErrorConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
-import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
-import com.neoflex.creditconveyer.deal.error.exception.BadRequestException;
-import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
-import com.neoflex.creditconveyer.deal.error.exception.ValidationAndScoringAndCalculationOfferException;
+import com.neoflex.creditconveyer.deal.error.exception.*;
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.deal.error.validation.Violation;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +71,19 @@ public class GlobalErrorHandler {
         messageInfo.setMessage(e.getMessage());
 
         log.debug("Output handleApplicationIsPreapprovalException. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
+                messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
+        return messageInfo;
+    }
+
+    @ExceptionHandler(ErrorSesCodeException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public MessageInfoDto handleWrongSesCodeException(ErrorSesCodeException e) {
+        log.debug("Input handleWrongSesCodeException. ErrorSesCodeException: {}", e.getMessage());
+
+        messageInfo.setRespCode(ErrorConstants.CONFLICT);
+        messageInfo.setMessage(e.getMessage());
+
+        log.debug("Output handleWrongSesCodeException. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
                 messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
         return messageInfo;
     }

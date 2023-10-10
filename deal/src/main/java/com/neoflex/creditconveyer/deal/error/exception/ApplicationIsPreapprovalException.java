@@ -15,6 +15,6 @@ public class ApplicationIsPreapprovalException extends RuntimeException {
 
     @Override
     public String toString() {
-        return "BadRequestException: "+getMessage();
+        return "Exception: "+getMessage();
     }
 }
