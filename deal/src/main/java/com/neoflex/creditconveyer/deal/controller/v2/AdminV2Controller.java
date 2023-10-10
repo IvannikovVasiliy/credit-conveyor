@@ -21,7 +21,7 @@ public class AdminV2Controller {
     public ResponseEntity<Void> updateStatusByApplicationId(@PathVariable Long applicationId) {
         log.debug("Request updateStatusByApplicationId. applicationId={}", applicationId);
 
-
+        adminService.updateStatusByApplicationId(applicationId);
 
         log.debug("Response updateStatusByApplicationId. OK");
         return ResponseEntity.ok().build();
