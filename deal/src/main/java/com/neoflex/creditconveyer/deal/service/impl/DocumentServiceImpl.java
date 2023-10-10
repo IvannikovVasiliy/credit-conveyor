@@ -36,7 +36,7 @@ public class DocumentServiceImpl implements DocumentService {
                 .theme(Theme.SEND_DOCUMENTS)
                 .applicationId(applicationId)
                 .build();
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, emailMessage);
+        emailProducer.sendEmailMessage(TopicConstants.TOPIC_SEND_DOCUMENTS, emailMessage);
 
         log.debug("Output sendDocuments. Successfully");
     }
