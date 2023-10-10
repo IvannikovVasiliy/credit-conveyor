@@ -9,7 +9,6 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@ToString
 public class PaymentScheduleElement {
     private Integer number;
     private LocalDate date;

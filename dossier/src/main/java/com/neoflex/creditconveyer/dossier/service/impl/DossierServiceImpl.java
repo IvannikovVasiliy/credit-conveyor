@@ -1,6 +1,7 @@
 package com.neoflex.creditconveyer.dossier.service.impl;
 
 import com.jcraft.jsch.*;
+import com.neoflex.creditconveyer.dossier.domain.constant.PaymentConstants;
 import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 @Service
@@ -37,7 +39,7 @@ public class DossierServiceImpl implements DossierService {
     @Value("${application.finishRegistration}")
     private String textFinishRegistration;
     @Value("${application.createDocuments}")
-    private String createDocuments;
+    private String textCreateDocuments;
     @Value("${application.loanAgreementText}")
     private String loanAgreementText;
     @Value("${application.questionnaireText}")
@@ -88,11 +90,18 @@ public class DossierServiceImpl implements DossierService {
             String questionnaireName = UUID.randomUUID()+" questionnaire "+emailMessage.getApplicationId();
             channelSftp.put(questionnaireInputStream, questionnaireName);
 
-            StringBuilder paymentScheduleBuilder = new StringBuilder(paymentScheduleText);
+            StringBuilder paymentScheduleBuilder = new StringBuilder(paymentScheduleText).append("\n");
             emailMessage
                     .getCredit()
                     .getPaymentSchedule()
-                    .forEach(paymentScheduleElement -> paymentScheduleBuilder.append(paymentScheduleElement));
+                    .forEach(paymentScheduleElement -> paymentScheduleBuilder
+                            .append(String.format("Номер платежа: %d; ", paymentScheduleElement.getNumber()))
+                            .append(String.format("Дата платежа: %s; ", paymentScheduleElement.getDate()))
+                            .append(String.format("Сумма: %s; ", paymentScheduleElement.getTotalPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
+                            .append(String.format("Погашение основного долга: %s; ", paymentScheduleElement.getInterestPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
+                            .append(String.format("Выплата процентов: %s; ", paymentScheduleElement.getDebtPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
+                            .append(String.format("Остаток: %s ", paymentScheduleElement.getDebtPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
+                            .append("\n"));
             ByteArrayInputStream paymentScheduleInputStream = new ByteArrayInputStream(paymentScheduleBuilder.toString().getBytes());
             String paymentScheduleName = UUID.randomUUID()+" payment schedule "+emailMessage.getApplicationId();
             channelSftp.put(paymentScheduleInputStream, paymentScheduleName);
@@ -104,7 +113,7 @@ public class DossierServiceImpl implements DossierService {
             simpleMailMessage.setTo(emailMessage.getAddress());
             simpleMailMessage.setFrom(email);
             simpleMailMessage.setSubject(emailMessage.getTheme().name());
-            simpleMailMessage.setText(createDocuments.replace("%applicationId%", emailMessage.getApplicationId().toString()));
+            simpleMailMessage.setText(textCreateDocuments.replace("%applicationId%", emailMessage.getApplicationId().toString()));
             mailSender.send(simpleMailMessage);
         } catch (JSchException e) {
             log.error("Error send documents for applicationId={}", emailMessage.getApplicationId());
@@ -135,7 +144,9 @@ public class DossierServiceImpl implements DossierService {
             ChannelSftp channelSftp = (ChannelSftp) channel;
             channelSftp.cd(locationFiles);
 
-            InputStream inputStream = channelSftp.get(documentEntity.getLoanAgreementName());
+            InputStream loanAgreementStream = channelSftp.get(documentEntity.getLoanAgreementName());
+            InputStream questionnaireStream = channelSftp.get(documentEntity.getQuestionnaireName());
+            InputStream paymentScheduleStream = channelSftp.get(documentEntity.getPaymentScheduleName());
 
             MimeMessage message = mailSender.createMimeMessage();
 
@@ -143,9 +154,11 @@ public class DossierServiceImpl implements DossierService {
             helper.setTo(emailMessage.getAddress());
             helper.setFrom(email);
             helper.setSubject(emailMessage.getTheme().name());
-            String text = createDocuments.replace("%applicationId%", emailMessage.getApplicationId().toString());
+            String text = textCreateDocuments.replace("%applicationId%", emailMessage.getApplicationId().toString());
             helper.setText(text);
-            helper.addAttachment("MyTestFile.txt", new ByteArrayResource(inputStream.readAllBytes()));
+            helper.addAttachment("Loan agreement.txt", new ByteArrayResource(loanAgreementStream.readAllBytes()));
+            helper.addAttachment("Questionnaire.txt", new ByteArrayResource(questionnaireStream.readAllBytes()));
+            helper.addAttachment("Payment schedule.txt", new ByteArrayResource(paymentScheduleStream.readAllBytes()));
 
             mailSender.send(message);
         } catch (MessagingException e) {

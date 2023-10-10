@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.dossier.domain.dto;
 
-import com.neoflex.creditconveyer.dossier.domain.constant.Theme;
+import com.neoflex.creditconveyer.dossier.domain.enumeration.Theme;
 import lombok.Getter;
 import lombok.Setter;
 
