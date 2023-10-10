@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: 01-changeset-client-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 10-changeset-credit-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 20-changeset-application-table.yaml
+      relativeToChangelogFile: true

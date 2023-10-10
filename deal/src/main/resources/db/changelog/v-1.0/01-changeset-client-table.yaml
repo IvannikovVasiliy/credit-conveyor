@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: vivannikov
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf-8
+            endDelimiter: \nGo
+            relativeToChangelogFile: true
+            splitStatements: true
+            path: 01-create-client-table.sql
+      rollback:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf-8
+            endDelimiter: \nGo
+            relativeToChangelogFile: true
+            splitStatements: true
+            path: 01-drop-clients-table.sql

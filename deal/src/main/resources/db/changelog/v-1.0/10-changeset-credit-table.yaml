@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: vivannikov
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf-8
+            endDelimiter: \nGo
+            relativeToChangelogFile: true
+            splitStatements: true
+            path: 10-create-credit-table.sql
+      rollback:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf-8
+            endDelimiter: \nGo
+            relativeToChangelogFile: true
+            splitStatements: true
+            path: 10-drop-credit-table.sql

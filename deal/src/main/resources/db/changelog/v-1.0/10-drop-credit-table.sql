@@ -1,0 +1,3 @@
+drop table credit;
+
+GO
