@@ -6,6 +6,7 @@ import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.VerifyCodeDTO;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
+import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
 import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.error.exception.ErrorSesCodeException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
@@ -15,6 +16,7 @@ import com.neoflex.creditconveyer.deal.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
 
@@ -27,6 +29,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final ApplicationRepository applicationRepository;
 
     @Override
+    @Transactional
     public void sendDocuments(Long applicationId) {
         log.debug("Input sendDocuments. applicationId: {}", applicationId);
 
@@ -35,6 +38,10 @@ public class DocumentServiceImpl implements DocumentService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format("Application with id=%d not found", applicationId)));
         ClientEntity client = application.getClient();
+
+        application.setStatus(ApplicationStatus.PREPARE_DOCUMENTS);
+        applicationRepository.save(application);
+
         EmailMessage emailMessage = EmailMessage
                 .builder()
                 .address(client.getEmail())

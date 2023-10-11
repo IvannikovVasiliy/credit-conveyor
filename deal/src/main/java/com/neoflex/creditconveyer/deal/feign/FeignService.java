@@ -5,6 +5,7 @@ import com.neoflex.creditconveyer.deal.domain.dto.CreditDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.ScoringDataDTO;
+import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.deal.error.validation.Violation;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,8 @@ public class FeignService {
         log.debug("Received scoring data. scoringData={ {amount:{}, term:{}, firstName:{}, lastName:{}, middleName:{}, gender:{}, birthdate:{}, martialStatus:{}, dependentAmount:{}, employment:{}, account:{},  passportSeries:{}, passportNumber:{}, passportIssueDate:{}, passportIssueBranch:{}, isInsuranceEnabled:{}, isSalaryClient:{}}",
                 scoringData.getAmount(), scoringData.getTerm(), scoringData.getFirstName(), scoringData.getLastName(), scoringData.getMiddleName(), scoringData.getGender(), scoringData.getBirthdate(), scoringData.getMartialStatus(), scoringData.getDependentAmount(), scoringData.getEmployment(), scoringData.getAccount(), scoringData.getPassportSeries(), scoringData.getPassportNumber(), scoringData.getPassportIssueDate(), scoringData.getPassportIssueBranch(), scoringData.getIsInsuranceEnabled(), scoringData.getIsSalaryClient());
 
-        CreditDTO creditResponse = conveyorFeignClient.validAndScoreAndCalcOffer(scoringData).getBody();
+        CreditDTO creditResponse = null;
+        creditResponse = conveyorFeignClient.validAndScoreAndCalcOffer(scoringData).getBody();
 
         log.info("Response creditDTO={ amount: {}, term: {}, monthlyPayment: {}, rate: {}, psk: {}, isInsuranceEnabled: {}, isSalaryClient: {}, paymentSchedule: {} }",
                 creditResponse.getAmount(), creditResponse.getTerm(), creditResponse.getMonthlyPayment(), creditResponse.getRate(), creditResponse.getPsk(), creditResponse.getIsInsuranceEnabled(), creditResponse.getIsSalaryClient(), creditResponse.getPaymentSchedule());

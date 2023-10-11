@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.deal.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
+import com.neoflex.creditconveyer.deal.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import feign.Response;
 import feign.codec.ErrorDecoder;
@@ -26,20 +27,14 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
         }
 
         String error = null;
+        ErrorResponseValidation errorResponse = null;
         ObjectMapper mapper = new ObjectMapper();
         try {
             MessageInfoDto message = mapper.readValue(responseBytes, MessageInfoDto.class);
             error = message.getMessage();
         } catch (Exception e) {
             try {
-                ErrorResponseValidation errorResponse = mapper.readValue(responseBytes, ErrorResponseValidation.class);
-                StringBuffer buffer = new StringBuffer();
-                errorResponse.getViolations()
-                        .forEach(violation -> {
-                            String violationString = String.format("The field: %s has error: %s;", violation.getFieldName(), violation.getMessage());
-                            buffer.append(violationString);
-                        });
-                error = buffer.toString();
+                errorResponse = mapper.readValue(responseBytes, ErrorResponseValidation.class);
             } catch (IOException ex) {
                 throw new RuntimeException(e.getMessage());
             }
@@ -47,7 +42,11 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
 
         switch (response.status()) {
             case 400:
-                throw new BadRequestException(null != error ? error : "Bad request");
+                if (null == error) {
+                    throw new ValidationAndScoringAndCalculationOfferException(errorResponse.getViolations());
+                } else {
+                    throw new BadRequestException(null != error ? error : "Bad request");
+                }
             case 404:
                 throw new ResourceNotFoundException(null != error ? error : "Not Found");
             default:

@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
@@ -35,7 +36,7 @@ import java.util.List;
 @Service("dealServiceSenderEmailImpl")
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
+//@Transactional(isolation = Isolation.DEFAULT)
 public class DealServiceSenderEmailImpl implements DealService {
 
     private final FeignService feignService;
