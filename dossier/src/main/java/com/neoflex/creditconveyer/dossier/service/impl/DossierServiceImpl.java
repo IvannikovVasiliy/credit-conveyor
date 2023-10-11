@@ -51,6 +51,8 @@ public class DossierServiceImpl implements DossierService {
     private String sesCodeEmailText;
     @Value("${application.issuedText}")
     private String sesIssuedCreditText;
+    @Value("${application.applicationDenied}")
+    private String applicationDeniedText;
 
     private final DocumentRepository documentrepository;
     private final JavaMailSender mailSender;
@@ -220,7 +222,7 @@ public class DossierServiceImpl implements DossierService {
         simpleMailMessage.setTo(emailMessage.getAddress());
         simpleMailMessage.setFrom(email);
         simpleMailMessage.setSubject(emailMessage.getTheme().name());
-        simpleMailMessage.setText(sesIssuedCreditText.replace("%applicationId%", emailMessage.getApplicationId().toString()));
+        simpleMailMessage.setText(applicationDeniedText.replace("%applicationId%", emailMessage.getApplicationId().toString()));
 
         mailSender.send(simpleMailMessage);
 
