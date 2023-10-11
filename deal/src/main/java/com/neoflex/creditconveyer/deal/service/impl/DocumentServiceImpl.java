@@ -29,7 +29,6 @@ public class DocumentServiceImpl implements DocumentService {
     private final ApplicationRepository applicationRepository;
 
     @Override
-    @Transactional
     public void sendDocuments(Long applicationId) {
         log.debug("Input sendDocuments. applicationId: {}", applicationId);
 
