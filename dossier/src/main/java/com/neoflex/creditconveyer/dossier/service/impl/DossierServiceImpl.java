@@ -210,4 +210,20 @@ public class DossierServiceImpl implements DossierService {
 
         log.debug("Output sendIssuedCreditEmail for applicationId={}", emailMessage.getApplicationId());
     }
+
+    @Override
+    public void sendApplicationDeniedEmail(EmailMessage emailMessage) {
+        log.debug("Input sendIssuedCreditEmail. emailMessage={ address: {}, theme: {}, applicationId: {} }",
+                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
+
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(emailMessage.getAddress());
+        simpleMailMessage.setFrom(email);
+        simpleMailMessage.setSubject(emailMessage.getTheme().name());
+        simpleMailMessage.setText(sesIssuedCreditText.replace("%applicationId%", emailMessage.getApplicationId().toString()));
+
+        mailSender.send(simpleMailMessage);
+
+        log.debug("Output sendIssuedCreditEmail for applicationId={}", emailMessage.getApplicationId());
+    }
 }

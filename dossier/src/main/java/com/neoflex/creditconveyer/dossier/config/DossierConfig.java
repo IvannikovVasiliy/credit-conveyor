@@ -45,4 +45,10 @@ public class DossierConfig {
         return emailMessage ->
                 dossierService.sendIssuedCreditEmail(emailMessage);
     }
+
+    @Bean
+    public Consumer<EmailMessage> consumerApplicationDeniedBinding() {
+        return emailMessage ->
+                dossierService.sendApplicationDeniedEmail(emailMessage);
+    }
 }

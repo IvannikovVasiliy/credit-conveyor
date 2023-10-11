@@ -10,4 +10,5 @@ public interface DossierService {
     void sendDocuments(EmailMessage emailMessage);
     void sendSesCode(SesEmailMessage sesEmailMessage);
     void sendIssuedCreditEmail(EmailMessage sesEmailMessage);
+    void sendApplicationDeniedEmail(EmailMessage sesEmailMessage);
 }
