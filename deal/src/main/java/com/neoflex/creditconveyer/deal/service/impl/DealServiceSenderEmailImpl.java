@@ -20,6 +20,7 @@ import com.neoflex.creditconveyer.deal.repository.ApplicationRepository;
 import com.neoflex.creditconveyer.deal.repository.ClientRepository;
 import com.neoflex.creditconveyer.deal.repository.CreditRepository;
 import com.neoflex.creditconveyer.deal.service.DealService;
+import com.neoflex.creditconveyer.deal.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -45,6 +47,7 @@ public class DealServiceSenderEmailImpl implements DealService {
     private final CreditRepository creditRepository;
     @Qualifier("sourceMapperImplementation") private final SourceMapper sourceMapper;
     private final EmailProducer emailProducer;
+    private final TransactionService transactionService;
 
     @Override
     public List<LoanOfferDTO> calculateCreditConditions(LoanApplicationRequestDTO loanApplicationRequest) {
@@ -113,7 +116,14 @@ public class DealServiceSenderEmailImpl implements DealService {
 
         ScoringDataDTO scoringData = buildScoringData(application, clientEntity, finishRegistration);
 
-        CreditDTO creditDto = feignService.validAndScoreAndCalcOffer(scoringData);
+        CreditDTO creditDto = null;
+        try {
+            creditDto = feignService.validAndScoreAndCalcOffer(scoringData);
+        } catch (RuntimeException e) {
+            log.error("Error response from conveyor. Exception={}", e.getMessage());
+            denyApplication(application, clientEntity);
+            throw e;
+        }
 
         CreditEntity creditEntity = sourceMapper.sourceToCreditEntity(creditDto);
         creditEntity.setCreditStatus(CreditStatus.CALCULATED);
@@ -221,5 +231,17 @@ public class DealServiceSenderEmailImpl implements DealService {
                 .isInsuranceEnabled(application.getAppliedOffer().getIsInsuranceEnabled())
                 .isSalaryClient(application.getAppliedOffer().getIsSalaryClient())
                 .build();
+    }
+
+    private void denyApplication(ApplicationEntity application, ClientEntity clientEntity) {
+        application.setStatus(ApplicationStatus.CC_DENIED);
+        transactionService.saveApplication(application);
+        EmailMessage emailMessage = EmailMessage
+                .builder()
+                .address(clientEntity.getEmail())
+                .theme(Theme.APPLICATION_DENIED)
+                .applicationId(application.getId())
+                .build();
+        emailProducer.sendEmailMessage(TopicConstants.TOPIC_APPLICATION_DENIED, emailMessage);
     }
 }

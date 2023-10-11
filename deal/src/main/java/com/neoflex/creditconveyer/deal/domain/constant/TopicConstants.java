@@ -6,4 +6,5 @@ public class TopicConstants {
     public static final String TOPIC_SEND_DOCUMENTS = "send-documents";
     public static final String TOPIC_SIGN_DOCUMENTS = "send-ses";
     public static final String TOPIC_CREDIT_ISSUED = "credit-issued";
+    public static final String TOPIC_APPLICATION_DENIED = "application-denied";
 }
