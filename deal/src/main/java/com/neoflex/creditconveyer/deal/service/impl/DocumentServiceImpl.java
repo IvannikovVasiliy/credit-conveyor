@@ -63,6 +63,7 @@ public class DocumentServiceImpl implements DocumentService {
         Random random = new Random();
         Integer sesCode = random.nextInt(89999999) + 10000000;
         application.setSesCode(sesCode);
+        applicationRepository.save(application);
         SesEmailMessage sesEmailMessage = SesEmailMessage
                 .builder()
                 .sesCode(sesCode)
