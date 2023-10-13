@@ -6,8 +6,10 @@ import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.domain.model.CustomEmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.model.DocumentModel;
 import com.neoflex.creditconveyer.dossier.feign.DealFeignService;
 import com.neoflex.creditconveyer.dossier.repository.DocumentRepository;
+import com.neoflex.creditconveyer.dossier.service.DocumentService;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import com.neoflex.creditconveyer.dossier.service.EmailSender;
 import com.neoflex.creditconveyer.dossier.service.FileWorker;
@@ -55,6 +57,7 @@ public class DossierServiceImpl implements DossierService {
     private final FileWorker fileWorker;
     private final DealFeignService dealFeignService;
     private final DocumentRepository documentRepository;
+    private final DocumentService documentService;
 
     @Override
     public void finishRegistration(EmailMessage emailMessage) {
@@ -80,8 +83,7 @@ public class DossierServiceImpl implements DossierService {
         SSHClient sshClient = connectSshClient();
         StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
 
-        String loanAgreement = ConfigUtils.getTextLoanAgreement().replace("%applicationId%", emailMessage.getApplicationId().toString());
-        String loanFileName = UUID.randomUUID() + " loan agreement " + emailMessage.getApplicationId();
+        DocumentModel loanAgreementDocument = documentService.createLoanAgreement(emailMessage.getApplicationId(), emailMessage.getCredit());
         fileWorker.writeFileInRemoteServer(statefulSFTPClient, loanAgreement, loanFileName);
 
         String questionnaire = ConfigUtils.getTextQuestionnaire().replace("%applicationId%", emailMessage.getApplicationId().toString());
