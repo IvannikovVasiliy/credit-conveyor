@@ -132,8 +132,6 @@ public class DossierServiceImpl implements DossierService {
             simpleMailMessage.setSubject(emailMessage.getTheme().name());
             simpleMailMessage.setText(textCreateDocuments.replace("%applicationId%", emailMessage.getApplicationId().toString()));
             mailSender.send(simpleMailMessage);
-        } catch (SSHException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
