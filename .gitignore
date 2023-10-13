@@ -42,4 +42,5 @@ secrets.yml
 .idea
 
 application.yaml
+application.conf
 hosts.dat
