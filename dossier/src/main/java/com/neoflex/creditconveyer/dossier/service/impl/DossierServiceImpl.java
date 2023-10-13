@@ -279,7 +279,7 @@ public class DossierServiceImpl implements DossierService {
 
     @Override
     public void sendApplicationDeniedEmail(EmailMessage emailMessage) {
-        log.debug("Input sendIssuedCreditEmail. emailMessage={ address: {}, theme: {}, applicationId: {} }",
+        log.debug("Input sendApplicationDeniedEmail. emailMessage={ address: {}, theme: {}, applicationId: {} }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -290,7 +290,7 @@ public class DossierServiceImpl implements DossierService {
 
         mailSender.send(simpleMailMessage);
 
-        log.debug("Output sendIssuedCreditEmail for applicationId={}", emailMessage.getApplicationId());
+        log.debug("Output sendApplicationDeniedEmail for applicationId={}", emailMessage.getApplicationId());
     }
 
     private SSHClient connectSshClient() {
