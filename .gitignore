@@ -40,3 +40,5 @@ secrets.yml
 .gradletasknamecache
 .sts4-cache
 .idea
+application.yaml
+hosts.dat
