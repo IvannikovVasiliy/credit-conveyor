@@ -14,6 +14,6 @@ public class InformationEmailMessage {
     private Theme theme;
     private Long applicationId;
     private ClientModel client;
-    //private ApplicationModel application;
+    private ApplicationModel application;
     //private CreditModel credit;
 }
