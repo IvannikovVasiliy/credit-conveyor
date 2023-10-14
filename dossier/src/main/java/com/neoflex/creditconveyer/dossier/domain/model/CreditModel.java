@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.dossier.domain.model;
 
-import com.neoflex.creditconveyer.dossier.domain.dto.PaymentScheduleElement;
+import com.neoflex.creditconveyer.dossier.domain.dto.PaymentScheduleElementJsonb;
 import com.neoflex.creditconveyer.dossier.domain.enumeration.CreditStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ public class CreditModel {
     private BigDecimal monthlyPayment;
     private BigDecimal rate;
     private BigDecimal psk;
-    private List<PaymentScheduleElement> paymentSchedule;
+    private List<PaymentScheduleElementJsonb> paymentSchedule;
     private Boolean insuranceEnable;
     private Boolean salaryClient;
     private CreditStatus creditStatus;

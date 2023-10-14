@@ -2,16 +2,17 @@ package com.neoflex.creditconveyer.dossier.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
-public class PaymentScheduleElement {
+public class PaymentScheduleElementJsonb implements Serializable {
     private Integer number;
-    private LocalDate date;
+    private Date date;
     private BigDecimal totalPayment;
     private BigDecimal interestPayment;
     private BigDecimal debtPayment;

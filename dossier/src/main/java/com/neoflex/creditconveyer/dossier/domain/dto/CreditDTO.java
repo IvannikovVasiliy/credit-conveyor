@@ -16,5 +16,5 @@ public class CreditDTO {
     private BigDecimal psk;
     private Boolean isInsuranceEnabled;
     private Boolean isSalaryClient;
-    private List<PaymentScheduleElement> paymentSchedule;
+    private List<PaymentScheduleElementJsonb> paymentSchedule;
 }
