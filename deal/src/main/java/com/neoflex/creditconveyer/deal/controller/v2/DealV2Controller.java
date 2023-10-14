@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/v2/deal")
 public class DealV2Controller {
 
-    @Qualifier("dealServiceSenderEmailImpl")
+    @Qualifier("dealSenderEmailServiceImpl")
     private final DealService dealService;
 
     @PostMapping("/application")
