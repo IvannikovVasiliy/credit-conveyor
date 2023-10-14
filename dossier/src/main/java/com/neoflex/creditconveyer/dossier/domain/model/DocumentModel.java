@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyer.dossier.domain.model;
 
-import com.neoflex.creditconveyer.dossier.service.impl.DocumentServiceImpl;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,11 +7,11 @@ import lombok.Setter;
 @Setter
 public class DocumentModel {
 
-    public DocumentModel(String fileName, String text) {
+    public DocumentModel(String fileName, String fileText) {
         this.fileName = fileName;
-        this.text = text;
+        this.fileText = fileText;
     }
 
-    private String text;
+    private String fileText;
     private String fileName;
 }

@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class StatusHistoryModel {
-
     private String status;
     private Timestamp time;
     private ChangeType changeType;

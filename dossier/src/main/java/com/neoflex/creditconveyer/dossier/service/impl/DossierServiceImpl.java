@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyer.dossier.service.impl;
 
-import com.neoflex.creditconveyer.dossier.domain.constant.PaymentConstants;
 import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
@@ -30,10 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +47,7 @@ public class DossierServiceImpl implements DossierService {
     private String sftpUser;
     @Value("${sftp.password}")
     private String sftpPassword;
-    @Value("${sftp.sshHostsFileName")
+    @Value("${sftp.sshHostsFileName}")
     private String sshHostsFileName;
 
     private final EmailSender emailSender;
@@ -77,20 +74,17 @@ public class DossierServiceImpl implements DossierService {
     @Override
     @Transactional
     public void createDocuments(InformationEmailMessage emailMessage) {
-        log.debug("start");
-//        log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} client={} }",
-//                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getClient());
+        log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} client={ lastName: {}, firstName: {}, middleName: {}, birthdate: {}, email: {},  martialStatus: {},  dependentAmount: {}, passport: {}, employment: {},  account: {} }; application: { status: {} creationDate: {},  appliedOffer: {},  statusHistory: {} }; credit: { amount: {}, term: {}, monthlyPayment: {}, rate: {}, psk: {}, paymentSchedule: {}, insuranceEnable: {}, salaryClient: {}, creditStatus: {} } }",
+                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getClient().getLastName(), emailMessage.getClient().getFirstName(), emailMessage.getClient().getMiddleName(), emailMessage.getClient().getBirthdate(), emailMessage.getClient().getEmail(), emailMessage.getClient().getMartialStatus(), emailMessage.getClient().getDependentAmount(), emailMessage.getClient().getPassport(), emailMessage.getClient().getEmployment(), emailMessage.getClient().getAccount(), emailMessage.getApplication().getStatus(), emailMessage.getApplication().getCreationDate(), emailMessage.getApplication().getAppliedOffer(), emailMessage.getApplication().getStatusHistory(), emailMessage.getCredit().getAmount(), emailMessage.getCredit().getTerm(), emailMessage.getCredit().getMonthlyPayment(), emailMessage.getCredit().getRate(), emailMessage.getCredit().getPsk(), emailMessage.getCredit().getPaymentSchedule(), emailMessage.getCredit().getInsuranceEnable(), emailMessage.getCredit().getSalaryClient(), emailMessage.getCredit().getCreditStatus());
 
-//        SSHClient sshClient = connectSshClient();
-//        StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
+        SSHClient sshClient = connectSshClient();
+        StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
 
-//        DocumentModel loanAgreementDocument = documentService.createLoanAgreement(emailMessage.getApplicationId(), emailMessage.getCredit());
-//        fileWorker.writeFileInRemoteServer(statefulSFTPClient, loanAgreementDocument.getFileName(), loanAgreementDocument.getText());
-//
-//        DocumentModel questionnaireDocument = documentService.createQuestionnaire()
-//        String questionnaire = ConfigUtils.getTextQuestionnaire().replace("%applicationId%", emailMessage.getApplicationId().toString());
-//        String questionnaireName = UUID.randomUUID() + " questionnaire " + emailMessage.getApplicationId();
-//        fileWorker.writeFileInRemoteServer(statefulSFTPClient, questionnaireName, questionnaire);
+        DocumentModel loanAgreementDocument = documentService.createLoanAgreement(emailMessage.getApplicationId(), emailMessage.getClient(), emailMessage.getApplication(), emailMessage.getCredit());
+        fileWorker.writeFileInRemoteServer(statefulSFTPClient, loanAgreementDocument.getFileName(), loanAgreementDocument.getFileText());
+
+        DocumentModel questionnaireDocument = documentService.createQuestionnaire(emailMessage.getApplicationId(), emailMessage.getClient(), emailMessage.getApplication().getAppliedOffer(), emailMessage.getCredit());
+        fileWorker.writeFileInRemoteServer(statefulSFTPClient, questionnaireDocument.getFileName(), questionnaireDocument.getFileText());
 //
 //        StringBuilder paymentScheduleBuilder = new StringBuilder(ConfigUtils.getTextPaymentSchedule()).append("\n");
 //        emailMessage
@@ -107,7 +101,7 @@ public class DossierServiceImpl implements DossierService {
 //        String paymentScheduleFileName = UUID.randomUUID() + " payment schedule " + emailMessage.getApplicationId();
 //        fileWorker.writeFileInRemoteServer(statefulSFTPClient, paymentScheduleFileName, paymentScheduleBuilder.toString());
 //
-//        DocumentEntity documentEntity = new DocumentEntity(emailMessage.getApplicationId(), loanFileName, questionnaireName, paymentScheduleFileName);
+//        DocumentEntity documentEntity = new DocumentEntity(emailMessage.getApplicationId(), loanFileName, questionnaireFileName, paymentScheduleFileName);
 //        documentRepository.save(documentEntity);
 //
 //        CustomEmailMessage customEmailMessage = new CustomEmailMessage(

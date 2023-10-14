@@ -1,8 +1,12 @@
 package com.neoflex.creditconveyer.dossier.service;
 
-import com.neoflex.creditconveyer.dossier.domain.dto.CreditDTO;
+import com.neoflex.creditconveyer.dossier.domain.dto.LoanOfferDTO;
+import com.neoflex.creditconveyer.dossier.domain.model.ApplicationModel;
+import com.neoflex.creditconveyer.dossier.domain.model.ClientModel;
+import com.neoflex.creditconveyer.dossier.domain.model.CreditModel;
 import com.neoflex.creditconveyer.dossier.domain.model.DocumentModel;
 
 public interface DocumentService {
-    DocumentModel createLoanAgreement(Long applicationId, CreditDTO creditDTO);
+    DocumentModel createLoanAgreement(Long applicationId, ClientModel client, ApplicationModel application, CreditModel credit);
+    DocumentModel createQuestionnaire(Long applicationId, ClientModel client, LoanOfferDTO loanOffer, CreditModel credit);
 }
