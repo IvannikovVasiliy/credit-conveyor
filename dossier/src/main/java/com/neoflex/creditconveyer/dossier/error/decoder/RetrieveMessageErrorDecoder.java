@@ -27,25 +27,12 @@ public class RetrieveMessageErrorDecoder implements ErrorDecoder {
             MessageInfoDto message = mapper.readValue(responseBytes, MessageInfoDto.class);
             error = message.getMessage();
         } catch (Exception e) {
-//            try {
-//                ErrorResponseValidation errorResponse = mapper.readValue(responseBytes, ErrorResponseValidation.class);
-//                StringBuffer buffer = new StringBuffer();
-//                errorResponse.getViolations()
-//                        .forEach(violation -> {
-//                            String violationString = String.format("The field: %s has error: %s;", violation.getFieldName(), violation.getMessage());
-//                            buffer.append(violationString);
-//                        });
-//                error = buffer.toString();
-//            } catch (IOException ex) {
                 throw new RuntimeException(e.getMessage());
-//            }
         }
-//
+
         switch (response.status()) {
             case 400:
                 return new BadRequestException(null != error ? error : "Bad request");
-//            case 404:
-//                return new NotFoundException(null != error ? error : "Not Found");
             default:
                 return errorDecoder.decode(methodKey, response);
         }

@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyer.dossier.config;
 
-import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import lombok.RequiredArgsConstructor;

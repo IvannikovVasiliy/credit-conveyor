@@ -13,12 +13,6 @@ public class ConfigUtils {
     public static String getTextCreateDocuments() {
         return config.getString("createDocuments");
     }
-    public static String getTextLoanAgreement() {
-        return config.getString("loanAgreement");
-    }
-    public static String getTextQuestionnaire() {
-        return config.getString("questionnaire");
-    }
     public static String getTextPaymentSchedule() {
         return config.getString("paymentSchedule");
     }

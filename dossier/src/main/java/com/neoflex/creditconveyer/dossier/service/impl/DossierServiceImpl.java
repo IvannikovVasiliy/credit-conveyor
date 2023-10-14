@@ -1,8 +1,7 @@
 package com.neoflex.creditconveyer.dossier.service.impl;
 
-import com.neoflex.creditconveyer.dossier.domain.constant.PaymentConstants;
-import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.domain.model.CustomEmailMessage;
@@ -30,10 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
