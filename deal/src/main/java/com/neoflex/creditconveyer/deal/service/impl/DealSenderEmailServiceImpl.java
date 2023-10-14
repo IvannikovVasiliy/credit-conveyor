@@ -150,7 +150,7 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .applicationId(application.getId())
                 .client(sourceMapper.sourceToClientModel(clientEntity))
                 .application(sourceMapper.sourceToApplicationModel(application))
-//                .credit(sourceMapper.sourceToCreditModel(creditEntity))
+                .credit(sourceMapper.sourceToCreditModel(creditEntity))
                 .build();
         emailProducer.sendCreditEmailMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, informationEmailMessage);
 

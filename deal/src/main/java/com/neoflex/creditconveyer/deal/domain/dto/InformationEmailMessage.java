@@ -23,6 +23,6 @@ public class InformationEmailMessage {
     private ClientModel client;
     @NotNull
     private ApplicationModel application;
-//    @NotNull
-//    private CreditModel credit;
+    @NotNull
+    private CreditModel credit;
 }
