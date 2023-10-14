@@ -15,5 +15,5 @@ public class InformationEmailMessage {
     private Long applicationId;
     private ClientModel client;
     private ApplicationModel application;
-    //private CreditModel credit;
+    private CreditModel credit;
 }
