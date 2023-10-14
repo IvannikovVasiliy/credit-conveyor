@@ -1,5 +1,6 @@
 package com.neoflex.creditconveyer.dossier.service.impl;
 
+import com.neoflex.creditconveyer.dossier.domain.constant.PaymentConstants;
 import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
@@ -29,8 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -85,33 +88,26 @@ public class DossierServiceImpl implements DossierService {
 
         DocumentModel questionnaireDocument = documentService.createQuestionnaire(emailMessage.getApplicationId(), emailMessage.getClient(), emailMessage.getApplication().getAppliedOffer(), emailMessage.getCredit());
         fileWorker.writeFileInRemoteServer(statefulSFTPClient, questionnaireDocument.getFileName(), questionnaireDocument.getFileText());
-//
-//        StringBuilder paymentScheduleBuilder = new StringBuilder(ConfigUtils.getTextPaymentSchedule()).append("\n");
-//        emailMessage
-//                .getCredit()
-//                .getPaymentSchedule()
-//                .forEach(paymentScheduleElement -> paymentScheduleBuilder
-//                        .append(String.format("Номер платежа: %d; ", paymentScheduleElement.getNumber()))
-//                        .append(String.format("Дата платежа: %s; ", paymentScheduleElement.getDate()))
-//                        .append(String.format("Сумма: %s; ", paymentScheduleElement.getTotalPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
-//                        .append(String.format("Погашение основного долга: %s; ", paymentScheduleElement.getInterestPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
-//                        .append(String.format("Выплата процентов: %s; ", paymentScheduleElement.getDebtPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
-//                        .append(String.format("Остаток: %s ", paymentScheduleElement.getDebtPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
-//                        .append("\n"));
-//        String paymentScheduleFileName = UUID.randomUUID() + " payment schedule " + emailMessage.getApplicationId();
-//        fileWorker.writeFileInRemoteServer(statefulSFTPClient, paymentScheduleFileName, paymentScheduleBuilder.toString());
-//
-//        DocumentEntity documentEntity = new DocumentEntity(emailMessage.getApplicationId(), loanFileName, questionnaireFileName, paymentScheduleFileName);
-//        documentRepository.save(documentEntity);
-//
-//        CustomEmailMessage customEmailMessage = new CustomEmailMessage(
-//                emailMessage.getAddress(),
-//                emailMessage.getTheme().name(),
-//                ConfigUtils.getTextCreateDocuments().replace("%applicationId%", emailMessage.getApplicationId().toString())
-//        );
-//        emailSender.sendMail(customEmailMessage);
-//
-//        log.debug("Output createDocuments for applicationId={}", emailMessage.getApplicationId());
+
+        DocumentModel paymentScheduleDocument = documentService.createPaymentSchedule(emailMessage.getApplicationId(), emailMessage.getCredit().getPaymentSchedule());
+        fileWorker.writeFileInRemoteServer(statefulSFTPClient, paymentScheduleDocument.getFileName(), paymentScheduleDocument.getFileText());
+
+        DocumentEntity documentEntity = new DocumentEntity(
+                emailMessage.getApplicationId(),
+                loanAgreementDocument.getFileName(),
+                loanAgreementDocument.getFileName(),
+                loanAgreementDocument.getFileName()
+        );
+        documentRepository.save(documentEntity);
+
+        CustomEmailMessage customEmailMessage = new CustomEmailMessage(
+                emailMessage.getAddress(),
+                emailMessage.getTheme().name(),
+                ConfigUtils.getTextCreateDocuments().replace("%applicationId%", emailMessage.getApplicationId().toString())
+        );
+        emailSender.sendMail(customEmailMessage);
+
+        log.debug("Output createDocuments for applicationId={}", emailMessage.getApplicationId());
     }
 
     @Override
