@@ -26,20 +26,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service("dealServiceSenderEmailImpl")
+@Service("dealSenderEmailServiceImpl")
 @RequiredArgsConstructor
 @Slf4j
-//@Transactional(isolation = Isolation.DEFAULT)
-public class DealServiceSenderEmailImpl implements DealService {
+@Transactional
+public class DealSenderEmailServiceImpl implements DealService {
 
     private final FeignService feignService;
     private final ClientRepository clientRepository;
@@ -145,14 +143,16 @@ public class DealServiceSenderEmailImpl implements DealService {
         creditRepository.save(creditEntity);
 
         ClientEntity client = application.getClient();
-        CreditEmailMessage creditEmailMessage = CreditEmailMessage
+        InformationEmailMessage informationEmailMessage = InformationEmailMessage
                 .builder()
                 .address(client.getEmail())
                 .theme(Theme.CREATE_DOCUMENTS)
                 .applicationId(application.getId())
-                .credit(creditDto)
+                .client(sourceMapper.sourceToClientModel(clientEntity))
+                .application(sourceMapper.sourceToApplicationModel(application))
+                .credit(sourceMapper.sourceToCreditModel(creditEntity))
                 .build();
-        emailProducer.sendCreditEmailMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, creditEmailMessage);
+        emailProducer.sendCreditEmailMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, informationEmailMessage);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");
     }

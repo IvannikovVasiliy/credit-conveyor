@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.deal.kafka.producer;
 
-import com.neoflex.creditconveyer.deal.domain.dto.CreditEmailMessage;
+import com.neoflex.creditconveyer.deal.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
 import lombok.RequiredArgsConstructor;
@@ -8,11 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CompletableFuture;
-
-import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +17,7 @@ import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 public class EmailProducer {
 
     private final KafkaTemplate<Long, EmailMessage> emailKafkaTemplate;
-    private final KafkaTemplate<Long, CreditEmailMessage> creditEmailKafkaTemplate;
+    private final KafkaTemplate<Long, InformationEmailMessage> creditEmailKafkaTemplate;
     private final KafkaTemplate<Long, SesEmailMessage> sesEmailKafkaTemplate;
 
     public void sendEmailMessage(final String TOPIC, EmailMessage emailMessage) {
@@ -37,8 +34,8 @@ public class EmailProducer {
         });
     }
 
-    public void sendCreditEmailMessage(final String TOPIC, CreditEmailMessage emailMessage) {
-        CompletableFuture<SendResult<Long, CreditEmailMessage>> future =
+    public void sendCreditEmailMessage(final String TOPIC, InformationEmailMessage emailMessage) {
+        CompletableFuture<SendResult<Long, InformationEmailMessage>> future =
                 creditEmailKafkaTemplate.send(TOPIC, emailMessage.getApplicationId(), emailMessage);
 
         future.whenCompleteAsync((result, exception) -> {

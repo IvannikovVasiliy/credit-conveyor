@@ -1,11 +1,10 @@
 package com.neoflex.creditconveyer.deal.config;
 
-import com.neoflex.creditconveyer.deal.domain.dto.CreditEmailMessage;
+import com.neoflex.creditconveyer.deal.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +41,7 @@ public class KafkaProducerConfig {
 //    }
 
     @Bean
-    public ProducerFactory<Long, CreditEmailMessage> emailCreditMessageProducerFactory() {
+    public ProducerFactory<Long, InformationEmailMessage> emailCreditMessageProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
@@ -70,7 +69,7 @@ public class KafkaProducerConfig {
 //    }
 
     @Bean
-    public KafkaTemplate<Long, CreditEmailMessage> creditEmailKafkaTemplate() {
+    public KafkaTemplate<Long, InformationEmailMessage> creditEmailKafkaTemplate() {
         return new KafkaTemplate<>(emailCreditMessageProducerFactory());
     }
 
