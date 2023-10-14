@@ -83,40 +83,40 @@ public class DossierServiceImpl implements DossierService {
         SSHClient sshClient = connectSshClient();
         StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
 
-        DocumentModel loanAgreementDocument = documentService.createLoanAgreement(emailMessage.getApplicationId(), emailMessage.getCredit());
-        fileWorker.writeFileInRemoteServer(statefulSFTPClient, loanAgreementDocument.getFileName(), loanAgreementDocument.getText());
-
-        DocumentModel questionnaireDocument = documentService.createQuestionnaire()
-        String questionnaire = ConfigUtils.getTextQuestionnaire().replace("%applicationId%", emailMessage.getApplicationId().toString());
-        String questionnaireName = UUID.randomUUID() + " questionnaire " + emailMessage.getApplicationId();
-        fileWorker.writeFileInRemoteServer(statefulSFTPClient, questionnaireName, questionnaire);
-
-        StringBuilder paymentScheduleBuilder = new StringBuilder(ConfigUtils.getTextPaymentSchedule()).append("\n");
-        emailMessage
-                .getCredit()
-                .getPaymentSchedule()
-                .forEach(paymentScheduleElement -> paymentScheduleBuilder
-                        .append(String.format("Номер платежа: %d; ", paymentScheduleElement.getNumber()))
-                        .append(String.format("Дата платежа: %s; ", paymentScheduleElement.getDate()))
-                        .append(String.format("Сумма: %s; ", paymentScheduleElement.getTotalPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
-                        .append(String.format("Погашение основного долга: %s; ", paymentScheduleElement.getInterestPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
-                        .append(String.format("Выплата процентов: %s; ", paymentScheduleElement.getDebtPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
-                        .append(String.format("Остаток: %s ", paymentScheduleElement.getDebtPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
-                        .append("\n"));
-        String paymentScheduleFileName = UUID.randomUUID() + " payment schedule " + emailMessage.getApplicationId();
-        fileWorker.writeFileInRemoteServer(statefulSFTPClient, paymentScheduleFileName, paymentScheduleBuilder.toString());
-
-        DocumentEntity documentEntity = new DocumentEntity(emailMessage.getApplicationId(), loanFileName, questionnaireName, paymentScheduleFileName);
-        documentRepository.save(documentEntity);
-
-        CustomEmailMessage customEmailMessage = new CustomEmailMessage(
-                emailMessage.getAddress(),
-                emailMessage.getTheme().name(),
-                ConfigUtils.getTextCreateDocuments().replace("%applicationId%", emailMessage.getApplicationId().toString())
-        );
-        emailSender.sendMail(customEmailMessage);
-
-        log.debug("Output createDocuments for applicationId={}", emailMessage.getApplicationId());
+//        DocumentModel loanAgreementDocument = documentService.createLoanAgreement(emailMessage.getApplicationId(), emailMessage.getCredit());
+//        fileWorker.writeFileInRemoteServer(statefulSFTPClient, loanAgreementDocument.getFileName(), loanAgreementDocument.getText());
+//
+//        DocumentModel questionnaireDocument = documentService.createQuestionnaire()
+//        String questionnaire = ConfigUtils.getTextQuestionnaire().replace("%applicationId%", emailMessage.getApplicationId().toString());
+//        String questionnaireName = UUID.randomUUID() + " questionnaire " + emailMessage.getApplicationId();
+//        fileWorker.writeFileInRemoteServer(statefulSFTPClient, questionnaireName, questionnaire);
+//
+//        StringBuilder paymentScheduleBuilder = new StringBuilder(ConfigUtils.getTextPaymentSchedule()).append("\n");
+//        emailMessage
+//                .getCredit()
+//                .getPaymentSchedule()
+//                .forEach(paymentScheduleElement -> paymentScheduleBuilder
+//                        .append(String.format("Номер платежа: %d; ", paymentScheduleElement.getNumber()))
+//                        .append(String.format("Дата платежа: %s; ", paymentScheduleElement.getDate()))
+//                        .append(String.format("Сумма: %s; ", paymentScheduleElement.getTotalPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
+//                        .append(String.format("Погашение основного долга: %s; ", paymentScheduleElement.getInterestPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
+//                        .append(String.format("Выплата процентов: %s; ", paymentScheduleElement.getDebtPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
+//                        .append(String.format("Остаток: %s ", paymentScheduleElement.getDebtPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
+//                        .append("\n"));
+//        String paymentScheduleFileName = UUID.randomUUID() + " payment schedule " + emailMessage.getApplicationId();
+//        fileWorker.writeFileInRemoteServer(statefulSFTPClient, paymentScheduleFileName, paymentScheduleBuilder.toString());
+//
+//        DocumentEntity documentEntity = new DocumentEntity(emailMessage.getApplicationId(), loanFileName, questionnaireName, paymentScheduleFileName);
+//        documentRepository.save(documentEntity);
+//
+//        CustomEmailMessage customEmailMessage = new CustomEmailMessage(
+//                emailMessage.getAddress(),
+//                emailMessage.getTheme().name(),
+//                ConfigUtils.getTextCreateDocuments().replace("%applicationId%", emailMessage.getApplicationId().toString())
+//        );
+//        emailSender.sendMail(customEmailMessage);
+//
+//        log.debug("Output createDocuments for applicationId={}", emailMessage.getApplicationId());
     }
 
     @Override
