@@ -80,8 +80,8 @@ public class DossierServiceImpl implements DossierService {
         log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
 
-        SSHClient sshClient = connectSshClient();
-        StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
+//        SSHClient sshClient = connectSshClient();
+//        StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
 
 //        DocumentModel loanAgreementDocument = documentService.createLoanAgreement(emailMessage.getApplicationId(), emailMessage.getCredit());
 //        fileWorker.writeFileInRemoteServer(statefulSFTPClient, loanAgreementDocument.getFileName(), loanAgreementDocument.getText());
