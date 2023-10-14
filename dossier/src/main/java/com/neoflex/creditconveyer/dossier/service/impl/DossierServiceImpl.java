@@ -77,8 +77,8 @@ public class DossierServiceImpl implements DossierService {
     @Override
     @Transactional
     public void createDocuments(InformationEmailMessage emailMessage) {
-        log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} }",
-                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
+        log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} client={} }",
+                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getClient());
 
 //        SSHClient sshClient = connectSshClient();
 //        StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
