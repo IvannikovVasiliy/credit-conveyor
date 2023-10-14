@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.dossier.config;
 
-import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
@@ -23,7 +23,7 @@ public class DossierConfig {
     }
 
     @Bean
-    public Consumer<CreditEmailMessage> consumerCreateDocumentsBinding() {
+    public Consumer<InformationEmailMessage> consumerCreateDocumentsBinding() {
         return emailMessage ->
                 dossierService.createDocuments(emailMessage);
     }

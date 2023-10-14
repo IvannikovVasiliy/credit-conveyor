@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyer.dossier.service.impl;
 
 import com.neoflex.creditconveyer.dossier.domain.constant.PaymentConstants;
-import com.neoflex.creditconveyer.dossier.domain.dto.CreditEmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
@@ -76,7 +76,7 @@ public class DossierServiceImpl implements DossierService {
 
     @Override
     @Transactional
-    public void createDocuments(CreditEmailMessage emailMessage) {
+    public void createDocuments(InformationEmailMessage emailMessage) {
         log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
 
