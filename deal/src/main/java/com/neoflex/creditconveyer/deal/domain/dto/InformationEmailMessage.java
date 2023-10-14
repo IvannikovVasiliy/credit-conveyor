@@ -19,6 +19,7 @@ public class InformationEmailMessage {
     private Theme theme;
     @NotNull
     private Long applicationId;
+    @NotNull
     private ClientModel client;
     @NotNull
     private ApplicationModel application;
