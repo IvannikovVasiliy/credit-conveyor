@@ -84,11 +84,12 @@ public class DossierServiceImpl implements DossierService {
         StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
 
         DocumentModel loanAgreementDocument = documentService.createLoanAgreement(emailMessage.getApplicationId(), emailMessage.getCredit());
-        fileWorker.writeFileInRemoteServer(statefulSFTPClient, loanAgreement, loanFileName);
+        fileWorker.writeFileInRemoteServer(statefulSFTPClient, loanAgreementDocument.getFileName(), loanAgreementDocument.getText());
 
+        DocumentModel questionnaireDocument = documentService.createQuestionnaire()
         String questionnaire = ConfigUtils.getTextQuestionnaire().replace("%applicationId%", emailMessage.getApplicationId().toString());
         String questionnaireName = UUID.randomUUID() + " questionnaire " + emailMessage.getApplicationId();
-        fileWorker.writeFileInRemoteServer(statefulSFTPClient, questionnaire, questionnaireName);
+        fileWorker.writeFileInRemoteServer(statefulSFTPClient, questionnaireName, questionnaire);
 
         StringBuilder paymentScheduleBuilder = new StringBuilder(ConfigUtils.getTextPaymentSchedule()).append("\n");
         emailMessage
@@ -103,7 +104,7 @@ public class DossierServiceImpl implements DossierService {
                         .append(String.format("Остаток: %s ", paymentScheduleElement.getDebtPayment().setScale(PaymentConstants.CLIENT_MONEY_ACCURACY, RoundingMode.DOWN)))
                         .append("\n"));
         String paymentScheduleFileName = UUID.randomUUID() + " payment schedule " + emailMessage.getApplicationId();
-        fileWorker.writeFileInRemoteServer(statefulSFTPClient, paymentScheduleBuilder.toString(), paymentScheduleFileName);
+        fileWorker.writeFileInRemoteServer(statefulSFTPClient, paymentScheduleFileName, paymentScheduleBuilder.toString());
 
         DocumentEntity documentEntity = new DocumentEntity(emailMessage.getApplicationId(), loanFileName, questionnaireName, paymentScheduleFileName);
         documentRepository.save(documentEntity);

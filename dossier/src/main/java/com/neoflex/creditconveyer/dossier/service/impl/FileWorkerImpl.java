@@ -15,7 +15,7 @@ import java.util.Set;
 @Slf4j
 public class FileWorkerImpl implements FileWorker {
 
-    public void writeFileInRemoteServer(StatefulSFTPClient statefulSFTPClient, String fileText, String fileName) {
+    public void writeFileInRemoteServer(StatefulSFTPClient statefulSFTPClient, String fileName, String fileText) {
         log.debug("Input writeFileInRemoteServer");
 
         ByteArrayInputStream loanInputStream = new ByteArrayInputStream(fileText.getBytes());
