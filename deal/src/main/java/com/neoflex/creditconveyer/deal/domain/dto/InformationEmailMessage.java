@@ -21,8 +21,8 @@ public class InformationEmailMessage {
     private Long applicationId;
     @NotNull
     private ClientModel client;
-    @NotNull
-    private ApplicationModel application;
-    @NotNull
-    private CreditModel credit;
+//    @NotNull
+//    private ApplicationModel application;
+//    @NotNull
+//    private CreditModel credit;
 }

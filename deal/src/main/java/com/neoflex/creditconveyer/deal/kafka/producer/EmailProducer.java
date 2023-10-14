@@ -38,15 +38,15 @@ public class EmailProducer {
         CompletableFuture<SendResult<Long, InformationEmailMessage>> future =
                 creditEmailKafkaTemplate.send(TOPIC, emailMessage.getApplicationId(), emailMessage);
 
-        future.whenCompleteAsync((result, exception) -> {
-            if (null != exception) {
-                log.error("error. Unable to send message with key={} message={ address: {}, theme: {}, applicationId: {}, credit: {} } due to : {}",
-                        emailMessage.getApplicationId(), emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), exception.getMessage());
-            } else {
-                log.info("Sent message={ address: {}, theme: {}, applicationId: {}, credit: {} } with offset=={}",
-                        emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), result.getRecordMetadata().offset());
-            }
-        });
+//        future.whenCompleteAsync((result, exception) -> {
+//            if (null != exception) {
+//                log.error("error. Unable to send message with key={} message={ address: {}, theme: {}, applicationId: {}, credit: {} } due to : {}",
+//                        emailMessage.getApplicationId(), emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), exception.getMessage());
+//            } else {
+//                log.info("Sent message={ address: {}, theme: {}, applicationId: {}, credit: {} } with offset=={}",
+//                        emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), result.getRecordMetadata().offset());
+//            }
+//        });
     }
 
     public void sendSesCodeEmailMessage(final String TOPIC, SesEmailMessage emailMessage) {
