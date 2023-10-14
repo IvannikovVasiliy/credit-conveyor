@@ -1,6 +1,8 @@
 package com.neoflex.creditconveyer.dossier.domain.model;
 
 import com.neoflex.creditconveyer.dossier.domain.enumeration.MartialStatus;
+import com.neoflex.creditconveyer.dossier.domain.jsonb.EmploymentJsonb;
+import com.neoflex.creditconveyer.dossier.domain.jsonb.PassportJsonb;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +18,7 @@ public class ClientModel {
     private String email;
     private MartialStatus martialStatus;
     private Integer dependentAmount;
-    private PassportModel passport;
-    private EmploymentModel employment;
+    private PassportJsonb passport;
+    private EmploymentJsonb employment;
     private String account;
 }

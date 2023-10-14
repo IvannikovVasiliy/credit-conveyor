@@ -13,7 +13,7 @@ public class InformationEmailMessage {
     private String address;
     private Theme theme;
     private Long applicationId;
-    private ClientModel client;
-    private ApplicationModel application;
-    private CreditModel credit;
+    //private ClientModel client;
+    //private ApplicationModel application;
+    //private CreditModel credit;
 }
