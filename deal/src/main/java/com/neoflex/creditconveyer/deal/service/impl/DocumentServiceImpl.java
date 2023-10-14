@@ -88,7 +88,7 @@ public class DocumentServiceImpl implements DocumentService {
             throw new ErrorSesCodeException("Conflict. SES code is wrong");
         }
 
-        // .save(...)
+        // .save(...) Там в одном методе, по логике, статусы сохряняются 2 раза
 
         EmailMessage emailMessage = EmailMessage
                 .builder()
