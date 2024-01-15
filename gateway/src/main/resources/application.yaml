@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: application-route
+          uri: ${APPLICATION_ROUTE_URI:http://localhost:8082}
+          predicates:
+            - Path=/application/**
+          filters:
+            - PrefixPath=/api
+            - AddResponseHeader=X-Powered-By,DanSON Gateway Service
