@@ -1,0 +1,16 @@
+spring:
+  output:
+    ansi:
+      enabled: always
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: example
+          uri: lb://example
+          predicates:
+            - Path=/example/**
+          filters:
+            - RewritePath=/example/(?<path>.*), /$\{path}
