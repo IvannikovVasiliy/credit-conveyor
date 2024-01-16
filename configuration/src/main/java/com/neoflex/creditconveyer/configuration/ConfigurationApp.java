@@ -1,4 +1,4 @@
-package com.neoflex.creditconveyer.gateway;
+package com.neoflex.creditconveyer.configuration;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,9 +6,9 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 
 @SpringBootApplication
 @EnableConfigServer
-public class GatewayApp {
+public class ConfigurationApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(GatewayApp.class, args);
+        SpringApplication.run(ConfigurationApp.class, args);
     }
 }
