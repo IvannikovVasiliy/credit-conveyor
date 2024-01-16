@@ -1,40 +1,62 @@
 version: '3.9'
 
-name: dossier
+name: credit-conveyor
 services:
-  zookeeper-dossier:
+  zookeeper-credit-conveyor:
     image: confluentinc/cp-zookeeper:7.3.2
-    container_name: zookeeper-dossier
+    container_name: zookeeper-credit-conveyor
     ports:
-      - 2181:2181
+      - "2181:2181"
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    volumes:
+      - credit-conveyor-volume:/home/zookeeper/data
     networks:
-      - kafka-dossier
+      - credit-conveyor-network
 
-  broker-dossier:
+  broker-credit-conveyor:
     image: confluentinc/cp-kafka:7.3.2
-    container_name: broker-dossier
+    container_name: broker-credit-conveyor
     ports:
       - 9092:9092
     depends_on:
-      - zookeeper-dossier
+      - zookeeper-credit-conveyor
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-dossier:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-dossier:29092,PLAINTEXT_INTERNAL://localhost:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-credit-conveyor:2181
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://broker-credit-conveyor:29092,PLAINTEXT_INTERNAL://localhost:9092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+    volumes:
+      - credit-conveyor-volume:/home/broker/data
     networks:
-      - kafka-dossier
+      - credit-conveyor-network
+
+  postgres-credit-conveyor:
+    image: postgres:13
+    container_name: postgres-credit-conveyor
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=credit-conveyor
+      - POSTGRES_USERNAME=POSTGRES
+      - POSTGRES_PASSWORD=POSTGRES
+    volumes:
+      - credit-conveyor-volume:/home/postgres/data
+    networks:
+      - credit-conveyor-network
+
+volumes:
+  credit-conveyor-volume:
+    external: true
 
 networks:
-  kafka-dossier:
-    name: kafka-dossier
+  credit-conveyor-network:
+    name: credit-conveyor-network
     driver: bridge
 
