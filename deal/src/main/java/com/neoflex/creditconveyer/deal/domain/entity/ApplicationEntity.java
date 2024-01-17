@@ -25,11 +25,11 @@ public class ApplicationEntity {
     @Column(name = "application_id")
     private Long id;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @NotNull
     @JoinColumn(name = "client_id", referencedColumnName = "client_id")
     private ClientEntity client;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "credit_id", referencedColumnName = "credit_id")
     private CreditEntity credit;
 
