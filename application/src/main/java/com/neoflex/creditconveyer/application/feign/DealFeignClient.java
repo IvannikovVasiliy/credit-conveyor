@@ -14,7 +14,7 @@ import java.util.List;
 
 @FeignClient(value = "dealFeign", url = "${dealService.hostPort}", configuration = DecoderConfiguration.class)
 public interface DealFeignClient {
-    @GetMapping("/v2/deal/application/{applicationId}")
+    @GetMapping("/v2/deal/admin/application/{applicationId}")
     ResponseEntity<LoanApplicationResponseDTO> getApplicationById(@Valid @PathVariable Long applicationId);
     @PostMapping("/v1/deal/application")
     ResponseEntity<List<LoanOfferDTO>> calculateOffers(@Valid @RequestBody LoanApplicationRequestDTO loanApplicationRequest);

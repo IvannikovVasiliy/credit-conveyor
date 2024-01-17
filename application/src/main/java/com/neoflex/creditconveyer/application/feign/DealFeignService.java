@@ -19,7 +19,7 @@ public class DealFeignService {
     public LoanApplicationResponseDTO getApplicationById(Long applicationId) {
         log.debug("Received applicationId={} for getting application by id", applicationId);
 
-        dealFeignClient.
+        dealFeignClient.getApplicationById(applicationId);
     }
 
     public List<LoanOfferDTO> postDealApplication(LoanApplicationRequestDTO loanApplicationRequest) {
