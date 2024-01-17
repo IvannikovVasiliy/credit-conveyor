@@ -43,9 +43,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=credit-conveyor
-      - POSTGRES_USERNAME=POSTGRES
-      - POSTGRES_PASSWORD=POSTGRES
+      - POSTGRES_DB=postgres
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - credit-conveyor-volume:/home/postgres/data
     networks:
