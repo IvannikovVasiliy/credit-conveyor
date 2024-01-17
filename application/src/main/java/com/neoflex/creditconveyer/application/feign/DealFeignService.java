@@ -1,6 +1,7 @@
 package com.neoflex.creditconveyer.application.feign;
 
 import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
+import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationResponseDTO;
 import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,12 @@ import java.util.List;
 public class DealFeignService {
 
     private final DealFeignClient dealFeignClient;
+
+    public LoanApplicationResponseDTO getApplicationById(Long applicationId) {
+        log.debug("Received applicationId={} for getting application by id", applicationId);
+
+        dealFeignClient.
+    }
 
     public List<LoanOfferDTO> postDealApplication(LoanApplicationRequestDTO loanApplicationRequest) {
         log.debug("Received loanApplicationRequest={ amount:{}, term:{}, firstName:{}, lastName={}, middleName={}, email: {}, birthdate; {}, passportSeries;{}, passportNumber: {} }",

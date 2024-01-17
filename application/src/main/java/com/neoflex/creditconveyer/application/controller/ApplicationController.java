@@ -1,6 +1,7 @@
 package com.neoflex.creditconveyer.application.controller;
 
 import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
+import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationResponseDTO;
 import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.application.service.ApplicationService;
 import jakarta.validation.Valid;
@@ -19,6 +20,15 @@ import java.util.List;
 public class ApplicationController {
 
     private final ApplicationService applicationService;
+
+    @GetMapping("/{applicationId}")
+    public ResponseEntity<LoanApplicationResponseDTO> getApplicationById(@PathVariable Long applicationId) {
+        log.debug("Request for get application by id. applicationId={}", applicationId);
+
+        applicationService.getApplicationById(applicationId);
+
+
+    }
 
     @PostMapping
     public ResponseEntity<List<LoanOfferDTO>> postApplication(@Valid @RequestBody LoanApplicationRequestDTO loanApplication) {

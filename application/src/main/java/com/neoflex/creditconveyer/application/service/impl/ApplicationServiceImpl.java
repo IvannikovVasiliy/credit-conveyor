@@ -3,6 +3,7 @@ package com.neoflex.creditconveyer.application.service.impl;
 import com.neoflex.creditconveyer.application.domain.constant.Constants;
 import com.neoflex.creditconveyer.application.domain.constant.RegExpConstants;
 import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
+import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationResponseDTO;
 import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.application.error.validation.Violation;
@@ -28,6 +29,13 @@ import java.util.regex.Pattern;
 public class ApplicationServiceImpl implements ApplicationService {
 
     private final DealFeignService dealFeignService;
+
+    @Override
+    public LoanApplicationResponseDTO getApplicationById(Long applicationId) {
+        log.debug("Input in method getApplicationById. applicationId={}", applicationId);
+
+        dealFeignService.getApplicationById(applicationId);
+    }
 
     @Override
     public List<LoanOfferDTO> prescoringAndCalcPossibleConditions(LoanApplicationRequestDTO loanApplication) {
