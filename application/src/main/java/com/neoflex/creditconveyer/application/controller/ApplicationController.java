@@ -27,7 +27,7 @@ public class ApplicationController {
 
         applicationService.getApplicationById(applicationId);
 
-
+        return null;
     }
 
     @PostMapping

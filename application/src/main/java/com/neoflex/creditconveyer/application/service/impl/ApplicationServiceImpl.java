@@ -35,6 +35,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         log.debug("Input in method getApplicationById. applicationId={}", applicationId);
 
         dealFeignService.getApplicationById(applicationId);
+
+        return null;
     }
 
     @Override
