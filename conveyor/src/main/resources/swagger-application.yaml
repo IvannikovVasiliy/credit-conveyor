@@ -1,0 +1,278 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition Conveyor-MS
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /v1/conveyor/offers:
+    post:
+      tags:
+        - conveyor-controller
+      operationId: calculateOffers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanApplicationRequestDTO'
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponseValidation'
+                  - $ref: '#/components/schemas/MessageInfoDto'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanOfferDTO'
+  /v1/conveyor/calculation:
+    post:
+      tags:
+        - conveyor-controller
+      operationId: validAndScoreAndCalcOffer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoringDataDTO'
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponseValidation'
+                  - $ref: '#/components/schemas/MessageInfoDto'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CreditDTO'
+components:
+  schemas:
+    MessageInfoDto:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+        respCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+    ErrorResponseValidation:
+      type: object
+      properties:
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Violation'
+    Violation:
+      type: object
+      properties:
+        fieldName:
+          type: string
+        message:
+          type: string
+    LoanApplicationRequestDTO:
+      required:
+        - amount
+        - firstName
+        - lastName
+        - passportNumber
+        - passportSeries
+        - term
+      type: object
+      properties:
+        amount:
+          minimum: 10000
+          type: number
+        term:
+          minimum: 6
+          type: integer
+          format: int32
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        email:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        passportSeries:
+          maxLength: 4
+          minLength: 4
+          type: string
+        passportNumber:
+          maxLength: 6
+          minLength: 6
+          type: string
+    LoanOfferDTO:
+      type: object
+      properties:
+        applicationId:
+          type: integer
+          format: int64
+        requestedAmount:
+          type: number
+        totalAmount:
+          type: number
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+        rate:
+          type: number
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+    EmploymentDTO:
+      type: object
+      properties:
+        employmentStatus:
+          type: string
+          enum:
+            - UNEMPLOYED
+            - EMPLOYED
+            - SELF_EMPLOYED
+            - BUSINESS_OWNER
+        employerINN:
+          type: string
+        salary:
+          type: number
+        position:
+          type: string
+          enum:
+            - WORKER
+            - MID_MANAGER
+            - TOP_MANAGER
+            - OWNER
+        workExperienceTotal:
+          type: integer
+          format: int32
+        workExperienceCurrent:
+          type: integer
+          format: int32
+    ScoringDataDTO:
+      required:
+        - amount
+        - firstName
+        - gender
+        - isInsuranceEnabled
+        - isSalaryClient
+        - lastName
+        - passportNumber
+        - passportSeries
+        - term
+      type: object
+      properties:
+        amount:
+          minimum: 10000
+          type: number
+        term:
+          minimum: 6
+          type: integer
+          format: int32
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        gender:
+          type: string
+          enum:
+            - MALE
+            - FEMALE
+            - NON_BINARY
+        birthdate:
+          type: string
+          format: date
+        passportSeries:
+          maxLength: 4
+          minLength: 4
+          type: string
+        passportNumber:
+          maxLength: 6
+          minLength: 6
+          type: string
+        passportIssueDate:
+          type: string
+          format: date
+        passportIssueBranch:
+          type: string
+        martialStatus:
+          type: string
+          enum:
+            - MARRIED
+            - DIVORCED
+            - SINGLE
+            - WIDOW_WIDOWER
+        dependentAmount:
+          type: integer
+          format: int32
+        employment:
+          $ref: '#/components/schemas/EmploymentDTO'
+        account:
+          type: string
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+    CreditDTO:
+      type: object
+      properties:
+        amount:
+          type: number
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+        rate:
+          type: number
+        psk:
+          type: number
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+        paymentSchedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentScheduleElement'
+    PaymentScheduleElement:
+      type: object
+      properties:
+        number:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date
+        totalPayment:
+          type: number
+        interestPayment:
+          type: number
+        debtPayment:
+          type: number
+        remainingDebt:
+          type: number
