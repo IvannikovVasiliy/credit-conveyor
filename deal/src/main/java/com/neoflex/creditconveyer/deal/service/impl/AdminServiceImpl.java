@@ -43,8 +43,6 @@ public class AdminServiceImpl implements AdminService {
 
         LocalDate birthDate = clientEntity
                 .getBirthdate()
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
                 .toLocalDate();
 
         LoanApplicationResponseDto loanApplicationResponseDto = LoanApplicationResponseDto
