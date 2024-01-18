@@ -1,5 +1,7 @@
 package com.neoflex.creditconveyer.dossier.config;
 
+import com.neoflex.creditconveyer.dossier.util.ConfigUtils;
+import com.neoflex.creditconveyer.dossier.util.SecretConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +20,8 @@ public class MailConfig {
     private Integer port;
     @Value("${mail.email}")
     private String email;
-    @Value("${mail.password}")
-    private String password;
+//    @Value("${mail.password}")
+//    private String password;
 
     @Bean
     public JavaMailSender mailSender() throws IOException {
@@ -27,7 +29,7 @@ public class MailConfig {
         mailSender.setHost(host);
         mailSender.setPort(port);
         mailSender.setUsername(email);
-        mailSender.setPassword(password);
+//        mailSender.setPassword(password);
 
         Properties properties = new Properties();
         properties.put("mail.transport.protocol", "smtp");

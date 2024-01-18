@@ -44,3 +44,4 @@ secrets.yml
 application.yaml
 application.conf
 hosts.dat
+secrets*
