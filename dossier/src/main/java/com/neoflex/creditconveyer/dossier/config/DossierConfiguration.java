@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 
 @Configuration
 @RequiredArgsConstructor
-public class DossierConfig {
+public class DossierConfiguration {
 
     private final DossierService dossierService;
 

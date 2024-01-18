@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.dossier.config;
 
-import com.neoflex.creditconveyer.dossier.util.ConfigUtils;
+import com.neoflex.creditconveyer.dossier.util.MailConfig;
 import com.neoflex.creditconveyer.dossier.util.SecretConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
-public class MailConfig {
+public class MailConfiguration {
 
     @Value("${mail.host}")
     private String host;
@@ -20,8 +20,6 @@ public class MailConfig {
     private Integer port;
     @Value("${mail.email}")
     private String email;
-//    @Value("${mail.password}")
-//    private String password;
 
     @Bean
     public JavaMailSender mailSender() throws IOException {
@@ -29,13 +27,13 @@ public class MailConfig {
         mailSender.setHost(host);
         mailSender.setPort(port);
         mailSender.setUsername(email);
-//        mailSender.setPassword(password);
+        mailSender.setPassword(SecretConfig.getMailPasswordConfig());
 
         Properties properties = new Properties();
-        properties.put("mail.transport.protocol", "smtp");
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.debug", "true");
+        properties.put(MailConfig.MAIL_TRANSPORT_PROTOCOL_CONFIG, "smtp");
+        properties.put(MailConfig.MAIL_SMTP_AUTH_CONFIG, "true");
+        properties.put(MailConfig.MAIL_SMTP_STARTTLS_ENABLE_CONFIG, "true");
+        properties.put(MailConfig.MAIL_DEBUG_CONFIG, "true");
 
         mailSender.setJavaMailProperties(properties);
         return mailSender;

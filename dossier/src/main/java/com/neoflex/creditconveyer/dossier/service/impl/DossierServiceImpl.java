@@ -13,6 +13,7 @@ import com.neoflex.creditconveyer.dossier.service.DossierService;
 import com.neoflex.creditconveyer.dossier.service.EmailSender;
 import com.neoflex.creditconveyer.dossier.service.FileWorker;
 import com.neoflex.creditconveyer.dossier.util.ConfigUtils;
+import com.neoflex.creditconveyer.dossier.util.SecretConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.schmizz.sshj.SSHClient;
@@ -38,17 +39,13 @@ import java.util.Set;
 public class DossierServiceImpl implements DossierService {
 
     @Value("${mail.email}")
-    private String email;
+    private String EMAIL_CONFIG;
     @Value("${sftp.locationFiles}")
-    private String locationFiles;
+    private String LOCATION_FILES_CONFIG;
     @Value("${sftp.host}")
-    private String sftpHost;
-    @Value("${sftp.user}")
-    private String sftpUser;
-    @Value("${sftp.password}")
-    private String sftpPassword;
+    private String SFTP_HOST_CONFIG;
     @Value("${sftp.sshHostsFileName}")
-    private String sshHostsFileName;
+    private String SSH_HOSTS_FILE_NAME_CONFIG;
 
     private final EmailSender emailSender;
     private final FileWorker fileWorker;
@@ -123,9 +120,9 @@ public class DossierServiceImpl implements DossierService {
             SSHClient sshClient = connectSshClient();
             StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
 
-            RemoteFile remoteLoanFile = statefulSFTPClient.open(locationFiles + "/" + documentEntity.getLoanAgreementName(), Set.of(OpenMode.READ));
-            RemoteFile remoteQuestionnaireFile = statefulSFTPClient.open(locationFiles + "/" + documentEntity.getQuestionnaireName(), Set.of(OpenMode.READ));
-            RemoteFile remotePaymentScheduleFile = statefulSFTPClient.open(locationFiles + "/" + documentEntity.getLoanAgreementName(), Set.of(OpenMode.READ));
+            RemoteFile remoteLoanFile = statefulSFTPClient.open(LOCATION_FILES_CONFIG + "/" + documentEntity.getLoanAgreementName(), Set.of(OpenMode.READ));
+            RemoteFile remoteQuestionnaireFile = statefulSFTPClient.open(LOCATION_FILES_CONFIG + "/" + documentEntity.getQuestionnaireName(), Set.of(OpenMode.READ));
+            RemoteFile remotePaymentScheduleFile = statefulSFTPClient.open(LOCATION_FILES_CONFIG + "/" + documentEntity.getLoanAgreementName(), Set.of(OpenMode.READ));
             try (InputStream loanInputStream = remoteLoanFile.new RemoteFileInputStream();
                  InputStream questionnaireInputStream = remoteQuestionnaireFile.new RemoteFileInputStream();
                  InputStream paymentScheduleInputStream = remotePaymentScheduleFile.new RemoteFileInputStream()) {
@@ -198,9 +195,9 @@ public class DossierServiceImpl implements DossierService {
 
         SSHClient sshClient = new SSHClient();
         try {
-            sshClient.loadKnownHosts(new File(sshHostsFileName));
-            sshClient.connect(sftpHost);
-            sshClient.authPassword(sftpUser, sftpPassword);
+            sshClient.loadKnownHosts(new File(SSH_HOSTS_FILE_NAME_CONFIG));
+            sshClient.connect(SFTP_HOST_CONFIG);
+            sshClient.authPassword(SecretConfig.getSftpUserConfig(), SecretConfig.getSftpPasswordConfig());
         } catch (IOException e) {
             log.error("Output error. Exception loading hosts");
             throw new RuntimeException(e);
@@ -217,7 +214,7 @@ public class DossierServiceImpl implements DossierService {
         try {
             SFTPEngine sftpEngine = new SFTPEngine(sshClient).init();
             statefulSFTPClient = new StatefulSFTPClient(sftpEngine);
-            statefulSFTPClient.cd(locationFiles);
+            statefulSFTPClient.cd(LOCATION_FILES_CONFIG);
         } catch (IOException e) {
             log.error("Error in createSftpClient");
             throw new RuntimeException(e);
