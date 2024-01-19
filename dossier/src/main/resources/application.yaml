@@ -1,0 +1,57 @@
+server:
+  port: 8083
+
+spring:
+  cloud:
+    function:
+      definition: consumerFinishRegistrationBinding;consumerCreateDocumentsBinding;consumerSendDocumentsBinding;consumerSendSesCodeBinding;consumerSendIssuedCreditBinding;consumerApplicationDeniedBinding
+    stream:
+      bindings:
+        consumerFinishRegistrationBinding-in-0:
+          destination: finish-registration
+          group: dossier-ms-group
+        consumerCreateDocumentsBinding-in-0:
+          destination: create-documents
+          group: dossier-ms-group
+        consumerSendDocumentsBinding-in-0:
+          destination: send-documents
+        consumerSendSesCodeBinding-in-0:
+          destination: send-ses
+        consumerSendIssuedCreditBinding-in-0:
+          destination: credit-issued
+        consumerApplicationDeniedBinding-in-0:
+          destination: application-denied
+    kafka:
+      binder:
+        brokers: localhost:9092
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/dossier
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate.ddl-auto: validate
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yaml
+
+dealService:
+  hostPort: http://localhost:8081
+
+mail:
+  host: smtp.gmail.com
+  port: 587
+  email: ivannikovvasiliya@gmail.com
+
+sftp:
+  host: 172.18.9.135
+  port: 22
+  locationFiles: /var/sftp/Files
+  sshHostsFileName: hosts.dat
+
+logging:
+  level:
+    com.neoflex.creditconveyer.dossier: DEBUG
