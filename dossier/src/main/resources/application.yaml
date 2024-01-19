@@ -15,12 +15,17 @@ spring:
           group: dossier-ms-group
         consumerSendDocumentsBinding-in-0:
           destination: send-documents
+          group: dossier-ms-group
         consumerSendSesCodeBinding-in-0:
           destination: send-ses
+          group: dossier-ms-group
         consumerSendIssuedCreditBinding-in-0:
           destination: credit-issued
+          group: dossier-ms-group
         consumerApplicationDeniedBinding-in-0:
           destination: application-denied
+          group: dossier-ms-group
+
     kafka:
       binder:
         brokers: localhost:9092
