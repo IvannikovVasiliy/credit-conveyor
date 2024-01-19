@@ -12,6 +12,7 @@ import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
 import com.neoflex.creditconveyer.deal.domain.jsonb.EmploymentJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
+import com.neoflex.creditconveyer.deal.error.exception.KafkaMessageNotSentException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.feign.FeignService;
 import com.neoflex.creditconveyer.deal.kafka.producer.EmailProducer;
@@ -43,7 +44,8 @@ public class DealSenderEmailServiceImpl implements DealService {
     private final ClientRepository clientRepository;
     private final ApplicationRepository applicationRepository;
     private final CreditRepository creditRepository;
-    @Qualifier("sourceMapperImplementation") private final SourceMapper sourceMapper;
+    @Qualifier("sourceMapperImplementation")
+    private final SourceMapper sourceMapper;
     private final EmailProducer emailProducer;
     private final TransactionService transactionService;
 
@@ -92,7 +94,7 @@ public class DealSenderEmailServiceImpl implements DealService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     public void finishRegistrationAndCalcAmountCredit(Long applicationId, FinishRegistrationRequestDTO finishRegistration) {
         log.debug("Request finishRegistrationAndCalcAmountCredit. applicationId={}, finishRegistration={ gender: {}, martialStatus: {}, dependentAmount: {}, passportIssueDate: {}, passportIssueBranch: {}, employment: { employmentStatus: [}, employerINN: {}, salary: {}, position: {}, workExperienceTotal: {}, workExperienceCurrent: {} } }",
                 applicationId, finishRegistration.getGender(), finishRegistration.getMaritalStatus(), finishRegistration.getDependentAmount(), finishRegistration.getPassportIssueDate(), finishRegistration.getPassportIssueBranch(), finishRegistration.getEmployment().getEmploymentStatus(), finishRegistration.getEmployment().getEmployerINN(), finishRegistration.getEmployment().getPosition(), finishRegistration.getEmployment().getWorkExperienceTotal(), finishRegistration.getEmployment().getWorkExperienceCurrent());
@@ -138,9 +140,9 @@ public class DealSenderEmailServiceImpl implements DealService {
         application.setStatus(ApplicationStatus.CC_APPROVED);
         application.setStatusHistory(statusHistories);
 
-        clientRepository.save(clientEntity);
-        applicationRepository.save(application);
-        creditRepository.save(creditEntity);
+//        clientRepository.save(clientEntity);
+//        applicationRepository.save(application);
+//        creditRepository.save(creditEntity);
 
         ClientEntity client = application.getClient();
         InformationEmailMessage informationEmailMessage = InformationEmailMessage

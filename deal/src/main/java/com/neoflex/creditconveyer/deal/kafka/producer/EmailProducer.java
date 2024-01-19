@@ -3,6 +3,7 @@ package com.neoflex.creditconveyer.deal.kafka.producer;
 import com.neoflex.creditconveyer.deal.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
+import com.neoflex.creditconveyer.deal.error.exception.KafkaMessageNotSentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -38,15 +39,16 @@ public class EmailProducer {
         CompletableFuture<SendResult<Long, InformationEmailMessage>> future =
                 creditEmailKafkaTemplate.send(TOPIC, emailMessage.getApplicationId(), emailMessage);
 
-//        future.whenCompleteAsync((result, exception) -> {
-//            if (null != exception) {
-//                log.error("error. Unable to send message with key={} message={ address: {}, theme: {}, applicationId: {}, credit: {} } due to : {}",
-//                        emailMessage.getApplicationId(), emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), exception.getMessage());
-//            } else {
-//                log.info("Sent message={ address: {}, theme: {}, applicationId: {}, credit: {} } with offset=={}",
-//                        emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), result.getRecordMetadata().offset());
-//            }
-//        });
+        future.whenCompleteAsync((result, exception) -> {
+            if (null != exception) {
+                log.error("error. Unable to send message with key={} message={ address: {}, theme: {}, applicationId: {}, credit: {} } due to : {}",
+                        emailMessage.getApplicationId(), emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), exception.getMessage());
+                throw new KafkaMessageNotSentException(String.format("Unable to send message with applicationId=%d", emailMessage.getApplicationId()));
+            } else {
+                log.info("Sent message={ address: {}, theme: {}, applicationId: {}, credit: {} } with offset=={}",
+                        emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), result.getRecordMetadata().offset());
+            }
+        });
     }
 
     public void sendSesCodeEmailMessage(final String TOPIC, SesEmailMessage emailMessage) {
