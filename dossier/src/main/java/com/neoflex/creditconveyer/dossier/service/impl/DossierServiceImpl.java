@@ -74,10 +74,8 @@ public class DossierServiceImpl implements DossierService {
         log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} client={ lastName: {}, firstName: {}, middleName: {}, birthdate: {}, email: {},  martialStatus: {},  dependentAmount: {}, passport: {}, employment: {},  account: {} }; application: { status: {} creationDate: {},  appliedOffer: {},  statusHistory: {} }; credit: { amount: {}, term: {}, monthlyPayment: {}, rate: {}, psk: {}, paymentSchedule: {}, insuranceEnable: {}, salaryClient: {}, creditStatus: {} } }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getClient().getLastName(), emailMessage.getClient().getFirstName(), emailMessage.getClient().getMiddleName(), emailMessage.getClient().getBirthdate(), emailMessage.getClient().getEmail(), emailMessage.getClient().getMartialStatus(), emailMessage.getClient().getDependentAmount(), emailMessage.getClient().getPassport(), emailMessage.getClient().getEmployment(), emailMessage.getClient().getAccount(), emailMessage.getApplication().getStatus(), emailMessage.getApplication().getCreationDate(), emailMessage.getApplication().getAppliedOffer(), emailMessage.getApplication().getStatusHistory(), emailMessage.getCredit().getAmount(), emailMessage.getCredit().getTerm(), emailMessage.getCredit().getMonthlyPayment(), emailMessage.getCredit().getRate(), emailMessage.getCredit().getPsk(), emailMessage.getCredit().getPaymentSchedule(), emailMessage.getCredit().getInsuranceEnable(), emailMessage.getCredit().getSalaryClient(), emailMessage.getCredit().getCreditStatus());
 
-
-
-//        SSHClient sshClient = connectSshClient();
-//        StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
+        SSHClient sshClient = connectSshClient();
+        StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
 //
 //        DocumentModel loanAgreementDocument = documentService.createLoanAgreement(emailMessage.getApplicationId(), emailMessage.getClient(), emailMessage.getApplication(), emailMessage.getCredit());
 //        fileWorker.writeFileInRemoteServer(statefulSFTPClient, loanAgreementDocument.getFileName(), loanAgreementDocument.getFileText());

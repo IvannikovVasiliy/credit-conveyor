@@ -6,6 +6,8 @@ spring:
     function:
       definition: consumerFinishRegistrationBinding;consumerCreateDocumentsBinding;consumerSendDocumentsBinding;consumerSendSesCodeBinding;consumerSendIssuedCreditBinding;consumerApplicationDeniedBinding
     stream:
+      default:
+        autoCommitOffset: false
       bindings:
         consumerFinishRegistrationBinding-in-0:
           destination: finish-registration
