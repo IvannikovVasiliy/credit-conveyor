@@ -25,7 +25,7 @@ public class DossierConfiguration {
     @Bean
     public Consumer<InformationEmailMessage> consumerCreateDocumentsBinding() {
         return emailMessage ->
-                dossierService.createDocuments(emailMessage);
+            dossierService.createDocuments(emailMessage);
     }
 
     @Bean
