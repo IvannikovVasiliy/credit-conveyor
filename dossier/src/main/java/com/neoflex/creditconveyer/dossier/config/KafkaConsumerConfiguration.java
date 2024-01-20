@@ -22,25 +22,23 @@ public class KafkaConsumerConfiguration {
 
     @Value("${kafka.bootstrap-server}")
     private String BOOTSTRAP_SERVER;
-    @Value("${kafka.dossier-ms-group}")
+    @Value("${kafka.group-id}")
     private String DOSSIER_GROUP;
 
     @Bean
     public ConsumerFactory<String, InformationEmailMessage> createDocumentConsumerFactory() {
 //        Properties properties = new Properties();
-//        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
-//        properties.put(ConsumerConfig.GROUP_ID_CONFIG, DOSSIER_GROUP);
-//        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-
         Map<String, Object> properties = new HashMap<>();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, DOSSIER_GROUP);
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        properties.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 
-        return new DefaultKafkaConsumerFactory<>(properties);
+        return new DefaultKafkaConsumerFactory<>(
+                properties, new StringDeserializer(), new JsonDeserializer<>(InformationEmailMessage.class, false)
+        );
     }
 
     @Bean
