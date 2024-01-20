@@ -2,48 +2,21 @@ server:
   port: 8083
 
 spring:
-  cloud:
-    function:
-      definition: consumerFinishRegistrationBinding;consumerCreateDocumentsBinding;consumerSendDocumentsBinding;consumerSendSesCodeBinding;consumerSendIssuedCreditBinding;consumerApplicationDeniedBinding
-    stream:
-      default:
-        autoCommitOffset: false
-      bindings:
-        consumerFinishRegistrationBinding-in-0:
-          destination: finish-registration
-          group: dossier-ms-group
-        consumerCreateDocumentsBinding-in-0:
-          destination: create-documents
-          group: dossier-ms-group
-        consumerSendDocumentsBinding-in-0:
-          destination: send-documents
-          group: dossier-ms-group
-        consumerSendSesCodeBinding-in-0:
-          destination: send-ses
-          group: dossier-ms-group
-        consumerSendIssuedCreditBinding-in-0:
-          destination: credit-issued
-          group: dossier-ms-group
-        consumerApplicationDeniedBinding-in-0:
-          destination: application-denied
-          group: dossier-ms-group
-
-    kafka:
-      binder:
-        brokers: localhost:9092
-
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/dossier
     username: postgres
     password: postgres
-
   jpa:
     hibernate.ddl-auto: validate
     show-sql: true
-
   liquibase:
     change-log: classpath:db/changelog/changelog-master.yaml
+
+kafka:
+  group-id: dossier-ms-group
+  topics:
+    create-documents-topic: create-documents
 
 dealService:
   hostPort: http://localhost:8081
