@@ -99,6 +99,7 @@ public class DossierServiceImpl implements DossierService {
 //                emailMessage.getTheme().name(),
 //                ConfigUtils.getTextCreateDocuments().replace("%applicationId%", emailMessage.getApplicationId().toString())
 //        );
+        // а что если сообщение не отправится?
 //        emailSender.sendMail(customEmailMessage);
 //
 //        log.debug("Output createDocuments for applicationId={}", emailMessage.getApplicationId());

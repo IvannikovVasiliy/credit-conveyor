@@ -14,9 +14,12 @@ spring:
     change-log: classpath:db/changelog/changelog-master.yaml
 
 kafka:
+  bootstrap-server: localhost:9092
   group-id: dossier-ms-group
   topics:
-    create-documents-topic: create-documents
+    create-documents-topic:
+      name: create-documents
+      count-consumers: 3
 
 dealService:
   hostPort: http://localhost:8081

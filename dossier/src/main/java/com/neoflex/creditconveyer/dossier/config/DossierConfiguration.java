@@ -5,9 +5,12 @@ import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 @Configuration
@@ -15,7 +18,15 @@ import java.util.function.Consumer;
 public class DossierConfiguration {
 
 //    private final DossierService dossierService;
-//
+
+    @Value("${kafka.topics.create-documents-topic.count-consumers}")
+    private Integer COUNT_CONSUMERS_CREATE_DOCUMENTS;
+
+    @Bean
+    public ExecutorService createDocumentsKafkaConsumerExecutorService() {
+        return Executors.newFixedThreadPool(COUNT_CONSUMERS_CREATE_DOCUMENTS);
+    }
+
 //    @Bean
 //    public Consumer<EmailMessage> consumerFinishRegistrationBinding() {
 //        return emailMessage ->
