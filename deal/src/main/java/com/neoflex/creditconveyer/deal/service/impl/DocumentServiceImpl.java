@@ -47,7 +47,7 @@ public class DocumentServiceImpl implements DocumentService {
                 .theme(Theme.SEND_DOCUMENTS)
                 .applicationId(applicationId)
                 .build();
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_SEND_DOCUMENTS, emailMessage);
+        emailProducer.sendEmailMessage(TopicConstants.TOPIC_SEND_DOCUMENTS, client.getId().toString(), emailMessage);
 
         log.debug("Output sendDocuments. Successfully");
     }
@@ -71,7 +71,9 @@ public class DocumentServiceImpl implements DocumentService {
                 .theme(Theme.SIGN_DOCUMENTS)
                 .applicationId(applicationId)
                 .build();
-        emailProducer.sendSesCodeEmailMessage(TopicConstants.TOPIC_SIGN_DOCUMENTS, sesEmailMessage);
+
+        String clientIdString = application.getClient().getId().toString();
+        emailProducer.sendSesCodeEmailMessage(TopicConstants.TOPIC_SIGN_DOCUMENTS, clientIdString, sesEmailMessage);
 
         log.debug("Output signDocuments. Success");
     }
@@ -96,7 +98,8 @@ public class DocumentServiceImpl implements DocumentService {
                 .theme(Theme.CREDIT_ISSUED)
                 .applicationId(applicationId)
                 .build();
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_CREDIT_ISSUED, emailMessage);
+        String clientIdString = application.getClient().getId().toString();
+        emailProducer.sendEmailMessage(TopicConstants.TOPIC_CREDIT_ISSUED, clientIdString, emailMessage);
 
         log.debug("Output issuedCredit. sesCode: {}", verifyCodeDTO.getSesCode());
     }

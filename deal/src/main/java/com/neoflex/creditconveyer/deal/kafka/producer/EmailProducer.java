@@ -17,12 +17,12 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class EmailProducer {
 
-    private final KafkaTemplate<Long, EmailMessage> emailKafkaTemplate;
-    private final KafkaTemplate<Long, InformationEmailMessage> creditEmailKafkaTemplate;
-    private final KafkaTemplate<Long, SesEmailMessage> sesEmailKafkaTemplate;
+    private final KafkaTemplate<String, EmailMessage> emailKafkaTemplate;
+    private final KafkaTemplate<String, InformationEmailMessage> creditEmailKafkaTemplate;
+    private final KafkaTemplate<String, SesEmailMessage> sesEmailKafkaTemplate;
 
-    public void sendEmailMessage(final String TOPIC, EmailMessage emailMessage) {
-        CompletableFuture<SendResult<Long, EmailMessage>> future = emailKafkaTemplate.send(TOPIC, emailMessage.getApplicationId(), emailMessage);
+    public void sendEmailMessage(final String TOPIC, String key, EmailMessage emailMessage) {
+        CompletableFuture<SendResult<String, EmailMessage>> future = emailKafkaTemplate.send(TOPIC, key, emailMessage);
 
         future.whenCompleteAsync((result, exception) -> {
             if (null != exception) {
@@ -35,9 +35,9 @@ public class EmailProducer {
         });
     }
 
-    public void sendCreditEmailMessage(final String TOPIC, InformationEmailMessage emailMessage) {
-        CompletableFuture<SendResult<Long, InformationEmailMessage>> future =
-                creditEmailKafkaTemplate.send(TOPIC, emailMessage.getApplicationId(), emailMessage);
+    public void sendCreditEmailMessage(final String TOPIC, String key, InformationEmailMessage emailMessage) {
+        CompletableFuture<SendResult<String, InformationEmailMessage>> future =
+                creditEmailKafkaTemplate.send(TOPIC, key, emailMessage);
 
         future.whenCompleteAsync((result, exception) -> {
             if (null != exception) {
@@ -51,9 +51,9 @@ public class EmailProducer {
         });
     }
 
-    public void sendSesCodeEmailMessage(final String TOPIC, SesEmailMessage emailMessage) {
-        CompletableFuture<SendResult<Long, SesEmailMessage>> future =
-                sesEmailKafkaTemplate.send(TOPIC, emailMessage.getApplicationId(), emailMessage);
+    public void sendSesCodeEmailMessage(final String TOPIC, String key, SesEmailMessage emailMessage) {
+        CompletableFuture<SendResult<String, SesEmailMessage>> future =
+                sesEmailKafkaTemplate.send(TOPIC, key, emailMessage);
 
         future.whenCompleteAsync((result, exception) -> {
             if (null != exception) {

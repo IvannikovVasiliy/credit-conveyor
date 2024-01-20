@@ -88,7 +88,7 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .theme(Theme.FINISH_REGISTRATION)
                 .applicationId(application.getId())
                 .build();
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, emailMessage);
+        emailProducer.sendEmailMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, client.getId().toString(), emailMessage);
 
         log.info("Response chooseOffer");
     }
@@ -154,7 +154,7 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .application(sourceMapper.sourceToApplicationModel(application))
                 .credit(sourceMapper.sourceToCreditModel(creditEntity))
                 .build();
-        emailProducer.sendCreditEmailMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, informationEmailMessage);
+        emailProducer.sendCreditEmailMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, client.getId().toString(), informationEmailMessage);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");
     }
@@ -244,6 +244,8 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .theme(Theme.APPLICATION_DENIED)
                 .applicationId(application.getId())
                 .build();
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_APPLICATION_DENIED, emailMessage);
+        emailProducer.sendEmailMessage(
+                TopicConstants.TOPIC_APPLICATION_DENIED, clientEntity.getId().toString(), emailMessage
+        );
     }
 }
