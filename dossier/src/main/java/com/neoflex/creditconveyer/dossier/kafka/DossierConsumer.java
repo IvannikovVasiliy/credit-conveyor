@@ -36,7 +36,7 @@ public class DossierConsumer {
     public void createDocumentConsumer(ConsumerRecord<String, InformationEmailMessage> createDocumentRecord, Acknowledgment acknowledgment) {
         executorServiceCreateDocuments.submit(() -> {
             log.debug("consume message: offset={}, key={}", createDocumentRecord.offset(), createDocumentRecord.key());
-            dossierService.createDocuments(createDocumentRecord.value());
+            dossierService.createDocuments(createDocumentRecord.value(), acknowledgment);
 //            acknowledgment.acknowledge();
         });
     }

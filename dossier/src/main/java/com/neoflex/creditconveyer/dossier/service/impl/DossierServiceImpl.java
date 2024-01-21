@@ -5,7 +5,6 @@ import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.domain.model.CustomEmailMessage;
-import com.neoflex.creditconveyer.dossier.domain.model.DocumentModel;
 import com.neoflex.creditconveyer.dossier.feign.DealFeignService;
 import com.neoflex.creditconveyer.dossier.repository.DocumentRepository;
 import com.neoflex.creditconveyer.dossier.service.DocumentService;
@@ -24,6 +23,7 @@ import net.schmizz.sshj.sftp.StatefulSFTPClient;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +70,7 @@ public class DossierServiceImpl implements DossierService {
 
     @Override
     @Transactional
-    public void createDocuments(InformationEmailMessage emailMessage) {
+    public void createDocuments(InformationEmailMessage emailMessage, Acknowledgment acknowledgment) {
         log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} client={ lastName: {}, firstName: {}, middleName: {}, birthdate: {}, email: {},  martialStatus: {},  dependentAmount: {}, passport: {}, employment: {},  account: {} }; application: { status: {} creationDate: {},  appliedOffer: {},  statusHistory: {} }; credit: { amount: {}, term: {}, monthlyPayment: {}, rate: {}, psk: {}, paymentSchedule: {}, insuranceEnable: {}, salaryClient: {}, creditStatus: {} } }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getClient().getLastName(), emailMessage.getClient().getFirstName(), emailMessage.getClient().getMiddleName(), emailMessage.getClient().getBirthdate(), emailMessage.getClient().getEmail(), emailMessage.getClient().getMartialStatus(), emailMessage.getClient().getDependentAmount(), emailMessage.getClient().getPassport(), emailMessage.getClient().getEmployment(), emailMessage.getClient().getAccount(), emailMessage.getApplication().getStatus(), emailMessage.getApplication().getCreationDate(), emailMessage.getApplication().getAppliedOffer(), emailMessage.getApplication().getStatusHistory(), emailMessage.getCredit().getAmount(), emailMessage.getCredit().getTerm(), emailMessage.getCredit().getMonthlyPayment(), emailMessage.getCredit().getRate(), emailMessage.getCredit().getPsk(), emailMessage.getCredit().getPaymentSchedule(), emailMessage.getCredit().getInsuranceEnable(), emailMessage.getCredit().getSalaryClient(), emailMessage.getCredit().getCreditStatus());
 
