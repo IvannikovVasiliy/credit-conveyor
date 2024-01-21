@@ -7,6 +7,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ExecutorService;
@@ -32,10 +33,11 @@ public class DossierConsumer {
             groupId = "${kafka.group-id}",
             containerFactory = "createDocumentKafkaListener"
     )
-    public void createDocumentConsumer(ConsumerRecord<String, InformationEmailMessage> createDocumentRecord) {
+    public void createDocumentConsumer(ConsumerRecord<String, InformationEmailMessage> createDocumentRecord, Acknowledgment acknowledgment) {
         executorServiceCreateDocuments.submit(() -> {
             log.debug("consume message: offset={}, key={}", createDocumentRecord.offset(), createDocumentRecord.key());
             dossierService.createDocuments(createDocumentRecord.value());
+//            acknowledgment.acknowledge();
         });
     }
 }
