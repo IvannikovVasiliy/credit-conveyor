@@ -198,12 +198,43 @@ public class DossierServiceImpl implements DossierService {
         sshClient.setConnectTimeout(1_000);
         try {
             sshClient.loadKnownHosts(new File(SSH_HOSTS_FILE_NAME_CONFIG));
-            sshClient.connect(SFTP_HOST_CONFIG);
+//            sshClient.connect(SFTP_HOST_CONFIG);
+            sshClient.connect("112.18.9.131");
             sshClient.authPassword(SecretConfig.getSftpUserConfig(), SecretConfig.getSftpPasswordConfig());
         } catch (IOException e) {
             log.error("Output error. Exception loading hosts");
             throw new RuntimeException(e);
         }
+//
+//        SSHClient client = SSHClient.setUpDefaultClient();
+//        client.start();
+//
+//        try (ClientSession session = client.connect(username, host, port)
+//                .verify(defaultTimeoutSeconds, TimeUnit.SECONDS).getSession()) {
+//            session.addPasswordIdentity(password);
+//            session.auth().verify(defaultTimeoutSeconds, TimeUnit.SECONDS);
+//
+//            try (ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
+//                 ClientChannel channel = session.createChannel(Channel.CHANNEL_SHELL)) {
+//                channel.setOut(responseStream);
+//                try {
+//                    channel.open().verify(defaultTimeoutSeconds, TimeUnit.SECONDS);
+//                    try (OutputStream pipedIn = channel.getInvertedIn()) {
+//                        pipedIn.write(command.getBytes());
+//                        pipedIn.flush();
+//                    }
+//
+//                    channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED),
+//                            TimeUnit.SECONDS.toMillis(defaultTimeoutSeconds));
+//                    String responseString = new String(responseStream.toByteArray());
+//                    System.out.println(responseString);
+//                } finally {
+//                    channel.close(false);
+//                }
+//            }
+//        } finally {
+//            client.stop();
+//        }
 
         log.debug("Output. Success connect to SFTP-server");
         return sshClient;
