@@ -42,3 +42,4 @@ secrets.yml
 .idea
 application.yaml
 secrets*
+hosts.dat
