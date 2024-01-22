@@ -22,3 +22,9 @@ spring:
             - Path=/example/**
           filters:
             - RewritePath=/example/(?<path>.*), /$\{path}
+        - id: deal
+          uri: lb://deal
+          predicates:
+            - Path=/deal/**
+          filters:
+            - RewritePath=/deal/(?<path>.*), /$\{path}
