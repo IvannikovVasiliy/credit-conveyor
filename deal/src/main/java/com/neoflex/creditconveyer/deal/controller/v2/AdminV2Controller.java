@@ -1,6 +1,7 @@
 package com.neoflex.creditconveyer.deal.controller.v2;
 
 import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationResponseDto;
+import com.neoflex.creditconveyer.deal.http.HttpConfig;
 import com.neoflex.creditconveyer.deal.service.AdminService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AdminV2Controller {
 
         log.debug("Response loan-application by applicationId={}", applicationId);
 
-        return new ResponseEntity<>(loanApplicationResponseDto, headers, HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(loanApplicationResponseDto, headers, HttpStatusCode.valueOf(HttpConfig.STATUS_OK));
     }
 
     @PutMapping("/application/{applicationId}/status")

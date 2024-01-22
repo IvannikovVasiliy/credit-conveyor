@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Getter
+@Setter
 @Builder
 public class LoanApplicationResponseDto {
     private BigDecimal amount;
