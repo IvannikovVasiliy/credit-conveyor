@@ -17,15 +17,22 @@ import com.neoflex.creditconveyer.dossier.util.ConfigUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.sftp.OpenMode;
+import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.StatefulSFTPClient;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -68,7 +75,7 @@ public class DossierServiceImpl implements DossierService {
 
     @Override
     @Transactional
-    public void createDocuments(InformationEmailMessage emailMessage, Acknowledgment acknowledgment) {
+    public void createDocuments(InformationEmailMessage emailMessage) {
         log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} client={ lastName: {}, firstName: {}, middleName: {}, birthdate: {}, email: {},  martialStatus: {},  dependentAmount: {}, passport: {}, employment: {},  account: {} }; application: { status: {} creationDate: {},  appliedOffer: {},  statusHistory: {} }; credit: { amount: {}, term: {}, monthlyPayment: {}, rate: {}, psk: {}, paymentSchedule: {}, insuranceEnable: {}, salaryClient: {}, creditStatus: {} } }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getClient().getLastName(), emailMessage.getClient().getFirstName(), emailMessage.getClient().getMiddleName(), emailMessage.getClient().getBirthdate(), emailMessage.getClient().getEmail(), emailMessage.getClient().getMartialStatus(), emailMessage.getClient().getDependentAmount(), emailMessage.getClient().getPassport(), emailMessage.getClient().getEmployment(), emailMessage.getClient().getAccount(), emailMessage.getApplication().getStatus(), emailMessage.getApplication().getCreationDate(), emailMessage.getApplication().getAppliedOffer(), emailMessage.getApplication().getStatusHistory(), emailMessage.getCredit().getAmount(), emailMessage.getCredit().getTerm(), emailMessage.getCredit().getMonthlyPayment(), emailMessage.getCredit().getRate(), emailMessage.getCredit().getPsk(), emailMessage.getCredit().getPaymentSchedule(), emailMessage.getCredit().getInsuranceEnable(), emailMessage.getCredit().getSalaryClient(), emailMessage.getCredit().getCreditStatus());
 
@@ -121,33 +128,33 @@ public class DossierServiceImpl implements DossierService {
                 .findById(emailMessage.getApplicationId())
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", emailMessage.getApplicationId())));
 
-//        try {
+        try {
 //            SSHClient sshClient = connectSshClient();
-//            StatefulSFTPClient statefulSFTPClient = createSftpClient(sshClient);
-//
-//            RemoteFile remoteLoanFile = statefulSFTPClient.open(LOCATION_FILES_CONFIG + "/" + documentEntity.getLoanAgreementName(), Set.of(OpenMode.READ));
-//            RemoteFile remoteQuestionnaireFile = statefulSFTPClient.open(LOCATION_FILES_CONFIG + "/" + documentEntity.getQuestionnaireName(), Set.of(OpenMode.READ));
-//            RemoteFile remotePaymentScheduleFile = statefulSFTPClient.open(LOCATION_FILES_CONFIG + "/" + documentEntity.getLoanAgreementName(), Set.of(OpenMode.READ));
-//            try (InputStream loanInputStream = remoteLoanFile.new RemoteFileInputStream();
-//                 InputStream questionnaireInputStream = remoteQuestionnaireFile.new RemoteFileInputStream();
-//                 InputStream paymentScheduleInputStream = remotePaymentScheduleFile.new RemoteFileInputStream()) {
-//                CustomEmailMessage customEmailMessage = new CustomEmailMessage(
-//                        emailMessage.getAddress(),
-//                        emailMessage.getTheme().name(),
-//                        ConfigUtils.getTextCreateDocuments().replace("%applicationId%", emailMessage.getApplicationId().toString())
-//                );
-//                Map<String, ByteArrayResource> files = Map.of(
-//                    "Loan agreement.txt", new ByteArrayResource(loanInputStream.readAllBytes()),
-//                    "Questionnaire.txt", new ByteArrayResource(questionnaireInputStream.readAllBytes()),
-//                    "Payment schedule.txt", new ByteArrayResource(paymentScheduleInputStream.readAllBytes())
-//                );
-//                emailSender.sendMimeMail(customEmailMessage, files);
-//            }
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        log.debug("Output sendDocuments for applicationId={}", emailMessage.getApplicationId());
+            StatefulSFTPClient statefulSFTPClient = sftpFactory.getStatefulSFTPClient();
+
+            RemoteFile remoteLoanFile = statefulSFTPClient.open(LOCATION_FILES_CONFIG + "/" + documentEntity.getLoanAgreementName(), Set.of(OpenMode.READ));
+            RemoteFile remoteQuestionnaireFile = statefulSFTPClient.open(LOCATION_FILES_CONFIG + "/" + documentEntity.getQuestionnaireName(), Set.of(OpenMode.READ));
+            RemoteFile remotePaymentScheduleFile = statefulSFTPClient.open(LOCATION_FILES_CONFIG + "/" + documentEntity.getLoanAgreementName(), Set.of(OpenMode.READ));
+            try (InputStream loanInputStream = remoteLoanFile.new RemoteFileInputStream();
+                 InputStream questionnaireInputStream = remoteQuestionnaireFile.new RemoteFileInputStream();
+                 InputStream paymentScheduleInputStream = remotePaymentScheduleFile.new RemoteFileInputStream()) {
+                CustomEmailMessage customEmailMessage = new CustomEmailMessage(
+                        emailMessage.getAddress(),
+                        emailMessage.getTheme().name(),
+                        ConfigUtils.getTextCreateDocuments().replace("%applicationId%", emailMessage.getApplicationId().toString())
+                );
+                Map<String, ByteArrayResource> files = Map.of(
+                    "Loan agreement.txt", new ByteArrayResource(loanInputStream.readAllBytes()),
+                    "Questionnaire.txt", new ByteArrayResource(questionnaireInputStream.readAllBytes()),
+                    "Payment schedule.txt", new ByteArrayResource(paymentScheduleInputStream.readAllBytes())
+                );
+                emailSender.sendMimeMail(customEmailMessage, files);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        log.debug("Output sendDocuments for applicationId={}", emailMessage.getApplicationId());
     }
 
     @Override

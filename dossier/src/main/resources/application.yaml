@@ -20,6 +20,9 @@ kafka:
     create-documents-topic:
       name: create-documents
       count-consumers: 3
+    send-documents-topic:
+      name: send-documents
+      count-consumers: 3
 
 dealService:
   hostPort: http://localhost:8081

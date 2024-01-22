@@ -28,6 +28,8 @@ public class DossierConfiguration {
 
     @Value("${kafka.topics.create-documents-topic.count-consumers}")
     private Integer COUNT_CONSUMERS_CREATE_DOCUMENTS;
+    @Value("${kafka.topics.send-documents-topic.count-consumers}")
+    private Integer COUNT_CONSUMERS_SEND_DOCUMENTS;
     @Value("${sftp.connectionTimeout}")
     private Integer CONNECTION_TIMEOUT_SFTP;
     @Value("${sftp.host}")
@@ -44,6 +46,11 @@ public class DossierConfiguration {
     @Bean
     public ExecutorService createDocumentsKafkaConsumerExecutorService() {
         return Executors.newFixedThreadPool(COUNT_CONSUMERS_CREATE_DOCUMENTS);
+    }
+
+    @Bean
+    public ExecutorService sendDocumentsKafkaConsumerExecutorService() {
+        return Executors.newFixedThreadPool(COUNT_CONSUMERS_SEND_DOCUMENTS);
     }
 
     @Bean

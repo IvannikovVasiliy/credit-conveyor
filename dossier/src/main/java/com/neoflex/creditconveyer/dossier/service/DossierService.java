@@ -7,7 +7,7 @@ import org.springframework.kafka.support.Acknowledgment;
 
 public interface DossierService {
     void finishRegistration(EmailMessage emailMessage);
-    void createDocuments(InformationEmailMessage emailMessage, Acknowledgment acknowledgment);
+    void createDocuments(InformationEmailMessage emailMessage);
     void sendDocuments(EmailMessage emailMessage);
     void sendSesCode(SesEmailMessage sesEmailMessage);
     void sendIssuedCreditEmail(EmailMessage sesEmailMessage);
