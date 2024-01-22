@@ -32,7 +32,7 @@ mail:
 sftp:
   host: 172.18.9.134
   port: 22
-  locationFiles: /var/sftp/Files
+  locationFiles: /home/ubuntu/dossier/sftp/files #/var/sftp/Files
   connectionTimeout: 1_000
   sshClientPool: 16
   statefulSftpClientPool: 128
