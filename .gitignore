@@ -36,9 +36,7 @@ out
 overridedb.*
 target
 .flattened-pom.xml
-secrets.conf
 .gradletasknamecache
 .sts4-cache
 .idea
-
 secrets*
