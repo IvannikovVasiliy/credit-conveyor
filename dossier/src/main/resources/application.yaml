@@ -30,10 +30,12 @@ mail:
   email: ivannikovvasiliya@gmail.com
 
 sftp:
-  host: 172.18.9.135
+  host: 172.18.9.134
   port: 22
   locationFiles: /var/sftp/Files
-  sshHostsFileName: hosts.dat
+  connectionTimeout: 1_000
+  sshClientPool: 16
+  statefulSftpClientPool: 128
 
 logging:
   level:
