@@ -1,0 +1,14 @@
+#server:
+#  port: 8761
+#eureka:
+#  server:
+#    enable-self-preservation: false
+#  client:
+#    register-with-eureka: false
+#    fetch-registry: false
+
+spring:
+  application:
+    name: discovery
+  config:
+    import: "optional:configserver:http://localhost:8888"
