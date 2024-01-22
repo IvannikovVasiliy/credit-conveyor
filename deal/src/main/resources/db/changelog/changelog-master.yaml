@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - preConditions:
+      - dbms:
+          type: postgresql
+  - changeSet:
+      id: 0
+      author: vivannikov
+      changes:
+        - tagDatabase:
+            tag: db_init
+  - include:
+      file: v-1.0/changelog-v.1.0.yaml
+      relativeToChangelogFile: true
+  - changeSet:
+      id: 1
+      author: vivannikov
+      changes:
+        - tagDatabase:
+            tag: v.1.0

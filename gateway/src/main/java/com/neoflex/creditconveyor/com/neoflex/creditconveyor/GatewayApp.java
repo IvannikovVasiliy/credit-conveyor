@@ -17,15 +17,15 @@ public class GatewayApp {
         SpringApplication.run(GatewayApp.class, args);
     }
 
-//    @Bean
-//    public RouteLocator routeLocator(RouteLocatorBuilder routeLocatorBuilder) {
-//        return routeLocatorBuilder
-//                .routes()
-//                .route(route -> route
-//                        .path("/deal/**")
-//                        .uri("http://localhost:8081")
-//
-//                )
-//                .build();
-//    }
+    @Bean
+    public RouteLocator routeLocator(RouteLocatorBuilder routeLocatorBuilder) {
+        return routeLocatorBuilder
+                .routes()
+                .route(route -> route
+                        .path("/deal/**")
+                        .uri("http://localhost:8081/v2/deal/admin/application/2")
+
+                )
+                .build();
+    }
 }
