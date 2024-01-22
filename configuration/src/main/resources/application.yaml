@@ -1,0 +1,18 @@
+server:
+  port: 8888
+
+spring:
+  profiles:
+    active: native
+#  application:
+#    name: proxy
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: application-route
+#          uri: ${APPLICATION_ROUTE_URI:http://localhost:8080}
+#          predicates:
+#            - Path=/home/**
+#          filters:
+#            - PrefixPath=/home
+#            - AddResponseHeader=X-Powered-By,DanSON Gateway Service
