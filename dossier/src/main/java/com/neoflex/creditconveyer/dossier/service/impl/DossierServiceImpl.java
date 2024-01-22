@@ -1,8 +1,8 @@
 package com.neoflex.creditconveyer.dossier.service.impl;
 
-import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessageDto;
 import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
-import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessageDto;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.domain.model.CustomEmailMessage;
 import com.neoflex.creditconveyer.dossier.domain.model.DocumentModel;
@@ -23,7 +23,6 @@ import net.schmizz.sshj.sftp.StatefulSFTPClient;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,18 +58,18 @@ public class DossierServiceImpl implements DossierService {
     private Random random = new Random();
 
     @Override
-    public void finishRegistration(EmailMessage emailMessage) {
+    public void finishRegistration(EmailMessageDto emailMessageDto) {
         log.debug("Input finishRegistration. emailMessage={ address: {}, theme: {}, applicationId: {} }",
-                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
+                emailMessageDto.getAddress(), emailMessageDto.getTheme(), emailMessageDto.getApplicationId());
 
         CustomEmailMessage customEmailMessage = new CustomEmailMessage(
-                emailMessage.getAddress(),
-                emailMessage.getTheme().name(),
-                ConfigUtils.getTextFinishRegistration().replace("%applicationId%", emailMessage.getApplicationId().toString())
+                emailMessageDto.getAddress(),
+                emailMessageDto.getTheme().name(),
+                ConfigUtils.getTextFinishRegistration().replace("%applicationId%", emailMessageDto.getApplicationId().toString())
         );
         emailSender.sendMail(customEmailMessage);
 
-        log.debug("Output finishRegistration for applicationId={}", emailMessage.getApplicationId());
+        log.debug("Output finishRegistration for applicationId={}", emailMessageDto.getApplicationId());
     }
 
     @Override
@@ -118,15 +117,15 @@ public class DossierServiceImpl implements DossierService {
 
     @Override
     @Transactional
-    public void sendDocuments(EmailMessage emailMessage) {
+    public void sendDocuments(EmailMessageDto emailMessageDto) {
         log.debug("Input sendDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} }",
-                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
+                emailMessageDto.getAddress(), emailMessageDto.getTheme(), emailMessageDto.getApplicationId());
 
-        dealFeignService.updateStatus(emailMessage.getApplicationId());
+        dealFeignService.updateStatus(emailMessageDto.getApplicationId());
 
         DocumentEntity documentEntity = documentRepository
-                .findById(emailMessage.getApplicationId())
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", emailMessage.getApplicationId())));
+                .findById(emailMessageDto.getApplicationId())
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", emailMessageDto.getApplicationId())));
 
         try {
 //            SSHClient sshClient = connectSshClient();
@@ -139,9 +138,9 @@ public class DossierServiceImpl implements DossierService {
                  InputStream questionnaireInputStream = remoteQuestionnaireFile.new RemoteFileInputStream();
                  InputStream paymentScheduleInputStream = remotePaymentScheduleFile.new RemoteFileInputStream()) {
                 CustomEmailMessage customEmailMessage = new CustomEmailMessage(
-                        emailMessage.getAddress(),
-                        emailMessage.getTheme().name(),
-                        ConfigUtils.getTextCreateDocuments().replace("%applicationId%", emailMessage.getApplicationId().toString())
+                        emailMessageDto.getAddress(),
+                        emailMessageDto.getTheme().name(),
+                        ConfigUtils.getTextCreateDocuments().replace("%applicationId%", emailMessageDto.getApplicationId().toString())
                 );
                 Map<String, ByteArrayResource> files = Map.of(
                     "Loan agreement.txt", new ByteArrayResource(loanInputStream.readAllBytes()),
@@ -154,52 +153,52 @@ public class DossierServiceImpl implements DossierService {
             throw new RuntimeException(e);
         }
 
-        log.debug("Output sendDocuments for applicationId={}", emailMessage.getApplicationId());
+        log.debug("Output sendDocuments for applicationId={}", emailMessageDto.getApplicationId());
     }
 
     @Override
-    public void sendSesCode(SesEmailMessage sesEmailMessage) {
+    public void sendSesCode(SesEmailMessageDto sesEmailMessageDto) {
         log.debug("Input finishRegistration. sesEmailMessage={ address: {}, theme: {}, applicationId: {} }",
-                sesEmailMessage.getAddress(), sesEmailMessage.getTheme(), sesEmailMessage.getApplicationId());
+                sesEmailMessageDto.getAddress(), sesEmailMessageDto.getTheme(), sesEmailMessageDto.getApplicationId());
 
         CustomEmailMessage customEmailMessage = new CustomEmailMessage(
-                sesEmailMessage.getAddress(),
-                sesEmailMessage.getTheme().name(),
-                ConfigUtils.getTextSesCode().replace("%sesCode%", sesEmailMessage.getSesCode().toString())
+                sesEmailMessageDto.getAddress(),
+                sesEmailMessageDto.getTheme().name(),
+                ConfigUtils.getTextSesCode().replace("%sesCode%", sesEmailMessageDto.getSesCode().toString())
         );
         emailSender.sendMail(customEmailMessage);
 
-        log.debug("Output finishRegistration for applicationId={}", sesEmailMessage.getApplicationId());
+        log.debug("Output finishRegistration for applicationId={}", sesEmailMessageDto.getApplicationId());
     }
 
     @Override
-    public void sendIssuedCreditEmail(EmailMessage emailMessage) {
+    public void sendIssuedCreditEmail(EmailMessageDto emailMessageDto) {
         log.debug("Input sendIssuedCreditEmail. emailMessage={ address: {}, theme: {}, applicationId: {} }",
-                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
+                emailMessageDto.getAddress(), emailMessageDto.getTheme(), emailMessageDto.getApplicationId());
 
         CustomEmailMessage customEmailMessage = new CustomEmailMessage(
-                emailMessage.getAddress(),
-                emailMessage.getTheme().name(),
-                ConfigUtils.getTextIssued().replace("%applicationId%", emailMessage.getApplicationId().toString())
+                emailMessageDto.getAddress(),
+                emailMessageDto.getTheme().name(),
+                ConfigUtils.getTextIssued().replace("%applicationId%", emailMessageDto.getApplicationId().toString())
         );
         emailSender.sendMail(customEmailMessage);
 
-        log.debug("Output sendIssuedCreditEmail for applicationId={}", emailMessage.getApplicationId());
+        log.debug("Output sendIssuedCreditEmail for applicationId={}", emailMessageDto.getApplicationId());
     }
 
     @Override
-    public void sendApplicationDeniedEmail(EmailMessage emailMessage) {
+    public void sendApplicationDeniedEmail(EmailMessageDto emailMessageDto) {
         log.debug("Input sendApplicationDeniedEmail. emailMessage={ address: {}, theme: {}, applicationId: {} }",
-                emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId());
+                emailMessageDto.getAddress(), emailMessageDto.getTheme(), emailMessageDto.getApplicationId());
 
         CustomEmailMessage customEmailMessage = new CustomEmailMessage(
-                emailMessage.getAddress(),
-                emailMessage.getTheme().name(),
-                ConfigUtils.getTextApplicationDenied().replace("%applicationId%", emailMessage.getApplicationId().toString())
+                emailMessageDto.getAddress(),
+                emailMessageDto.getTheme().name(),
+                ConfigUtils.getTextApplicationDenied().replace("%applicationId%", emailMessageDto.getApplicationId().toString())
         );
         emailSender.sendMail(customEmailMessage);
 
-        log.debug("Output sendApplicationDeniedEmail for applicationId={}", emailMessage.getApplicationId());
+        log.debug("Output sendApplicationDeniedEmail for applicationId={}", emailMessageDto.getApplicationId());
     }
 
 //    private SSHClient connectSshClient() {

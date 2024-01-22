@@ -23,6 +23,9 @@ kafka:
     send-documents-topic:
       name: send-documents
       count-consumers: 3
+    sign-documents-topic:
+      name: send-ses
+      count-consumers: 3
 
 dealService:
   hostPort: http://localhost:8081

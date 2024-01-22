@@ -1,15 +1,14 @@
 package com.neoflex.creditconveyer.dossier.service;
 
-import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessageDto;
 import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
-import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessage;
-import org.springframework.kafka.support.Acknowledgment;
+import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessageDto;
 
 public interface DossierService {
-    void finishRegistration(EmailMessage emailMessage);
+    void finishRegistration(EmailMessageDto emailMessageDto);
     void createDocuments(InformationEmailMessage emailMessage);
-    void sendDocuments(EmailMessage emailMessage);
-    void sendSesCode(SesEmailMessage sesEmailMessage);
-    void sendIssuedCreditEmail(EmailMessage sesEmailMessage);
-    void sendApplicationDeniedEmail(EmailMessage sesEmailMessage);
+    void sendDocuments(EmailMessageDto emailMessageDto);
+    void sendSesCode(SesEmailMessageDto sesEmailMessageDto);
+    void sendIssuedCreditEmail(EmailMessageDto sesEmailMessageDto);
+    void sendApplicationDeniedEmail(EmailMessageDto sesEmailMessageDto);
 }

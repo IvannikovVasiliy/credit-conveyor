@@ -1,7 +1,8 @@
 package com.neoflex.creditconveyer.dossier.config;
 
-import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessageDto;
 import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessageDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,7 +51,7 @@ public class KafkaConsumerConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<String, EmailMessage> sendDocumentsConsumerFactory() {
+    public ConsumerFactory<String, EmailMessageDto> sendDocumentsConsumerFactory() {
         Map<String, Object> properties = new HashMap<>();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, DOSSIER_GROUP);
@@ -61,16 +62,39 @@ public class KafkaConsumerConfiguration {
         properties.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 
         return new DefaultKafkaConsumerFactory<>(
-                properties, new StringDeserializer(), new JsonDeserializer<>(EmailMessage.class, false)
+                properties, new StringDeserializer(), new JsonDeserializer<>(EmailMessageDto.class, false)
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, EmailMessage> sendDocumentsKafkaListener() {
-        var factory = new ConcurrentKafkaListenerContainerFactory<String, EmailMessage>();
+    public ConcurrentKafkaListenerContainerFactory<String, EmailMessageDto> sendDocumentsKafkaListener() {
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, EmailMessageDto>();
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         factory.setConsumerFactory(sendDocumentsConsumerFactory());
         return factory;
     }
 
+    @Bean
+    public ConsumerFactory<String, SesEmailMessageDto> signDocumentsConsumerFactory() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, DOSSIER_GROUP);
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        properties.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+
+        return new DefaultKafkaConsumerFactory<>(
+                properties, new StringDeserializer(), new JsonDeserializer<>(SesEmailMessageDto.class, false)
+        );
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, SesEmailMessageDto> signDocumentsKafkaListener() {
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, SesEmailMessageDto>();
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        factory.setConsumerFactory(signDocumentsConsumerFactory());
+        return factory;
+    }
 }

@@ -1,7 +1,8 @@
 package com.neoflex.creditconveyer.dossier.kafka;
 
-import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessageDto;
 import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessageDto;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -40,7 +41,8 @@ public class DossierConsumer {
     public void createDocumentConsumer(ConsumerRecord<String, InformationEmailMessage> createDocumentRecord,
                                        Acknowledgment acknowledgment) {
         executorServiceCreateDocuments.submit(() -> {
-            log.debug("consume message: offset={}, key={}", createDocumentRecord.offset(), createDocumentRecord.key());
+            log.debug("consume message: offset={}, key={} from topic: create-documents",
+                    createDocumentRecord.offset(), createDocumentRecord.key());
             dossierService.createDocuments(createDocumentRecord.value());
             acknowledgment.acknowledge();
         });
@@ -51,11 +53,27 @@ public class DossierConsumer {
             groupId = "${kafka.group-id}",
             containerFactory = "sendDocumentsKafkaListener"
     )
-    public void sendDocumentsConsumer(ConsumerRecord<String, EmailMessage> emailMessageRecord,
+    public void sendDocumentsConsumer(ConsumerRecord<String, EmailMessageDto> emailMessageRecord,
                                       Acknowledgment acknowledgment) {
         executorServiceSendDocuments.submit(() -> {
-            log.debug("consume message: offset={}, key={}", emailMessageRecord.offset(), emailMessageRecord.key());
+            log.debug("consume message: offset={}, key={} from topic: send-documents",
+                    emailMessageRecord.offset(), emailMessageRecord.key());
             dossierService.sendDocuments(emailMessageRecord.value());
+            acknowledgment.acknowledge();
+        });
+    }
+
+    @KafkaListener(
+            topics = "${kafka.topics.sign-documents-topic.name}",
+            groupId = "${kafka.group-id}",
+            containerFactory = "signDocumentsKafkaListener"
+    )
+    public void signDocumentsConsumer(ConsumerRecord<String, SesEmailMessageDto> signDocumentsRecord,
+                                      Acknowledgment acknowledgment) {
+        executorServiceSendDocuments.submit(() -> {
+            log.debug("consume message: offset={}, key={} from topic: send-ses",
+                    signDocumentsRecord.offset(), signDocumentsRecord.key());
+            dossierService.sendSesCode(signDocumentsRecord.value());
             acknowledgment.acknowledge();
         });
     }
