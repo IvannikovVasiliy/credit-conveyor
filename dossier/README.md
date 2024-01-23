@@ -26,3 +26,9 @@ Handle messages from Kafka from Deal-microservice and send emails in user-email
 * kafka-topics --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 1 --topic send-ses
 * kafka-topics --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 1 --topic credit-issued
 * kafka-topics --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 1 --topic application-denied
+
+--- 
+
+## Generate SSH-key for sftp protocol
+
+ssh -o HostKeyAlgorithms=ssh-ed25519 -o UserKnownHostsFile=hosts.dat ubuntu@<ip_address_sftp_server>

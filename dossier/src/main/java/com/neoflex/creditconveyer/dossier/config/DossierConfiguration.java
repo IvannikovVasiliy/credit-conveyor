@@ -3,10 +3,12 @@ package com.neoflex.creditconveyer.dossier.config;
 import com.neoflex.creditconveyer.dossier.util.SecretConfig;
 import com.neoflex.creditconveyer.dossier.util.SFTPConfig;
 import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.SFTPEngine;
 import net.schmizz.sshj.sftp.StatefulSFTPClient;
+import org.apache.kafka.common.metrics.Stat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,10 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Configuration
 @Slf4j
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class DossierConfiguration {
 
-//    private final DossierService dossierService;
+    private final List<SSHClient> sshClients;
+    private final List<StatefulSFTPClient> statefulSFTPClients;
 
     @Value("${kafka.topics.create-documents-topic.count-consumers}")
     private Integer COUNT_CONSUMERS_CREATE_DOCUMENTS;
@@ -95,7 +98,7 @@ public class DossierConfiguration {
 
     @PreDestroy
     public void destroySSHClients() {
-        sshClientPool()
+        sshClients
                 .forEach(sshClient -> {
                     try {
                         sshClient.disconnect();
@@ -104,6 +107,19 @@ public class DossierConfiguration {
                     }
                 });
         log.info("Disconnect all SSHClients");
+    }
+
+    @PreDestroy
+    public void destroyStatefulSFTPClient() {
+        statefulSFTPClients
+                .forEach(statefulSFTPClient -> {
+                    try {
+                        statefulSFTPClient.close();
+                    } catch (IOException e) {
+                        log.error("Unable to close StatefulSFTPClient");
+                    }
+                });
+        log.info("Close all StatefulSFTPClients");
     }
 
 //    @Bean
