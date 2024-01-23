@@ -34,3 +34,15 @@ spring:
             - Path=/deal/admin/application
           filters:
             - RewritePath=/deal/admin/application, /v2/deal/admin/application
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: deal
+        url: /v3/api-docs/deal
