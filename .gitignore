@@ -44,3 +44,4 @@ secrets.yml
 application.conf
 secrets*
 sftp.conf
+hosts.dat
