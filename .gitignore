@@ -42,3 +42,4 @@ secrets.conf
 .idea
 application.yaml
 hosts.dat
+sftp.conf
