@@ -17,6 +17,9 @@ kafka:
   bootstrap-server: localhost:9092
   group-id: dossier-ms-group
   topics:
+    finish-registration-topic:
+      name: finish-registration
+      count-consumers: 3
     create-documents-topic:
       name: create-documents
       count-consumers: 3

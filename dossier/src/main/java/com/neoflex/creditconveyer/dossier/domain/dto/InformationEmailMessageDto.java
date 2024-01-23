@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class InformationEmailMessage {
+public class InformationEmailMessageDto {
     private String address;
     private Theme theme;
     private Long applicationId;

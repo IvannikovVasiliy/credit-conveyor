@@ -29,6 +29,8 @@ public class DossierConfiguration {
     private final List<SSHClient> sshClients;
     private final List<StatefulSFTPClient> statefulSFTPClients;
 
+    @Value("${kafka.topics.finish-registration-topic.count-consumers}")
+    private Integer COUNT_CONSUMERS_FINISH_REGISTRATION;
     @Value("${kafka.topics.create-documents-topic.count-consumers}")
     private Integer COUNT_CONSUMERS_CREATE_DOCUMENTS;
     @Value("${kafka.topics.send-documents-topic.count-consumers}")
@@ -45,6 +47,11 @@ public class DossierConfiguration {
     private String LOCATION_FILES_CONFIG;
 
     private AtomicInteger counter = new AtomicInteger();
+
+    @Bean
+    public ExecutorService finishRegistrationKafkaConsumerExecutorService() {
+        return Executors.newFixedThreadPool(COUNT_CONSUMERS_FINISH_REGISTRATION);
+    }
 
     @Bean
     public ExecutorService createDocumentsKafkaConsumerExecutorService() {

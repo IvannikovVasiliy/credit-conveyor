@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyer.dossier.kafka;
 
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessageDto;
-import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessageDto;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessageDto;
 import com.neoflex.creditconveyer.dossier.service.DossierService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,25 +20,43 @@ public class DossierConsumer {
 
     @Autowired
     public DossierConsumer(
+            @Qualifier("finishRegistrationKafkaConsumerExecutorService") ExecutorService executorServiceFinishRegistration,
             @Qualifier("createDocumentsKafkaConsumerExecutorService") ExecutorService executorServiceCreateDocuments,
             @Qualifier("sendDocumentsKafkaConsumerExecutorService") ExecutorService executorServiceSendDocuments,
             DossierService dossierService
     ) {
+        this.executorServiceFinishRegistration = executorServiceFinishRegistration;
         this.executorServiceCreateDocuments = executorServiceCreateDocuments;
         this.executorServiceSendDocuments = executorServiceSendDocuments;
         this.dossierService = dossierService;
     }
 
+    private final ExecutorService executorServiceFinishRegistration;
     private final ExecutorService executorServiceCreateDocuments;
     private final ExecutorService executorServiceSendDocuments;
     private final DossierService dossierService;
+
+    @KafkaListener(
+            topics = "${kafka.topics.finish-registration-topic.name}",
+            groupId = "${kafka.group-id}",
+            containerFactory = "finishRegistrationKafkaListener"
+    )
+    public void finishRegistrationConsumer(ConsumerRecord<String, EmailMessageDto> finishRegistrationDto,
+                                       Acknowledgment acknowledgment) {
+        executorServiceFinishRegistration.submit(() -> {
+            log.debug("consume message: offset={}, key={} from topic: finish-registration",
+                    finishRegistrationDto.offset(), finishRegistrationDto.key());
+            dossierService.finishRegistration(finishRegistrationDto.value());
+            acknowledgment.acknowledge();
+        });
+    }
 
     @KafkaListener(
             topics = "${kafka.topics.create-documents-topic.name}",
             groupId = "${kafka.group-id}",
             containerFactory = "createDocumentKafkaListener"
     )
-    public void createDocumentConsumer(ConsumerRecord<String, InformationEmailMessage> createDocumentRecord,
+    public void createDocumentConsumer(ConsumerRecord<String, InformationEmailMessageDto> createDocumentRecord,
                                        Acknowledgment acknowledgment) {
         executorServiceCreateDocuments.submit(() -> {
             log.debug("consume message: offset={}, key={} from topic: create-documents",

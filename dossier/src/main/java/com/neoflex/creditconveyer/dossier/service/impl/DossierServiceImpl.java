@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyer.dossier.service.impl;
 
 import com.neoflex.creditconveyer.dossier.domain.dto.EmailMessageDto;
-import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessage;
+import com.neoflex.creditconveyer.dossier.domain.dto.InformationEmailMessageDto;
 import com.neoflex.creditconveyer.dossier.domain.dto.SesEmailMessageDto;
 import com.neoflex.creditconveyer.dossier.domain.entity.DocumentEntity;
 import com.neoflex.creditconveyer.dossier.domain.model.CustomEmailMessage;
@@ -74,7 +74,7 @@ public class DossierServiceImpl implements DossierService {
 
     @Override
     @Transactional
-    public void createDocuments(InformationEmailMessage emailMessage) {
+    public void createDocuments(InformationEmailMessageDto emailMessage) {
         log.debug("Input createDocuments. emailMessage={ address: {}, theme: {}, applicationId: {} client={ lastName: {}, firstName: {}, middleName: {}, birthdate: {}, email: {},  martialStatus: {},  dependentAmount: {}, passport: {}, employment: {},  account: {} }; application: { status: {} creationDate: {},  appliedOffer: {},  statusHistory: {} }; credit: { amount: {}, term: {}, monthlyPayment: {}, rate: {}, psk: {}, paymentSchedule: {}, insuranceEnable: {}, salaryClient: {}, creditStatus: {} } }",
                 emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getClient().getLastName(), emailMessage.getClient().getFirstName(), emailMessage.getClient().getMiddleName(), emailMessage.getClient().getBirthdate(), emailMessage.getClient().getEmail(), emailMessage.getClient().getMartialStatus(), emailMessage.getClient().getDependentAmount(), emailMessage.getClient().getPassport(), emailMessage.getClient().getEmployment(), emailMessage.getClient().getAccount(), emailMessage.getApplication().getStatus(), emailMessage.getApplication().getCreationDate(), emailMessage.getApplication().getAppliedOffer(), emailMessage.getApplication().getStatusHistory(), emailMessage.getCredit().getAmount(), emailMessage.getCredit().getTerm(), emailMessage.getCredit().getMonthlyPayment(), emailMessage.getCredit().getRate(), emailMessage.getCredit().getPsk(), emailMessage.getCredit().getPaymentSchedule(), emailMessage.getCredit().getInsuranceEnable(), emailMessage.getCredit().getSalaryClient(), emailMessage.getCredit().getCreditStatus());
 
