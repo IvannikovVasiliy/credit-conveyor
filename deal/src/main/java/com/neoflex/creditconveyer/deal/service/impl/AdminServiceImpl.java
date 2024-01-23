@@ -1,6 +1,7 @@
 package com.neoflex.creditconveyer.deal.service.impl;
 
 import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationResponseDto;
+import com.neoflex.creditconveyer.deal.domain.dto.PageDto;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.CreditEntity;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +63,36 @@ public class AdminServiceImpl implements AdminService {
         log.debug("Build loan-application by applicationId={}", applicationId);
 
         return loanApplicationResponseDto;
+    }
+
+    @Override
+    public List<LoanApplicationResponseDto> getAllApplications(PageDto page) {
+        return applicationRepository
+                .findAll(page.pageable())
+                .stream()
+                .map(applicationEntity -> {
+                    CreditEntity creditEntity = applicationEntity.getCredit();
+                    ClientEntity clientEntity = applicationEntity.getClient();
+                    PassportJsonb passportJson = clientEntity.getPassport();
+
+                    LocalDate birthDate = clientEntity
+                            .getBirthdate()
+                            .toLocalDate();
+
+                    return LoanApplicationResponseDto
+                            .builder()
+                            .amount(creditEntity.getAmount())
+                            .term(creditEntity.getTerm())
+                            .firstName(clientEntity.getFirstName())
+                            .lastName(clientEntity.getLastName())
+                            .middleName(clientEntity.getMiddleName())
+                            .email(clientEntity.getEmail())
+                            .birthdate(birthDate)
+                            .passportSeries(passportJson.getSeries())
+                            .passportNumber(passportJson.getNumber())
+                            .build();
+                })
+                .toList();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.neoflex.creditconveyer.deal.controller.v2;
 
 import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationResponseDto;
+import com.neoflex.creditconveyer.deal.domain.dto.PageDto;
 import com.neoflex.creditconveyer.deal.http.HttpConfig;
 import com.neoflex.creditconveyer.deal.service.AdminService;
 import jakarta.validation.constraints.NotNull;
@@ -34,6 +35,16 @@ public class AdminV2Controller {
 
         return new ResponseEntity<>(loanApplicationResponseDto, headers, HttpStatusCode.valueOf(HttpConfig.STATUS_OK));
     }
+
+    @GetMapping("/application")
+    public ResponseEntity<List<LoanApplicationResponseDto>> getAllApplications(PageDto page) {
+        log.debug("Request to receive all applications");
+
+        adminService.getAllApplications(page);
+
+        return null;
+    }
+
 
     @PutMapping("/application/{applicationId}/status")
     public ResponseEntity<Void> updateStatusByApplicationId(@PathVariable Long applicationId) {

@@ -16,27 +16,21 @@ spring:
         locator:
           enabled: true
       routes:
-#        - id: example
-#          uri: lb://example
-#          predicates:
-#            - Path=/example/**
-#          filters:
-#            - RewritePath=/example/(?<path>.*), /$\{path}
-#        - id: example
-#          uri: lb://example
-#          predicates:
-#            - Path=/home
-#          filters:
-#            - RewritePath=/example/home/home, /$\{path}
 #        - id: deal
 #          uri: lb://deal
 #          predicates:
 #            - Path=/deal/**
 #          filters:
 #            - RewritePath=/deal/(?<path>.*), /$\{path}
-#        - id: deal
-#          uri: lb://deal
-#          predicates:
-#            - Path=/deal/admin/application
-#          filters:
-#            - RewritePath=/deal/v2/deal/admin/application/2, /
+        - id: deal
+          uri: lb://deal
+          predicates:
+            - Path=/deal/admin/application/*
+          filters:
+            - RewritePath=/deal/admin/application/(?<segment>.*), /v2/deal/admin/application/${segment}
+        - id: deal-1
+          uri: lb://deal
+          predicates:
+            - Path=/deal/admin/application
+          filters:
+            - RewritePath=/deal/admin/application, /v2/deal/admin/application
