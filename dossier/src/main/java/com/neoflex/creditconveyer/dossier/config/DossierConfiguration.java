@@ -75,7 +75,7 @@ public class DossierConfiguration {
     }
 
     @Bean
-    public List<StatefulSFTPClsient> statefulSFTPClientPool(List<SSHClient> sshClientPool) {
+    public List<StatefulSFTPClient> statefulSFTPClientPool(List<SSHClient> sshClientPool) {
         List<StatefulSFTPClient> statefulSFTPClients = new ArrayList<>(STATEFUL_SFTP_CLIENT_POOL);
         for (int i = 0; i < STATEFUL_SFTP_CLIENT_POOL; i++) {
             int indexSshClient = i % SSH_CLIENT_POOL;
