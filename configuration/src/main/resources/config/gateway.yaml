@@ -22,13 +22,13 @@ spring:
 #            - Path=/deal/**
 #          filters:
 #            - RewritePath=/deal/(?<path>.*), /$\{path}
-        - id: deal
+        - id: deal-application-by-id
           uri: lb://deal
           predicates:
             - Path=/deal/admin/application/*
           filters:
             - RewritePath=/deal/admin/application/(?<segment>.*), /v2/deal/admin/application/${segment}
-        - id: deal-1
+        - id: deal-application
           uri: lb://deal
           predicates:
             - Path=/deal/admin/application
