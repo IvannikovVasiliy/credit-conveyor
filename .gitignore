@@ -42,3 +42,4 @@ secrets.yml
 .idea
 secrets*
 hosts.dat
+sftp.conf
