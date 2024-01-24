@@ -16,12 +16,12 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: post-application
-          uri: lb://application
+        - id: application-service
+          uri: lb://application-service
           predicates:
-            - Path=/application
+            - Path=/application-service/**
           filters:
-            - RewritePath=/application, /v1/application
+            - RewritePath=/application-service/(?<path>.*), /$\{path}
         - id: deal-application-by-id
           uri: lb://deal
           predicates:
