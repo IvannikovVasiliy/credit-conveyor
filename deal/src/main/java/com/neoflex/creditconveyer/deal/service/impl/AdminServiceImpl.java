@@ -37,7 +37,7 @@ public class AdminServiceImpl implements AdminService {
         ApplicationEntity applicationEntity = applicationRepository
                 .findById(applicationId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Application with id=%d not found", applicationId)
+                        String.format("Application with id=%d not found", applicationId), applicationId.toString()
                 ));
         CreditEntity creditEntity = applicationEntity.getCredit();
         ClientEntity clientEntity = applicationEntity.getClient();

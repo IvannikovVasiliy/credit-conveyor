@@ -5,8 +5,12 @@ import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.deal.error.exception.*;
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.deal.error.validation.Violation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -22,16 +26,19 @@ public class GlobalErrorHandler {
     MessageInfoDto messageInfo = new MessageInfoDto(ErrorConstants.DEFAULT_ERROR_CODE);
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public MessageInfoDto handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ResponseEntity<MessageInfoDto> handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
         log.debug("Input handlePaymentNotFound. paymentNotFound: {}", paymentNotFound.getMessage());
 
         messageInfo.setRespCode(ErrorConstants.BAD_REQUEST);
         messageInfo.setMessage(paymentNotFound.getMessage());
 
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.put("Correlation-Id", List.of(paymentNotFound.getCorrelationId()));
+
         log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
                 messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
-        return messageInfo;
+        return new ResponseEntity<>(messageInfo, headers, HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
