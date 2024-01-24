@@ -2,7 +2,6 @@ package com.neoflex.creditconveyor.conveyor.domain.dto;
 
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Gender;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.MartialStatus;
-import com.neoflex.creditconveyor.conveyor.validation.constraint.AdultConstraint;
 import com.neoflex.creditconveyor.conveyor.validation.constraint.EmploymentConstraint;
 import com.neoflex.creditconveyor.conveyor.validation.constraint.FirstLastMiddleNameConstraint;
 import jakarta.validation.constraints.Min;

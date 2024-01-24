@@ -1,10 +1,9 @@
 package com.neoflex.creditconveyor.conveyor.schedule;
 
-import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
 import com.neoflex.creditconveyor.conveyor.domain.dto.PaymentScheduleElement;
 import com.neoflex.creditconveyor.conveyor.domain.dto.ScoringDataDTO;
+import com.neoflex.creditconveyor.conveyor.util.Constants;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

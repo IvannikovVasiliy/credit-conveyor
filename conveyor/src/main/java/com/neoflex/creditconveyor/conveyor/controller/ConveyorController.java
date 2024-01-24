@@ -30,7 +30,7 @@ public class ConveyorController {
         log.debug("Request calculate offers. loanApplicationRequest={amount: {}, term:{}, firstName:{}, lastName:{}, middleName:{}, email:{}, birthdate:{}, passportSeries:{}, passportNumber:{}}",
                 loanApplicationRequest.getAmount(), loanApplicationRequest.getTerm(), loanApplicationRequest.getFirstName(), loanApplicationRequest.getLastName(), loanApplicationRequest.getMiddleName(), loanApplicationRequest.getEmail(), loanApplicationRequest.getBirthdate(), loanApplicationRequest.getPassportSeries(), loanApplicationRequest.getPassportNumber());
 
-        List<LoanOfferDTO> loanOffers = conveyorService.createLoanOffer(loanApplicationRequest);
+        List<LoanOfferDTO> loanOffers = conveyorService.createLoanOffers(loanApplicationRequest);
 
         log.debug("Response calculate offers. loanOffers={}", loanOffers);
         return new ResponseEntity(loanOffers, HttpStatus.OK);

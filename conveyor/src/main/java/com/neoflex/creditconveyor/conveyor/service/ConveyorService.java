@@ -9,6 +9,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 public interface ConveyorService {
-    List<LoanOfferDTO> createLoanOffer(@Valid LoanApplicationRequestDTO loanApplicationRequest);
+    List<LoanOfferDTO> createLoanOffers(@Valid LoanApplicationRequestDTO loanApplicationRequest);
     CreditDTO validAndScoreAndCalcOffer(@Valid ScoringDataDTO scoringData);
 }

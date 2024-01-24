@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyor.conveyor.domain.dto;
 
-import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentStatus;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentPosition;
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

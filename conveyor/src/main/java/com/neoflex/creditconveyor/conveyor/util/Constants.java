@@ -1,4 +1,4 @@
-package com.neoflex.creditconveyor.conveyor.domain.constants;
+package com.neoflex.creditconveyor.conveyor.util;
 
 import java.math.BigDecimal;
 

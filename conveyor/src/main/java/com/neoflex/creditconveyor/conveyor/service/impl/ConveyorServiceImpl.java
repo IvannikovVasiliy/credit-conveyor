@@ -1,19 +1,19 @@
 package com.neoflex.creditconveyor.conveyor.service.impl;
 
-import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
 import com.neoflex.creditconveyor.conveyor.domain.dto.CreditDTO;
 import com.neoflex.creditconveyor.conveyor.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyor.conveyor.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyor.conveyor.domain.dto.ScoringDataDTO;
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentPosition;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentStatus;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Gender;
-import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentPosition;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.MartialStatus;
 import com.neoflex.creditconveyor.conveyor.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyor.conveyor.error.validation.Violation;
 import com.neoflex.creditconveyor.conveyor.schedule.PaymentSchedule;
 import com.neoflex.creditconveyor.conveyor.service.ConveyorService;
-import com.neoflex.creditconveyor.conveyor.utils.DatesUtil;
+import com.neoflex.creditconveyor.conveyor.util.Constants;
+import com.neoflex.creditconveyor.conveyor.util.DatesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +30,7 @@ import java.util.List;
 public class ConveyorServiceImpl implements ConveyorService {
 
     @Override
-    public List<LoanOfferDTO> createLoanOffer(LoanApplicationRequestDTO loanApplication) {
+    public List<LoanOfferDTO> createLoanOffers(LoanApplicationRequestDTO loanApplication) {
         log.debug("Request calculate offers. loanApplicationRequest={ amount:{}, term:{}, firstName:{}, lastName={}, middleName={}, email: {}, birthdate; {}, passportSeries;{}, passportNumber: {} }",
                 loanApplication.getAmount(), loanApplication.getTerm(), loanApplication.getFirstName(), loanApplication.getLastName(), loanApplication.getMiddleName(), loanApplication.getEmail(), loanApplication.getBirthdate(), loanApplication.getPassportSeries(), loanApplication.getPassportNumber());
 

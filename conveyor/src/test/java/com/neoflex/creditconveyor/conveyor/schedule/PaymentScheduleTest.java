@@ -1,7 +1,6 @@
 package com.neoflex.creditconveyor.conveyor.schedule;
 
-import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
-import com.neoflex.creditconveyor.conveyor.domain.dto.CreditDTO;
+import com.neoflex.creditconveyor.conveyor.util.Constants;
 import com.neoflex.creditconveyor.conveyor.domain.dto.EmploymentDTO;
 import com.neoflex.creditconveyor.conveyor.domain.dto.PaymentScheduleElement;
 import com.neoflex.creditconveyor.conveyor.domain.dto.ScoringDataDTO;

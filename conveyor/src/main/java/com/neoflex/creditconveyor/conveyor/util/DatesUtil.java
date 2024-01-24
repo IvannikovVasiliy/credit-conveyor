@@ -1,4 +1,4 @@
-package com.neoflex.creditconveyor.conveyor.utils;
+package com.neoflex.creditconveyor.conveyor.util;
 
 import lombok.extern.slf4j.Slf4j;
 

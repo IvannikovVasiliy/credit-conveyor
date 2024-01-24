@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyor.conveyor.service.impl;
 
-import com.neoflex.creditconveyor.conveyor.domain.constants.Constants;
+import com.neoflex.creditconveyor.conveyor.util.Constants;
 import com.neoflex.creditconveyor.conveyor.domain.dto.*;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentStatus;
 import com.neoflex.creditconveyor.conveyor.domain.enumeration.Gender;
@@ -53,24 +53,44 @@ class ConveyorServiceImplTest {
                         BigDecimal.valueOf(50000), 7, "Ivan", "Ivanov", LocalDate.of(2000, 01, 01), "1234", "123456"
                 );
 
-        LoanOfferDTO loanOfferResponse0 = new LoanOfferDTO(123456L, BigDecimal.valueOf(50000),
-                new BigDecimal(50668.885155).setScale(Constants.ACCURACY, RoundingMode.DOWN), 7,
+        LoanOfferDTO loanOfferResponse0 = new LoanOfferDTO(
+                123456L,
+                BigDecimal.valueOf(50000),
+                new BigDecimal(50668.885155).setScale(Constants.ACCURACY, RoundingMode.DOWN),
+                7,
                 BigDecimal.valueOf(7238.412165).setScale(Constants.ACCURACY, RoundingMode.DOWN),
-                BigDecimal.valueOf(4), true, true);
-        LoanOfferDTO loanOfferResponse1 = new LoanOfferDTO(123456L, BigDecimal.valueOf(50000),
-                BigDecimal.valueOf(50836.798285).setScale(Constants.ACCURACY, RoundingMode.DOWN), 7,
+                BigDecimal.valueOf(4),
+                true,
+                true);
+        LoanOfferDTO loanOfferResponse1 = new LoanOfferDTO(
+                123456L,
+                BigDecimal.valueOf(50000),
+                BigDecimal.valueOf(50836.798285).setScale(Constants.ACCURACY, RoundingMode.DOWN),
+                7,
                 BigDecimal.valueOf(7262.399755).setScale(Constants.ACCURACY, RoundingMode.DOWN),
-                BigDecimal.valueOf(5), true, false);
-        LoanOfferDTO loanOfferResponse2 = new LoanOfferDTO(123456L, BigDecimal.valueOf(50000),
-                BigDecimal.valueOf(51511.207475).setScale(Constants.ACCURACY, RoundingMode.DOWN), 7,
+                BigDecimal.valueOf(5),
+                true,
+                false);
+        LoanOfferDTO loanOfferResponse2 = new LoanOfferDTO(
+                123456L,
+                BigDecimal.valueOf(50000),
+                BigDecimal.valueOf(51511.207475).setScale(Constants.ACCURACY, RoundingMode.DOWN),
+                7,
                 BigDecimal.valueOf(7358.743925).setScale(Constants.ACCURACY, RoundingMode.DOWN),
-                BigDecimal.valueOf(9), false, true);
-        LoanOfferDTO loanOfferResponse3 = new LoanOfferDTO(123456L, BigDecimal.valueOf(50000),
-                BigDecimal.valueOf(51680.49719).setScale(Constants.ACCURACY, RoundingMode.DOWN), 7,
+                BigDecimal.valueOf(9),
+                false,
+                true);
+        LoanOfferDTO loanOfferResponse3 = new LoanOfferDTO(
+                123456L,
+                BigDecimal.valueOf(50000),
+                BigDecimal.valueOf(51680.49719).setScale(Constants.ACCURACY, RoundingMode.DOWN),
+                7,
                 BigDecimal.valueOf(7382.92817).setScale(Constants.ACCURACY, RoundingMode.DOWN),
-                BigDecimal.valueOf(10), false, false);
+                BigDecimal.valueOf(10),
+                false,
+                false);
 
-        List<LoanOfferDTO> loanOffers = conveyorService.createLoanOffer(loanApplicationRequestDTO);
+        List<LoanOfferDTO> loanOffers = conveyorService.createLoanOffers(loanApplicationRequestDTO);
 
         assertEquals(loanOfferResponse0, loanOffers.get(0));
         assertEquals(loanOfferResponse1, loanOffers.get(1));
