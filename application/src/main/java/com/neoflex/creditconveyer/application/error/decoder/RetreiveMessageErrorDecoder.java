@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoflex.creditconveyer.application.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.application.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.application.error.exception.ConnectionRefusedException;
+import com.neoflex.creditconveyer.application.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
+import com.neoflex.creditconveyer.application.http.HttpConfig;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +55,10 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
                     throw new ValidationAndScoringAndCalculationOfferException(errorResponse.getViolations());
                 }
             case 404:
-                throw new NotFoundException(null != error ? error : "Not Found");
+                throw new ResourceNotFoundException(
+                        null != error ? error : "Not Found",
+                        response.headers().get(HttpConfig.CORRELATION_ID_HEADER_CONFIG).stream().findFirst().get()
+                );
             case 500:
                 throw new ConnectionRefusedException(messageInfo.getMessage());
             default:

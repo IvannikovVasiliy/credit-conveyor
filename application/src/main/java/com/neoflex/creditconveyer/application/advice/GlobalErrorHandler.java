@@ -57,15 +57,14 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
 //    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ResponseEntity<MessageInfoDto> handlePaymentNotFound(ResourceNotFoundException paymentNotFound,
-                                                               HttpServletRequest httpServletRequest) {
+    public ResponseEntity<MessageInfoDto> handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
         log.debug("Input handlePaymentNotFound. paymentNotFound: {}", paymentNotFound.getMessage());
 
         messageInfo.setRespCode(ErrorConstants.NOT_FOUND);
         messageInfo.setMessage(paymentNotFound.getMessage());
 
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-//        headers.put(HttpConfig.CORRELATION_ID_HEADER_CONFIG, List.of(applicationId.toString()));
+        headers.put(HttpConfig.CORRELATION_ID_HEADER_CONFIG, List.of(paymentNotFound.getCorrelationId()));
 
         log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
                 messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
