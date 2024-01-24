@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.SFTPEngine;
 import net.schmizz.sshj.sftp.StatefulSFTPClient;
-import org.apache.kafka.common.metrics.Stat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
