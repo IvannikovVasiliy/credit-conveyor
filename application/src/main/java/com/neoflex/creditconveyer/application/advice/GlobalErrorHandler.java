@@ -3,6 +3,7 @@ package com.neoflex.creditconveyer.application.advice;
 import com.neoflex.creditconveyer.application.domain.constant.ErrorConstants;
 import com.neoflex.creditconveyer.application.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.application.error.exception.BadRequestException;
+import com.neoflex.creditconveyer.application.error.exception.ConnectionRefusedException;
 import com.neoflex.creditconveyer.application.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
@@ -59,6 +60,15 @@ public class GlobalErrorHandler {
 
         log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
                 messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
+        return messageInfo;
+    }
+
+    @ExceptionHandler(ConnectionRefusedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public MessageInfoDto handleConnectionRefusedException(ConnectionRefusedException connectException) {
+        log.debug("Input handleConnectionRefusedException. exception: {}", connectException.getMessage());
+        messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
+        messageInfo.setMessage(connectException.getMessage());
         return messageInfo;
     }
 

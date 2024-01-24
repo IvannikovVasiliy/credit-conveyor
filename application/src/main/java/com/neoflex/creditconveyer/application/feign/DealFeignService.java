@@ -28,10 +28,14 @@ public class DealFeignService {
         log.debug("Received loanApplicationRequest={ amount:{}, term:{}, firstName:{}, lastName={}, middleName={}, email: {}, birthdate; {}, passportSeries;{}, passportNumber: {} }",
                 loanApplicationRequest.getAmount(), loanApplicationRequest.getTerm(), loanApplicationRequest.getFirstName(), loanApplicationRequest.getLastName(), loanApplicationRequest.getMiddleName(), loanApplicationRequest.getEmail(), loanApplicationRequest.getBirthdate(), loanApplicationRequest.getPassportSeries(), loanApplicationRequest.getPassportNumber());
 
-        List<LoanOfferDTO> loanOffers = dealFeignClient.calculateOffers(loanApplicationRequest).getBody();
+        try {
+            List<LoanOfferDTO> loanOffers = dealFeignClient.calculateOffers(loanApplicationRequest).getBody();
 
-        log.info("Response loanOffers={}", loanOffers);
-        return loanOffers;
+            log.info("Response loanOffers={}", loanOffers);
+            return loanOffers;
+        } catch (RuntimeException e) {
+            throw e;
+        }
     }
 
     public void putOffer(LoanOfferDTO loanOffer) {

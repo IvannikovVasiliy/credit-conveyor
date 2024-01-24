@@ -3,6 +3,7 @@ package com.neoflex.creditconveyer.application.error.decoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoflex.creditconveyer.application.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.application.error.exception.BadRequestException;
+import com.neoflex.creditconveyer.application.error.exception.ConnectionRefusedException;
 import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
 import feign.Response;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.webjars.NotFoundException;
 
 import java.io.IOException;
+import java.net.ConnectException;
 
 @Slf4j
 public class RetreiveMessageErrorDecoder implements ErrorDecoder {
@@ -52,6 +54,8 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
                 }
             case 404:
                 throw new NotFoundException(null != error ? error : "Not Found");
+            case 500:
+                throw new ConnectionRefusedException(messageInfo.getMessage());
             default:
                 return errorDecoder.decode(methodKey, response);
         }
