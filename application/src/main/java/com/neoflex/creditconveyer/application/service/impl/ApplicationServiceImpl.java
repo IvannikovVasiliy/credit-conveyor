@@ -34,9 +34,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     public LoanApplicationResponseDTO getApplicationById(Long applicationId) {
         log.debug("Input in method getApplicationById. applicationId={}", applicationId);
 
-        dealFeignService.getApplicationById(applicationId);
+        LoanApplicationResponseDTO loanApplicationResponseDTO = dealFeignService.getApplicationById(applicationId);
 
-        return null;
+        log.debug("Output getApplicationById. applicationId={}", applicationId);
+        return loanApplicationResponseDTO;
     }
 
     @Override

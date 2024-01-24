@@ -3,12 +3,15 @@ package com.neoflex.creditconveyer.application.controller;
 import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationResponseDTO;
 import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
+import com.neoflex.creditconveyer.application.http.HttpConfig;
 import com.neoflex.creditconveyer.application.service.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,9 +28,13 @@ public class ApplicationController {
     public ResponseEntity<LoanApplicationResponseDTO> getApplicationById(@PathVariable Long applicationId) {
         log.debug("Request for get application by id. applicationId={}", applicationId);
 
-        applicationService.getApplicationById(applicationId);
+        LoanApplicationResponseDTO loanApplicationResponseDTO = applicationService.getApplicationById(applicationId);
 
-        return null;
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.put(HttpConfig.CORRELATION_ID_HEADER_CONFIG, List.of(applicationId.toString()));
+
+        log.debug("Response receiving applications. received application with id={}", applicationId);
+        return new ResponseEntity<>(loanApplicationResponseDTO, headers, HttpStatusCode.valueOf(HttpStatus.OK.value()));
     }
 
     @PostMapping

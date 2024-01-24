@@ -5,6 +5,7 @@ import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationResponse
 import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +18,13 @@ public class DealFeignService {
     private final DealFeignClient dealFeignClient;
 
     public LoanApplicationResponseDTO getApplicationById(Long applicationId) {
-        log.debug("Received applicationId={} for getting application by id", applicationId);
+        log.debug("try to get application with applicationId={} from deal-microservice", applicationId);
 
-        dealFeignClient.getApplicationById(applicationId);
+        ResponseEntity<LoanApplicationResponseDTO> loanApplicationResponseDTO =
+                dealFeignClient.getApplicationById(applicationId);
 
-        return null;
+        log.debug("Get application with applicationId={} from deal-microservice", applicationId);
+        return loanApplicationResponseDTO.getBody();
     }
 
     public List<LoanOfferDTO> postDealApplication(LoanApplicationRequestDTO loanApplicationRequest) {
