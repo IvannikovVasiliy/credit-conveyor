@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.ConnectException;
 import java.util.List;
 
 @RestControllerAdvice
@@ -95,5 +96,14 @@ public class GlobalErrorHandler {
     ) {
         log.debug("Input handleValidationAndScoringAndCalculationOfferException. offer: {}", offer.getViolations());
         return new ErrorResponseValidation(offer.getViolations());
+    }
+
+    @ExceptionHandler(ConnectException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public MessageInfoDto handleConnectionRefusedException(ConnectException connectException) {
+        log.debug("Input handleConnectionRefusedException. exception: {}", connectException.getMessage());
+        messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
+        messageInfo.setMessage(connectException.getMessage());
+        return messageInfo;
     }
 }
