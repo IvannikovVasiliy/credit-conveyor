@@ -8,8 +8,13 @@ import com.neoflex.creditconveyer.application.error.exception.ResourceNotFoundEx
 import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.application.error.validation.Violation;
+import com.neoflex.creditconveyer.application.http.HttpConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.HeaderParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -51,16 +56,20 @@ public class GlobalErrorHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public MessageInfoDto handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
+//    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ResponseEntity<MessageInfoDto> handlePaymentNotFound(ResourceNotFoundException paymentNotFound,
+                                                               HttpServletRequest httpServletRequest) {
         log.debug("Input handlePaymentNotFound. paymentNotFound: {}", paymentNotFound.getMessage());
 
         messageInfo.setRespCode(ErrorConstants.NOT_FOUND);
         messageInfo.setMessage(paymentNotFound.getMessage());
 
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+//        headers.put(HttpConfig.CORRELATION_ID_HEADER_CONFIG, List.of(applicationId.toString()));
+
         log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
                 messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
-        return messageInfo;
+        return new ResponseEntity<>(messageInfo, headers, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ConnectionRefusedException.class)
