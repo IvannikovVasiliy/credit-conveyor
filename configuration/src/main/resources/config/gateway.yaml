@@ -22,6 +22,12 @@ spring:
             - Path=/application/*
           filters:
             - RewritePath=/application/(?<segment>.*), /v1/application/${segment}
+        - id: application-post-application
+          uri: lb://application-service
+          predicates:
+            - Path=/application
+          filters:
+            - RewritePath=/application, /v1/application
         - id: deal-application-by-id
           uri: lb://deal
           predicates:
