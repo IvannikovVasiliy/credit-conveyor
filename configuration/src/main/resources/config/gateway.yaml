@@ -16,12 +16,12 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: application-service
+        - id: application-get-application-by-id
           uri: lb://application-service
           predicates:
-            - Path=/application-service/**
+            - Path=/application/*
           filters:
-            - RewritePath=/application-service/(?<path>.*), /$\{path}
+            - RewritePath=/application/(?<segment>.*), /v1/application/${segment}
         - id: deal-application-by-id
           uri: lb://deal
           predicates:
@@ -40,6 +40,12 @@ spring:
             - Path=/deal/**
           filters:
             - RewritePath=/deal/(?<path>.*), /$\{path}
+        - id: application-service
+          uri: lb://application-service
+          predicates:
+            - Path=/application-service/**
+          filters:
+            - RewritePath=/application-service/(?<path>.*), /$\{path}
         - id: openapi
           uri: http://localhost:${server.port}
           predicates:
