@@ -28,6 +28,12 @@ spring:
             - Path=/application
           filters:
             - RewritePath=/application, /v1/application
+        - id: application-offer
+          uri: lb://application-service
+          predicates:
+            - Path=/application/apply
+          filters:
+            - RewritePath=/application/apply, /v1/application/offer
         - id: deal-application-by-id
           uri: lb://deal
           predicates:
@@ -40,6 +46,30 @@ spring:
             - Path=/deal/admin/application
           filters:
             - RewritePath=/deal/admin/application, /v2/deal/admin/application
+        - id: deal-calculate
+          uri: lb://deal
+          predicates:
+            - Path=/application/registration/*
+          filters:
+            - RewritePath=/application/registration/(?<segment>.*), /v2/deal/calculate/${segment}
+        - id: deal-document
+          uri: lb://deal
+          predicates:
+            - Path=/document/*
+          filters:
+            - RewritePath=/document/(?<segment>.*), /v2/deal/document/${segment}/send
+        - id: deal-sign
+          uri: lb://deal
+          predicates:
+            - Path=/document/*/sign
+          filters:
+            - RewritePath=/document/(?<segment>.*)/sign, /v2/deal/document/${segment}/sign
+        - id: deal-ses-code
+          uri: lb://deal
+          predicates:
+            - Path=/document/*/code
+          filters:
+            - RewritePath=/document/(?<segment>.*)/code, /v2/deal/document/${segment}/code
         - id: deal
           uri: lb://deal
           predicates:
