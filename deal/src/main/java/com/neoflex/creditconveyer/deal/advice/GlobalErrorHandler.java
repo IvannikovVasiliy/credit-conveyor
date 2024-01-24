@@ -98,10 +98,19 @@ public class GlobalErrorHandler {
         return new ErrorResponseValidation(offer.getViolations());
     }
 
+    @ExceptionHandler(ConnectionRefusedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public MessageInfoDto handleConnectionRefusedException(ConnectionRefusedException connectException) {
+        log.debug("Input handleConnectionRefusedException. exception: {}", connectException.getMessage());
+        messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
+        messageInfo.setMessage(connectException.getMessage());
+        return messageInfo;
+    }
+
     @ExceptionHandler(ConnectException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public MessageInfoDto handleConnectionRefusedException(ConnectException connectException) {
-        log.debug("Input handleConnectionRefusedException. exception: {}", connectException.getMessage());
+    public MessageInfoDto handleBaseConnectRefusedException(ConnectException connectException) {
+        log.debug("Input handleBaseConnectRefusedException. exception: {}", connectException.getMessage());
         messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
         messageInfo.setMessage(connectException.getMessage());
         return messageInfo;
