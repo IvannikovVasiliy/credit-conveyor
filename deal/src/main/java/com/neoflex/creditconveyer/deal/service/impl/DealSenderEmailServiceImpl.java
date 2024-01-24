@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyer.deal.service.impl;
 
-import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.domain.constant.TopicConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.*;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
@@ -9,10 +8,10 @@ import com.neoflex.creditconveyer.deal.domain.entity.CreditEntity;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ChangeType;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
+import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.domain.jsonb.EmploymentJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
-import com.neoflex.creditconveyer.deal.error.exception.KafkaMessageNotSentException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.feign.FeignService;
 import com.neoflex.creditconveyer.deal.kafka.producer.EmailProducer;
@@ -26,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;

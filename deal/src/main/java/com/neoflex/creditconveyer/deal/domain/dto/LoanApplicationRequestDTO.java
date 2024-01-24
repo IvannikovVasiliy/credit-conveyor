@@ -1,5 +1,6 @@
 package com.neoflex.creditconveyer.deal.domain.dto;
 
+import com.neoflex.creditconveyer.deal.validation.constraint.AdultConstraint;
 import com.neoflex.creditconveyer.deal.validation.constraint.FirstLastMiddleNameConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -10,8 +11,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import com.neoflex.creditconveyer.deal.validation.constraint.AdultConstraint;
 
 @Getter
 @Setter

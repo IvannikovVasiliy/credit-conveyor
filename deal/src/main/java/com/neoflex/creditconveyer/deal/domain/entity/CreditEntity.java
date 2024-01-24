@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyer.deal.domain.entity;
 
-import com.neoflex.creditconveyer.deal.domain.dto.PaymentScheduleElement;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
 import com.neoflex.creditconveyer.deal.domain.jsonb.PaymentScheduleElementJsonb;
 import jakarta.persistence.*;

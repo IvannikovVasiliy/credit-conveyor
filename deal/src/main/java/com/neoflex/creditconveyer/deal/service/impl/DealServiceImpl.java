@@ -8,10 +8,8 @@ import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ChangeType;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
 import com.neoflex.creditconveyer.deal.domain.jsonb.EmploymentJsonb;
-import com.neoflex.creditconveyer.deal.domain.jsonb.PassportJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
-import com.neoflex.creditconveyer.deal.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.feign.FeignService;
 import com.neoflex.creditconveyer.deal.mapper.SourceMapper;
@@ -23,13 +21,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

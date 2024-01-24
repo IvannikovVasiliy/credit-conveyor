@@ -1,10 +1,9 @@
 package com.neoflex.creditconveyer.deal.config;
 
-import com.neoflex.creditconveyer.deal.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.deal.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

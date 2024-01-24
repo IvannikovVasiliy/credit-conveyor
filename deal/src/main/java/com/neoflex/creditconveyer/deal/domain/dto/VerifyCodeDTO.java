@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyer.deal.domain.dto;
 
-import com.neoflex.creditconveyer.deal.domain.constant.Constants;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

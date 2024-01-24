@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyer.deal.kafka.producer;
 
-import com.neoflex.creditconveyer.deal.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.deal.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.deal.error.exception.KafkaMessageNotSentException;
 import lombok.RequiredArgsConstructor;

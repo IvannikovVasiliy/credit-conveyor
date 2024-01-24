@@ -8,8 +8,6 @@ import com.neoflex.creditconveyer.deal.error.exception.ValidationAndScoringAndCa
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import feign.Response;
 import feign.codec.ErrorDecoder;
-import com.neoflex.creditconveyer.deal.error.exception.NotFoundException;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 

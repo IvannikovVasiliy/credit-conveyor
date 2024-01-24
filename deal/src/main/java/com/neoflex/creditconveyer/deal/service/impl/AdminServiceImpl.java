@@ -9,17 +9,12 @@ import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
 import com.neoflex.creditconveyer.deal.domain.jsonb.PassportJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.repository.ApplicationRepository;
-import com.neoflex.creditconveyer.deal.repository.ClientRepository;
-import com.neoflex.creditconveyer.deal.repository.CreditRepository;
 import com.neoflex.creditconveyer.deal.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 @Service

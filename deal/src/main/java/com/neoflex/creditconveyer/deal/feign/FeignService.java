@@ -1,26 +1,17 @@
 package com.neoflex.creditconveyer.deal.feign;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoflex.creditconveyer.deal.domain.dto.CreditDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.deal.domain.dto.ScoringDataDTO;
-import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.error.exception.ConnectionRefusedException;
-import com.neoflex.creditconveyer.deal.error.exception.ValidationAndScoringAndCalculationOfferException;
-import com.neoflex.creditconveyer.deal.error.validation.Violation;
 import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.ConnectException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
