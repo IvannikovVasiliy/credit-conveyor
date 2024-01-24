@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.ConnectException;
 import java.util.List;
 
 @RestControllerAdvice
@@ -79,6 +80,15 @@ public class GlobalErrorHandler {
         messageInfo.setMessage(connectException.getMessage());
         return messageInfo;
     }
+
+//    @ExceptionHandler(ConnectException.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public MessageInfoDto handleBaseConnectException(ConnectionRefusedException connectException) {
+//        log.debug("Input handleConnectionRefusedException. exception: {}", connectException.getMessage());
+//        messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
+//        messageInfo.setMessage(connectException.getMessage());
+//        return messageInfo;
+//    }
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)

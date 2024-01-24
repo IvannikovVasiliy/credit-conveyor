@@ -3,8 +3,11 @@ package com.neoflex.creditconveyer.application.feign;
 import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationResponseDTO;
 import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
+import com.neoflex.creditconveyer.application.error.exception.ConnectionRefusedException;
+import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +20,22 @@ public class DealFeignService {
 
     private final DealFeignClient dealFeignClient;
 
+    @Value("${dealService.hostPort}")
+    private String DEAL_HOST_PORT;
+
     public LoanApplicationResponseDTO getApplicationById(Long applicationId) {
         log.debug("try to get application with applicationId={} from deal-microservice", applicationId);
 
-        ResponseEntity<LoanApplicationResponseDTO> loanApplicationResponseDTO =
-                dealFeignClient.getApplicationById(applicationId);
-
-        log.debug("Get application with applicationId={} from deal-microservice", applicationId);
-        return loanApplicationResponseDTO.getBody();
+        try {
+            ResponseEntity<LoanApplicationResponseDTO> loanApplicationResponseDTO =
+                    dealFeignClient.getApplicationById(applicationId);
+            log.debug("Get application with applicationId={} from deal-microservice", applicationId);
+            return loanApplicationResponseDTO.getBody();
+        } catch (RetryableException e) {
+            throw new ConnectionRefusedException(
+                    String.format("Connection refused. No further information %s", DEAL_HOST_PORT)
+            );
+        }
     }
 
     public List<LoanOfferDTO> postDealApplication(LoanApplicationRequestDTO loanApplicationRequest) {
