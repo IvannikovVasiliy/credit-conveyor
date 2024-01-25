@@ -183,8 +183,10 @@ public class DealSenderEmailServiceImpl implements DealService {
     private ApplicationEntity saveApplication(LoanOfferDTO loanOffer) {
         ApplicationEntity application = applicationRepository
                 .findById(loanOffer.getApplicationId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", loanOffer.getApplicationId())));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("Not found. Application with id=%s not found", loanOffer.getApplicationId()),
+                        loanOffer.getApplicationId().toString()
+                ));
         application.setStatus(ApplicationStatus.APPROVED);
         List<StatusHistoryJsonb> statusHistories = application.getStatusHistory();
         StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();

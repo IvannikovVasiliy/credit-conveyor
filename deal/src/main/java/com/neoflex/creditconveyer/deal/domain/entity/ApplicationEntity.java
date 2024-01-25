@@ -26,7 +26,8 @@ public class ApplicationEntity {
     private Long id;
 
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REFRESH})
-    @MapsId
+//    @MapsId
+//    @JoinColumn(name = "client_id")
     @JoinColumn(name = "client_id", referencedColumnName = "client_id")
     private ClientEntity client;
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
