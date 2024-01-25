@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyer.deal.service.impl;
 
-import com.neoflex.creditconveyer.deal.domain.constant.TopicConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.*;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
@@ -12,8 +11,6 @@ import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.domain.jsonb.EmploymentJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
-import com.neoflex.creditconveyer.deal.error.exception.ConnectionRefusedException;
-import com.neoflex.creditconveyer.deal.error.exception.KafkaMessageNotSentException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.feign.FeignService;
 import com.neoflex.creditconveyer.deal.kafka.producer.EmailProducer;
@@ -26,6 +23,7 @@ import com.neoflex.creditconveyer.deal.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +46,13 @@ public class DealSenderEmailServiceImpl implements DealService {
     private final SourceMapper sourceMapper;
     private final EmailProducer emailProducer;
     private final TransactionService transactionService;
+
+    @Value("${kafka.topic.finishRegistration}")
+    private String FINISH_REGISTRATION_TOPIC;
+    @Value("${kafka.topic.createDocuments}")
+    private String CREATE_DOCUMENTS_TOPIC;
+    @Value("${kafka.topic.applicationDenied}")
+    private String APPLICATION_DENIED_TOPIC;
 
     @Override
     public List<LoanOfferDTO> calculateCreditConditions(LoanApplicationRequestDTO loanApplicationRequest) {
@@ -90,7 +95,7 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .applicationId(application.getId())
                 .build();
 
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, client.getId().toString(), emailMessage);
+        emailProducer.sendEmailMessage(FINISH_REGISTRATION_TOPIC, client.getId().toString(), emailMessage);
 
         log.info("Response chooseOffer");
     }
@@ -156,7 +161,7 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .application(sourceMapper.sourceToApplicationModel(application))
                 .credit(sourceMapper.sourceToCreditModel(creditEntity))
                 .build();
-        emailProducer.sendCreditEmailMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, client.getId().toString(), informationEmailMessage);
+        emailProducer.sendCreditEmailMessage(CREATE_DOCUMENTS_TOPIC, client.getId().toString(), informationEmailMessage);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");
     }
@@ -248,8 +253,6 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .theme(Theme.APPLICATION_DENIED)
                 .applicationId(application.getId())
                 .build();
-        emailProducer.sendEmailMessage(
-                TopicConstants.TOPIC_APPLICATION_DENIED, clientEntity.getId().toString(), emailMessage
-        );
+        emailProducer.sendEmailMessage(APPLICATION_DENIED_TOPIC, clientEntity.getId().toString(), emailMessage);
     }
 }
