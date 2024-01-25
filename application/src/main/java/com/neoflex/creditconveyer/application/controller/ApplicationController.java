@@ -45,7 +45,7 @@ public class ApplicationController {
         List<LoanOfferDTO> loanOffers = applicationService.prescoringAndCalcPossibleConditions(loanApplication);
 
         log.debug("Response postApplication. loanOffers={}", loanOffers);
-        return new ResponseEntity<>(loanOffers, HttpStatus.OK);
+        return new ResponseEntity<>(loanOffers, HttpStatus.CREATED);
     }
 
     @PutMapping("/offer")
@@ -56,6 +56,6 @@ public class ApplicationController {
         applicationService.chooseOffer(loanOffer);
 
         log.debug("Response putOffer");
-        return ResponseEntity.ok().build();
+        return ResponseEntity.accepted().build();
     }
 }
