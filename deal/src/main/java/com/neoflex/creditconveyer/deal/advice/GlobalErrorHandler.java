@@ -121,4 +121,13 @@ public class GlobalErrorHandler {
         messageInfo.setMessage(connectException.getMessage());
         return messageInfo;
     }
+
+    @ExceptionHandler(KafkaMessageNotSentException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public MessageInfoDto handleKafkaSentException(KafkaMessageNotSentException connectException) {
+        log.debug("Input handleKafkaSentException. exception: {}", connectException.getMessage());
+        messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
+        messageInfo.setMessage(connectException.getMessage());
+        return messageInfo;
+    }
 }

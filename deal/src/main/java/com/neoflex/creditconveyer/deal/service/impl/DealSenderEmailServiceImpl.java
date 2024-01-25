@@ -12,6 +12,8 @@ import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.domain.jsonb.EmploymentJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
+import com.neoflex.creditconveyer.deal.error.exception.ConnectionRefusedException;
+import com.neoflex.creditconveyer.deal.error.exception.KafkaMessageNotSentException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.feign.FeignService;
 import com.neoflex.creditconveyer.deal.kafka.producer.EmailProducer;
@@ -74,6 +76,7 @@ public class DealSenderEmailServiceImpl implements DealService {
     }
 
     @Override
+    @Transactional
     public void chooseOffer(LoanOfferDTO loanOffer) {
         log.debug("Request chooseOffer. loanOffer={applicationId: {}, requestedAmount: {}, totalAmount: {}, term: {}, monthlyPayment: {}, rate: {}, isInsuranceEnabled: {}, isSalaryClient: {}}",
                 loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
@@ -86,6 +89,7 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .theme(Theme.FINISH_REGISTRATION)
                 .applicationId(application.getId())
                 .build();
+
         emailProducer.sendEmailMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, client.getId().toString(), emailMessage);
 
         log.info("Response chooseOffer");
