@@ -47,9 +47,8 @@ public class EmailProducer {
                     producerRecord,
                     (result, exception) -> {
                         if (null != exception) {
-                            log.error("error. Unable to send message with key={} message={ address: {}, theme: {}, applicationId: {}, credit: {} } due to : {}",
-                                    emailMessage.getApplicationId(), emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), exception.getMessage());
-                            throw new KafkaMessageNotSentException(String.format("Unable to send message with applicationId=%d", emailMessage.getApplicationId()));
+                            throw new KafkaMessageNotSentException(String.format("error. Unable to send message: key=%s, applicationId=%s, topic: %s. Error message: %s",
+                                    key, emailMessage.getApplicationId(), TOPIC, exception.getMessage()));
                         } else {
                             log.info("Sent message={ address: {}, theme: {}, applicationId: {}, credit: {} } with offset=={}",
                                     emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getCredit(), result.offset());
@@ -66,8 +65,8 @@ public class EmailProducer {
                     producerRecord,
                     (result, exception) -> {
                         if (null != exception) {
-                            log.error("error. Unable to send message with key={} message={ address: {}, theme: {}, applicationId: {}, sesCode: {} } due to : {}",
-                                    emailMessage.getApplicationId(), emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getSesCode(), exception.getMessage());
+                            throw new KafkaMessageNotSentException(String.format("error. Unable to send message: key=%s, applicationId=%s, topic: %s. Error message: %s",
+                                    key, emailMessage.getApplicationId(), TOPIC, exception.getMessage()));
                         } else {
                             log.info("Sent message={ address: {}, theme: {}, applicationId: {}, sesCode: {} } with offset=={}",
                                     emailMessage.getAddress(), emailMessage.getTheme(), emailMessage.getApplicationId(), emailMessage.getSesCode(), result.offset());
