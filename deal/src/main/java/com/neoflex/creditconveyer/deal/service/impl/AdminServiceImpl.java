@@ -13,6 +13,8 @@ import com.neoflex.creditconveyer.deal.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -91,15 +93,17 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void updateStatusByApplicationId(Long applicationId) {
         log.debug("Input updateStatusByApplicationId. applicationId={}", applicationId);
 
         ApplicationEntity applicationEntity = applicationRepository
                 .findById(applicationId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", applicationId)));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("Not found. Application with id=%s not found", applicationId)
+                ));
         applicationEntity.setStatus(ApplicationStatus.DOCUMENT_CREATED);
-        applicationRepository.save(applicationEntity);
+//        applicationRepository.save(applicationEntity);
 
         log.debug("Output updateStatusByApplicationId. Success");
     }

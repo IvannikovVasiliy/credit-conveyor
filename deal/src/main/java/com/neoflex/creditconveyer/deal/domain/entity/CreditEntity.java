@@ -49,6 +49,6 @@ public class CreditEntity {
     @Column(name = "credit_status")
     private CreditStatus creditStatus;
 
-    @OneToOne(mappedBy = "credit", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(mappedBy = "credit", cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     private ApplicationEntity application;
 }

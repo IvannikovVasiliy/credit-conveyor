@@ -81,7 +81,6 @@ public class DealSenderEmailServiceImpl implements DealService {
     }
 
     @Override
-    @Transactional
     public void chooseOffer(LoanOfferDTO loanOffer) {
         log.debug("Request chooseOffer. loanOffer={applicationId: {}, requestedAmount: {}, totalAmount: {}, term: {}, monthlyPayment: {}, rate: {}, isInsuranceEnabled: {}, isSalaryClient: {}}",
                 loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
@@ -101,7 +100,6 @@ public class DealSenderEmailServiceImpl implements DealService {
     }
 
     @Override
-    @Transactional
     public void finishRegistrationAndCalcAmountCredit(Long applicationId, FinishRegistrationRequestDTO finishRegistration) {
         log.debug("Request finishRegistrationAndCalcAmountCredit. applicationId={}, finishRegistration={ gender: {}, martialStatus: {}, dependentAmount: {}, passportIssueDate: {}, passportIssueBranch: {}, employment: { employmentStatus: [}, employerINN: {}, salary: {}, position: {}, workExperienceTotal: {}, workExperienceCurrent: {} } }",
                 applicationId, finishRegistration.getGender(), finishRegistration.getMaritalStatus(), finishRegistration.getDependentAmount(), finishRegistration.getPassportIssueDate(), finishRegistration.getPassportIssueBranch(), finishRegistration.getEmployment().getEmploymentStatus(), finishRegistration.getEmployment().getEmployerINN(), finishRegistration.getEmployment().getPosition(), finishRegistration.getEmployment().getWorkExperienceTotal(), finishRegistration.getEmployment().getWorkExperienceCurrent());

@@ -6,6 +6,8 @@ import com.neoflex.creditconveyer.deal.error.exception.*;
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.deal.error.validation.Violation;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.bridge.Message;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -129,5 +131,13 @@ public class GlobalErrorHandler {
         messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
         messageInfo.setMessage(connectException.getMessage());
         return messageInfo;
+    }
+
+    @ExceptionHandler(CannotAcquireLockException.class)
+    public ResponseEntity<MessageInfoDto> handleConcurrentAccessDataException(CannotAcquireLockException exception) {
+        log.debug("handleConcurrentAccessDataException. exception: {}", exception.getMessage());
+        messageInfo.setRespCode(HttpStatus.CONFLICT.value());
+        messageInfo.setMessage(exception.getMessage());
+        return new ResponseEntity<>(messageInfo, HttpStatus.CONFLICT);
     }
 }

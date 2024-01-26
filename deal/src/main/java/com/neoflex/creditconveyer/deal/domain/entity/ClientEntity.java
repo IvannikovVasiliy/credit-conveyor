@@ -57,7 +57,7 @@ public class ClientEntity {
 
     private String account;
 
-    @OneToOne(mappedBy = "client", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @PrimaryKeyJoinColumn
     private ApplicationEntity application;
 }
