@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyer.deal.domain.entity;
 
-import com.neoflex.creditconveyer.deal.domain.dto.PaymentScheduleElement;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
 import com.neoflex.creditconveyer.deal.domain.jsonb.PaymentScheduleElementJsonb;
 import jakarta.persistence.*;
@@ -18,6 +17,9 @@ import java.util.List;
 @Getter
 @Setter
 public class CreditEntity {
+
+    @Version
+    private long version;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +52,6 @@ public class CreditEntity {
     @Column(name = "credit_status")
     private CreditStatus creditStatus;
 
-    @OneToOne(mappedBy = "credit", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(mappedBy = "credit", cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     private ApplicationEntity application;
 }

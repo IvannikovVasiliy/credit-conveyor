@@ -1,7 +1,5 @@
 package com.neoflex.creditconveyer.deal.service.impl;
 
-import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
-import com.neoflex.creditconveyer.deal.domain.constant.TopicConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.*;
 import com.neoflex.creditconveyer.deal.domain.entity.ApplicationEntity;
 import com.neoflex.creditconveyer.deal.domain.entity.ClientEntity;
@@ -9,10 +7,10 @@ import com.neoflex.creditconveyer.deal.domain.entity.CreditEntity;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ApplicationStatus;
 import com.neoflex.creditconveyer.deal.domain.enumeration.ChangeType;
 import com.neoflex.creditconveyer.deal.domain.enumeration.CreditStatus;
+import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
 import com.neoflex.creditconveyer.deal.domain.jsonb.EmploymentJsonb;
 import com.neoflex.creditconveyer.deal.domain.jsonb.StatusHistoryJsonb;
 import com.neoflex.creditconveyer.deal.error.exception.ApplicationIsPreapprovalException;
-import com.neoflex.creditconveyer.deal.error.exception.KafkaMessageNotSentException;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.feign.FeignService;
 import com.neoflex.creditconveyer.deal.kafka.producer.EmailProducer;
@@ -25,8 +23,10 @@ import com.neoflex.creditconveyer.deal.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
@@ -37,7 +37,7 @@ import java.util.List;
 @Service("dealSenderEmailServiceImpl")
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
+@Transactional(readOnly = true)
 public class DealSenderEmailServiceImpl implements DealService {
 
     private final FeignService feignService;
@@ -48,6 +48,13 @@ public class DealSenderEmailServiceImpl implements DealService {
     private final SourceMapper sourceMapper;
     private final EmailProducer emailProducer;
     private final TransactionService transactionService;
+
+    @Value("${kafka.topic.finishRegistration}")
+    private String FINISH_REGISTRATION_TOPIC;
+    @Value("${kafka.topic.createDocuments}")
+    private String CREATE_DOCUMENTS_TOPIC;
+    @Value("${kafka.topic.applicationDenied}")
+    private String APPLICATION_DENIED_TOPIC;
 
     @Override
     public List<LoanOfferDTO> calculateCreditConditions(LoanApplicationRequestDTO loanApplicationRequest) {
@@ -76,6 +83,7 @@ public class DealSenderEmailServiceImpl implements DealService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void chooseOffer(LoanOfferDTO loanOffer) {
         log.debug("Request chooseOffer. loanOffer={applicationId: {}, requestedAmount: {}, totalAmount: {}, term: {}, monthlyPayment: {}, rate: {}, isInsuranceEnabled: {}, isSalaryClient: {}}",
                 loanOffer.getApplicationId(), loanOffer.getRequestedAmount(), loanOffer.getTotalAmount(), loanOffer.getTerm(), loanOffer.getMonthlyPayment(), loanOffer.getRate(), loanOffer.getIsInsuranceEnabled(), loanOffer.getIsSalaryClient());
@@ -88,13 +96,14 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .theme(Theme.FINISH_REGISTRATION)
                 .applicationId(application.getId())
                 .build();
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_FINISH_REGISTRATION, client.getId().toString(), emailMessage);
+
+        emailProducer.sendEmailMessage(FINISH_REGISTRATION_TOPIC, client.getId().toString(), emailMessage);
 
         log.info("Response chooseOffer");
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void finishRegistrationAndCalcAmountCredit(Long applicationId, FinishRegistrationRequestDTO finishRegistration) {
         log.debug("Request finishRegistrationAndCalcAmountCredit. applicationId={}, finishRegistration={ gender: {}, martialStatus: {}, dependentAmount: {}, passportIssueDate: {}, passportIssueBranch: {}, employment: { employmentStatus: [}, employerINN: {}, salary: {}, position: {}, workExperienceTotal: {}, workExperienceCurrent: {} } }",
                 applicationId, finishRegistration.getGender(), finishRegistration.getMaritalStatus(), finishRegistration.getDependentAmount(), finishRegistration.getPassportIssueDate(), finishRegistration.getPassportIssueBranch(), finishRegistration.getEmployment().getEmploymentStatus(), finishRegistration.getEmployment().getEmployerINN(), finishRegistration.getEmployment().getPosition(), finishRegistration.getEmployment().getWorkExperienceTotal(), finishRegistration.getEmployment().getWorkExperienceCurrent());
@@ -140,10 +149,6 @@ public class DealSenderEmailServiceImpl implements DealService {
         application.setStatus(ApplicationStatus.CC_APPROVED);
         application.setStatusHistory(statusHistories);
 
-//        clientRepository.save(clientEntity);
-//        applicationRepository.save(application);
-//        creditRepository.save(creditEntity);
-
         ClientEntity client = application.getClient();
         InformationEmailMessage informationEmailMessage = InformationEmailMessage
                 .builder()
@@ -154,7 +159,7 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .application(sourceMapper.sourceToApplicationModel(application))
                 .credit(sourceMapper.sourceToCreditModel(creditEntity))
                 .build();
-        emailProducer.sendCreditEmailMessage(TopicConstants.TOPIC_CREATE_DOCUMENTS, client.getId().toString(), informationEmailMessage);
+        emailProducer.sendCreditEmailMessage(CREATE_DOCUMENTS_TOPIC, client.getId().toString(), informationEmailMessage);
 
         log.info("Response finishRegistrationAndCalcAmountCredit");
     }
@@ -185,8 +190,10 @@ public class DealSenderEmailServiceImpl implements DealService {
     private ApplicationEntity saveApplication(LoanOfferDTO loanOffer) {
         ApplicationEntity application = applicationRepository
                 .findById(loanOffer.getApplicationId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(String.format("Not found. Application with id=%s not found", loanOffer.getApplicationId())));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("Not found. Application with id=%s not found", loanOffer.getApplicationId()),
+                        loanOffer.getApplicationId().toString()
+                ));
         application.setStatus(ApplicationStatus.APPROVED);
         List<StatusHistoryJsonb> statusHistories = application.getStatusHistory();
         StatusHistoryJsonb statusHistory = new StatusHistoryJsonb();
@@ -244,8 +251,6 @@ public class DealSenderEmailServiceImpl implements DealService {
                 .theme(Theme.APPLICATION_DENIED)
                 .applicationId(application.getId())
                 .build();
-        emailProducer.sendEmailMessage(
-                TopicConstants.TOPIC_APPLICATION_DENIED, clientEntity.getId().toString(), emailMessage
-        );
+        emailProducer.sendEmailMessage(APPLICATION_DENIED_TOPIC, clientEntity.getId().toString(), emailMessage);
     }
 }

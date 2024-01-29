@@ -19,6 +19,9 @@ import java.sql.Date;
 @Setter
 public class ClientEntity {
 
+    @Version
+    private long version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "client_id")
@@ -57,7 +60,7 @@ public class ClientEntity {
 
     private String account;
 
-    @OneToOne(mappedBy = "client", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @PrimaryKeyJoinColumn
     private ApplicationEntity application;
 }

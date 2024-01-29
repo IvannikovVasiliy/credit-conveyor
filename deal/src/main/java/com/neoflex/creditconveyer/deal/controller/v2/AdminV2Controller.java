@@ -40,11 +40,11 @@ public class AdminV2Controller {
     public ResponseEntity<List<LoanApplicationResponseDto>> getAllApplications(PageDto page) {
         log.debug("Request to receive all applications");
 
-        adminService.getAllApplications(page);
+        List<LoanApplicationResponseDto> loanApplications = adminService.getAllApplications(page);
 
-        return null;
+        log.debug("Response loan applications");
+        return ResponseEntity.ok().body(loanApplications);
     }
-
 
     @PutMapping("/application/{applicationId}/status")
     public ResponseEntity<Void> updateStatusByApplicationId(@PathVariable Long applicationId) {

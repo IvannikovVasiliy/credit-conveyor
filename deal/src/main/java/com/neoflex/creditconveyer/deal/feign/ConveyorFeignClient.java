@@ -8,12 +8,14 @@ import com.neoflex.creditconveyer.deal.domain.dto.ScoringDataDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 @FeignClient(value = "conveyorFeign", url = "${conveyorService.hostPort}/v1/conveyor", configuration = DecoderConfiguration.class)
+@Validated
 public interface ConveyorFeignClient {
 
     @PostMapping("/offers")

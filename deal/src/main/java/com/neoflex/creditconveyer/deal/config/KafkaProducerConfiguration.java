@@ -1,10 +1,10 @@
 package com.neoflex.creditconveyer.deal.config;
 
-import com.neoflex.creditconveyer.deal.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
+import com.neoflex.creditconveyer.deal.domain.dto.InformationEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
+import com.neoflex.creditconveyer.deal.utils.KafkaProducerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaProducerConfig {
+public class KafkaProducerConfiguration {
 
     @Value(value = "${spring.kafka.bootstrapAddress}")
     private String bootstrapAddress;
@@ -29,6 +29,7 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configProps.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, KafkaProducerConfig.MAX_BLOCK_MS_CONFIG);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 //
@@ -47,7 +48,7 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        configProps.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 500);
+        configProps.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, KafkaProducerConfig.MAX_BLOCK_MS_CONFIG);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
@@ -57,6 +58,7 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configProps.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, KafkaProducerConfig.MAX_BLOCK_MS_CONFIG);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 

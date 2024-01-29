@@ -1,5 +1,6 @@
 package com.neoflex.creditconveyer.deal.validation.validator;
 
+import com.neoflex.creditconveyer.deal.domain.constant.Constants;
 import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.deal.validation.constraint.AdultConstraint;
 import com.neoflex.creditconveyer.utils.DatesUtil;
@@ -8,7 +9,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
-import com.neoflex.creditconveyer.deal.domain.constant.Constants;
 
 @Slf4j
 public class AdultValidator implements ConstraintValidator<AdultConstraint, LocalDate> {

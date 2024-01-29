@@ -1,6 +1,5 @@
 package com.neoflex.creditconveyer.deal.service.impl;
 
-import com.neoflex.creditconveyer.deal.domain.constant.TopicConstants;
 import com.neoflex.creditconveyer.deal.domain.dto.EmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.SesEmailMessage;
 import com.neoflex.creditconveyer.deal.domain.dto.VerifyCodeDTO;
@@ -15,6 +14,7 @@ import com.neoflex.creditconveyer.deal.repository.ApplicationRepository;
 import com.neoflex.creditconveyer.deal.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -26,6 +26,13 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final EmailProducer emailProducer;
     private final ApplicationRepository applicationRepository;
+
+    @Value("${kafka.topic.sendDocuments}")
+    private String SEND_DOCUMENTS_TOPIC;
+    @Value("${kafka.topic.sendSes}")
+    private String SEND_SES_TOPIC;
+    @Value("${kafka.topic.creditIssued}")
+    private String CREDIT_ISSUED_TOPIC;
 
     @Override
     public void sendDocuments(Long applicationId) {
@@ -46,7 +53,7 @@ public class DocumentServiceImpl implements DocumentService {
                 .theme(Theme.SEND_DOCUMENTS)
                 .applicationId(applicationId)
                 .build();
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_SEND_DOCUMENTS, client.getId().toString(), emailMessage);
+        emailProducer.sendEmailMessage(SEND_DOCUMENTS_TOPIC, client.getId().toString(), emailMessage);
 
         log.debug("Output sendDocuments. Successfully");
     }
@@ -72,7 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
                 .build();
 
         String clientIdString = application.getClient().getId().toString();
-        emailProducer.sendSesCodeEmailMessage(TopicConstants.TOPIC_SIGN_DOCUMENTS, clientIdString, sesEmailMessage);
+        emailProducer.sendSesCodeEmailMessage(SEND_SES_TOPIC, clientIdString, sesEmailMessage);
 
         log.debug("Output signDocuments. Success");
     }
@@ -98,7 +105,7 @@ public class DocumentServiceImpl implements DocumentService {
                 .applicationId(applicationId)
                 .build();
         String clientIdString = application.getClient().getId().toString();
-        emailProducer.sendEmailMessage(TopicConstants.TOPIC_CREDIT_ISSUED, clientIdString, emailMessage);
+        emailProducer.sendEmailMessage(CREDIT_ISSUED_TOPIC, clientIdString, emailMessage);
 
         log.debug("Output issuedCredit. sesCode: {}", verifyCodeDTO.getSesCode());
     }

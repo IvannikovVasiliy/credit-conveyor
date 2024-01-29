@@ -21,7 +21,6 @@ import java.sql.Date;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Component("sourceMapperImplementation")
 public class SourceMapperImpl implements SourceMapper {

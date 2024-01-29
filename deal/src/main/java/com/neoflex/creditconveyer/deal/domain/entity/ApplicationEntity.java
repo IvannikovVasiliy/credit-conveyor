@@ -20,16 +20,18 @@ import java.util.List;
 @Setter
 public class ApplicationEntity {
 
+    @Version
+    private long version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "application_id")
     private Long id;
 
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REFRESH})
-    @MapsId
     @JoinColumn(name = "client_id", referencedColumnName = "client_id")
     private ClientEntity client;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "credit_id", referencedColumnName = "credit_id")
     private CreditEntity credit;
 

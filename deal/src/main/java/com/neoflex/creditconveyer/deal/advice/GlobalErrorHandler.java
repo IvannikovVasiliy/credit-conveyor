@@ -6,12 +6,18 @@ import com.neoflex.creditconveyer.deal.error.exception.*;
 import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.deal.error.validation.Violation;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.bridge.Message;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.ConnectException;
 import java.util.List;
 
 @RestControllerAdvice
@@ -21,16 +27,19 @@ public class GlobalErrorHandler {
     MessageInfoDto messageInfo = new MessageInfoDto(ErrorConstants.DEFAULT_ERROR_CODE);
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public MessageInfoDto handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ResponseEntity<MessageInfoDto> handlePaymentNotFound(ResourceNotFoundException paymentNotFound) {
         log.debug("Input handlePaymentNotFound. paymentNotFound: {}", paymentNotFound.getMessage());
 
         messageInfo.setRespCode(ErrorConstants.BAD_REQUEST);
         messageInfo.setMessage(paymentNotFound.getMessage());
 
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.put("Correlation-Id", List.of(paymentNotFound.getCorrelationId()));
+
         log.debug("Output handlePaymentNotFound. messageInfo={ errorCode: {}, respCode: {}, message: {} }",
                 messageInfo.getErrorCode(), messageInfo.getRespCode(), messageInfo.getMessage());
-        return messageInfo;
+        return new ResponseEntity<>(messageInfo, headers, HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -95,5 +104,40 @@ public class GlobalErrorHandler {
     ) {
         log.debug("Input handleValidationAndScoringAndCalculationOfferException. offer: {}", offer.getViolations());
         return new ErrorResponseValidation(offer.getViolations());
+    }
+
+    @ExceptionHandler(ConnectionRefusedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public MessageInfoDto handleConnectionRefusedException(ConnectionRefusedException connectException) {
+        log.debug("Input handleConnectionRefusedException. exception: {}", connectException.getMessage());
+        messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
+        messageInfo.setMessage(connectException.getMessage());
+        return messageInfo;
+    }
+
+    @ExceptionHandler(ConnectException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public MessageInfoDto handleBaseConnectRefusedException(ConnectException connectException) {
+        log.debug("Input handleBaseConnectRefusedException. exception: {}", connectException.getMessage());
+        messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
+        messageInfo.setMessage(connectException.getMessage());
+        return messageInfo;
+    }
+
+    @ExceptionHandler(KafkaMessageNotSentException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public MessageInfoDto handleKafkaSentException(KafkaMessageNotSentException connectException) {
+        log.debug("Input handleKafkaSentException. exception: {}", connectException.getMessage());
+        messageInfo.setRespCode(ErrorConstants.INTERNAL_SERVER_ERROR);
+        messageInfo.setMessage(connectException.getMessage());
+        return messageInfo;
+    }
+
+    @ExceptionHandler(CannotAcquireLockException.class)
+    public ResponseEntity<MessageInfoDto> handleConcurrentAccessDataException(CannotAcquireLockException exception) {
+        log.debug("handleConcurrentAccessDataException. exception: {}", exception.getMessage());
+        messageInfo.setRespCode(HttpStatus.CONFLICT.value());
+        messageInfo.setMessage(exception.getMessage());
+        return new ResponseEntity<>(messageInfo, HttpStatus.CONFLICT);
     }
 }

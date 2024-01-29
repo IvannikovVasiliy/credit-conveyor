@@ -1,7 +1,6 @@
 package com.neoflex.creditconveyer.deal.domain.dto;
 
 import com.neoflex.creditconveyer.deal.domain.enumeration.Theme;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
