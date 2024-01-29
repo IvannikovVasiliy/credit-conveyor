@@ -63,400 +63,402 @@ paths:
       responses:
         '200':
           description: successful operation
-  /v2/deal/offer:
-    put:
-      tags:
-        - deal-v-2-controller
-      operationId: chooseOffer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoanOfferDTO'
-          required: true
-      responses:
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                $ref : '#/components/schemas/MessageInfoDto'
-        '400':
-          description: Bad Request,
-          content:
-            '*/*':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ErrorResponseValidation'
-                  - $ref: '#/components/schemas/MessageInfoDto'
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '404':
-          description: Not Found,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto',
-        '200':
-          description: OK
-  /v2/deal/calculate/{applicationId}:
-    put:
-      tags:
-        - deal-v-2-controller
-      operationId: calculateByAppId,
-      parameters:
-        - name: applicationId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FinishRegistrationRequestDTO'\
-        required: true
-      responses:
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '400':
-          description: Bad Request,
-          content:
-            '*/*':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ErrorResponseValidation'
-                  - $ref: '#/components/schemas/MessageInfoDto'
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '404':
-          description: Not Found,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto',
-        '200':
-          description: OK
-  /v2/deal/admin/application/{applicationId}/status:
-    put:
-      tags:
-        - admin-v-2-controller
-      operationId: updateStatusByApplicationId,
-      parameters:
-        - name: applicationId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '400':
-          description: Bad Request,
-          content:
-            '*/*':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ErrorResponseValidation'
-                  - $ref: '#/components/schemas/MessageInfoDto'
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '404':
-          description: Not Found,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto',
-        '200':
-          description: OK
-  /v2/deal/document/{applicationId}/sign:
-    post:
-      tags:
-        - document-v-2-controller
-      operationId: signDocuments,
-      parameters:
-        - name: applicationId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '400':
-          description: Bad Request,
-          content:
-            '*/*':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ErrorResponseValidation'
-                  - $ref: '#/components/schemas/MessageInfoDto'
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '404':
-          description: Not Found,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto',
-        '200':
-          description: OK
-  /v2/deal/document/{applicationId}/send:
-    post:
-      tags:
-        - document-v-2-controller
-      operationId: sendDocuments,
-      parameters:
-        - name: applicationId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '400':
-          description: Bad Request,
-          content:
-            '*/*':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ErrorResponseValidation'
-                  - $ref: '#/components/schemas/MessageInfoDto'
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '404':
-          description: Not Found,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto',
-        '200':
-          description: OK
-  /v2/deal/document/{applicationId}/code:
-    post:
-      tags:
-        - document-v-2-controller
-      operationId: signAllDocuments,
-      parameters:
-        - name: applicationId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VerifyCodeDTO'
-        required: true
-      responses:
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '400':
-          description: Bad Request,
-          content:
-            '*/*':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ErrorResponseValidation'
-                  - $ref: '#/components/schemas/MessageInfoDto'
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '404':
-          description: Not Found,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto',
-        '200':
-          description: OK
-  /v2/deal/application:
-    post:
-      tags:
-        - document-v-2-controller
-      operationId: postApplication,
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoanApplicationRequestDTO'
-        required: true
-      responses:
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '400':
-          description: Bad Request,
-          content:
-            '*/*':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ErrorResponseValidation'
-                  - $ref: '#/components/schemas/MessageInfoDto'
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '404':
-          description: Not Found,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto',
-        '200':
-          description: OK,
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LoanOfferDTO'
-  /v2/deal/admin/application:
-    get:
-      tags:
-        - admin-v-2-controller
-      operationId: getAllApplications,
-      parameters:
-        - name: page
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/PageDto'
-      responses:
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '400':
-          description: Bad Request,
-          content:
-            '*/*':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ErrorResponseValidation'
-                  - $ref: '#/components/schemas/MessageInfoDto'
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '404':
-          description: Not Found,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto',
-        '200':
-          description: OK,
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LoanApplicationResponseDto'
-  /v2/deal/admin/application/{applicationId}:
-    get:
-      tags:
-        - admin-v-2-controller
-      operationId: getApplicationById,
-      parameters:
-        - name: applicationId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '400':
-          description: Bad Request,
-          content:
-            '*/*':
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ErrorResponseValidation'
-                  - $ref: '#/components/schemas/MessageInfoDto'
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto'
-        '404':
-          description: Not Found,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/MessageInfoDto',
-        '200':
-          description: OK,
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/LoanApplicationResponseDto'
+#  /v2/deal/offer:
+#    put:
+#      tags:
+#        - deal-v-2-controller
+#      operationId: chooseOffer
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/LoanOfferDTO'
+#          required: true
+#      responses:
+#        '404':
+#          description: Not Found,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '409':
+#          description: Conflict
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '400':
+#          description: Bad Request,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#                oneOf:
+#                  - $ref: '#/components/schemas/ErrorResponseValidation'
+#                  - $ref: '#/components/schemas/FinishRegistrationRequestDTO'
+#                  - $ref: '#/components/schemas/MessageInfoDto'
+#        '500':
+#          description: Internal Server Error
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '200':
+#          description: OK
+##  /v2/deal/calculate/{applicationId}:
+##    put:
+##      tags:
+##        - deal-v-2-controller
+##      operationId: calculateByAppId,
+##      parameters:
+##        - name: applicationId
+##          in: path
+##          required: true
+##          schema:
+##            type: integer
+##            format: int64
+##      requestBody:
+##        content:
+##          application/json:
+##            schema:
+##              $ref: '#/components/schemas/FinishRegistrationRequestDTO'
+##        required: true
+##      responses:
+##        '409':
+##          description: Conflict
+##          content:
+##            '*/*':
+##              schema:
+##                $ref: '#/components/schemas/MessageInfoDto'
+##        '400':
+##          description: Bad Request,
+##          content:
+##            '*/*':
+##              schema:
+#                oneOf:
+#                  - $ref: '#/components/schemas/ErrorResponseValidation'
+#                  - $ref: '#/components/schemas/MessageInfoDto'
+##        '500':
+##          description: Internal Server Error
+##          content:
+##            '*/*':
+##              schema:
+##                $ref: '#/components/schemas/MessageInfoDto'
+##        '404':
+##          description: Not Found,
+##          content:
+##            '*/*':
+##              schema:
+##                $ref: '#/components/schemas/MessageInfoDto'
+##        '200':
+##          description: OK
+#  /v2/deal/admin/application/{applicationId}/status:
+#    put:
+#      tags:
+#        - admin-v-2-controller
+#      operationId: updateStatusByApplicationId,
+#      parameters:
+#        - name: applicationId
+#          in: path
+#          required: true
+#          schema:
+#            type: integer
+#            format: int64
+#      responses:
+#        '409':
+#          description: Conflict
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '400':
+#          description: Bad Request,
+#          content:
+#            '*/*':
+#              schema:
+#                oneOf:
+#                  - $ref: '#/components/schemas/ErrorResponseValidation'
+#                  - $ref: '#/components/schemas/MessageInfoDto'
+#        '500':
+#          description: Internal Server Error
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '404':
+#          description: Not Found,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '200':
+#          description: OK
+#  /v2/deal/document/{applicationId}/sign:
+#    post:
+#      tags:
+#        - document-v-2-controller
+#      operationId: signDocuments,
+#      parameters:
+#        - name: applicationId
+#          in: path
+#          required: true
+#          schema:
+#            type: integer
+#            format: int64
+#      responses:
+#        '409':
+#          description: Conflict
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '400':
+#          description: Bad Request,
+#          content:
+#            '*/*':
+#              schema:
+#                oneOf:
+#                  - $ref: '#/components/schemas/ErrorResponseValidation'
+#                  - $ref: '#/components/schemas/MessageInfoDto'
+#        '500':
+#          description: Internal Server Error
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '404':
+#          description: Not Found,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '200':
+#          description: OK
+#  /v2/deal/document/{applicationId}/send:
+#    post:
+#      tags:
+#        - document-v-2-controller
+#      operationId: sendDocuments,
+#      parameters:
+#        - name: applicationId
+#          in: path
+#          required: true
+#          schema:
+#            type: integer
+#            format: int64
+#      responses:
+#        '409':
+#          description: Conflict
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '400':
+#          description: Bad Request,
+#          content:
+#            '*/*':
+#              schema:
+#                oneOf:
+#                  - $ref: '#/components/schemas/ErrorResponseValidation'
+#                  - $ref: '#/components/schemas/MessageInfoDto'
+#        '500':
+#          description: Internal Server Error
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '404':
+#          description: Not Found,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '200':
+#          description: OK
+#  /v2/deal/document/{applicationId}/code:
+#    post:
+#      tags:
+#        - document-v-2-controller
+#      operationId: signAllDocuments,
+#      parameters:
+#        - name: applicationId
+#          in: path
+#          required: true
+#          schema:
+#            type: integer
+#            format: int64
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/VerifyCodeDTO'
+#        required: true
+#      responses:
+#        '409':
+#          description: Conflict
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '400':
+#          description: Bad Request,
+#          content:
+#            '*/*':
+#              schema:
+#                oneOf:
+#                  - $ref: '#/components/schemas/ErrorResponseValidation'
+#                  - $ref: '#/components/schemas/MessageInfoDto'
+#        '500':
+#          description: Internal Server Error
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '404':
+#          description: Not Found,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '200':
+#          description: OK
+#  /v2/deal/application:
+#    post:
+#      tags:
+#        - document-v-2-controller
+#      operationId: postApplication,
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/LoanApplicationRequestDTO'
+#        required: true
+#      responses:
+#        '409':
+#          description: Conflict
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '400':
+#          description: Bad Request,
+#          content:
+#            '*/*':
+#              schema:
+#                oneOf:
+#                  - $ref: '#/components/schemas/ErrorResponseValidation'
+#                  - $ref: '#/components/schemas/MessageInfoDto'
+#        '500':
+#          description: Internal Server Error
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '404':
+#          description: Not Found,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '200':
+#          description: OK,
+#          content:
+#            '*/*':
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/LoanOfferDTO'
+#  /v2/deal/admin/application:
+#    get:
+#      tags:
+#        - admin-v-2-controller
+#      operationId: getAllApplications,
+#      parameters:
+#        - name: page
+#          in: query
+#          required: true
+#          schema:
+#            $ref: '#/components/schemas/PageDto'
+#      responses:
+#        '409':
+#          description: Conflict
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '400':
+#          description: Bad Request,
+#          content:
+#            '*/*':
+#              schema:
+#                oneOf:
+#                  - $ref: '#/components/schemas/ErrorResponseValidation'
+#                  - $ref: '#/components/schemas/MessageInfoDto'
+#        '500':
+#          description: Internal Server Error
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '404':
+#          description: Not Found,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '200':
+#          description: OK,
+#          content:
+#            '*/*':
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/LoanApplicationResponseDto'
+#  /v2/deal/admin/application/{applicationId}:
+#    get:
+#      tags:
+#        - admin-v-2-controller
+#      operationId: getApplicationById,
+#      parameters:
+#        - name: applicationId
+#          in: path
+#          required: true
+#          schema:
+#            type: integer
+#            format: int64
+#      responses:
+#        '409':
+#          description: Conflict
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '400':
+#          description: Bad Request,
+#          content:
+#            '*/*':
+#              schema:
+#                oneOf:
+#                  - $ref: '#/components/schemas/ErrorResponseValidation'
+#                  - $ref: '#/components/schemas/MessageInfoDto'
+#        '500':
+#          description: Internal Server Error
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '404':
+#          description: Not Found,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/MessageInfoDto'
+#        '200':
+#          description: OK,
+#          content:
+#            '*/*':
+#              schema:
+#                $ref: '#/components/schemas/LoanApplicationResponseDto'
 components:
   schemas:
     MessageInfoDto:
@@ -470,20 +472,20 @@ components:
           format: int32
         message:
           type: string
-    ErrorResponseValidation:
-      type: object
-      properties:
-        violations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Violation'
-    Violation:
-      type: object
-      properties:
-        fieldName:
-          type: string
-        message:
-          type: string
+#    ErrorResponseValidation:
+#      type: object
+#      properties:
+#        violations:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/Violation'
+#    Violation:
+#      type: object
+#      properties:
+#        fieldName:
+#          type: string
+#        message:
+#          type: string
     LoanApplicationRequestDTO:
       required:
         - amount
@@ -531,29 +533,29 @@ components:
           example: 123456
           minimum: 6
           maximum: 6
-    LoanApplicationResponseDto:
-      type: object
-      properties:
-        amount:
-          type: number
-        term:
-          type: integer
-          format: int32
-        firstName:
-          type: string
-        lastName:
-          type: string
-        middleName:
-          type: string
-        email:
-          type: string
-        birthdate:
-          type: string
-          format: date
-        passportSeries:
-          type: string
-        passportNumber:
-          type: string
+#    LoanApplicationResponseDto:
+#      type: object
+#      properties:
+#        amount:
+#          type: number
+#        term:
+#          type: integer
+#          format: int32
+#        firstName:
+#          type: string
+#        lastName:
+#          type: string
+#        middleName:
+#          type: string
+#        email:
+#          type: string
+#        birthdate:
+#          type: string
+#          format: date
+#        passportSeries:
+#          type: string
+#        passportNumber:
+#          type: string
     LoanOfferDTO:
       required:
         - applicationId
@@ -615,6 +617,14 @@ components:
           $ref: '#/components/schemas/EmploymentDTO'
         account:
           type: string
+    VerifyCodeDTO:
+      required:
+        - sesCode
+      type: object
+      properties:
+        sesCode:
+          type: integer
+          format: int32
     EmploymentDTO:
       type: object
       format: EmploymentDTO
@@ -632,17 +642,17 @@ components:
           type: integer
         workExperienceCurrent:
           type: integer
-    EmailMessage:
-      type: object
-      format: EmailMessage
-      properties:
-        address:
-          type: string
-        theme:
-          $ref: '#/components/schemas/Theme'
-        applicationId:
-          type: integer
-          format: int64
+#    EmailMessage:
+#      type: object
+#      format: EmailMessage
+#      properties:
+#        address:
+#          type: string
+#        theme:
+#          $ref: '#/components/schemas/Theme'
+#        applicationId:
+#          type: integer
+#          format: int64
     Gender:
       type: string
       enum:
@@ -670,7 +680,7 @@ components:
         - MID_MANAGER
         - TOP_MANAGER
         - OWNER
-    Theme:
-      type: string
-      enum:
-        - EXAMPLE
+#    Theme:
+#      type: string
+#      enum:
+#        - EXAMPLE
