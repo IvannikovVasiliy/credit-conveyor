@@ -43,3 +43,7 @@ application.conf
 secrets*
 sftp.conf
 hosts.dat
+
+mvnw
+mvnw.cmd
+.mvn

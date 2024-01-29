@@ -62,6 +62,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>conveyor:0.0.1-SNAPSHOT</finalName>
     </build>
 
 </project>
