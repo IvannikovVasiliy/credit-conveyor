@@ -18,6 +18,9 @@ import java.util.List;
 @Setter
 public class CreditEntity {
 
+    @Version
+    private long version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "credit_id")

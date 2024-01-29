@@ -20,6 +20,9 @@ import java.util.List;
 @Setter
 public class ApplicationEntity {
 
+    @Version
+    private long version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "application_id")

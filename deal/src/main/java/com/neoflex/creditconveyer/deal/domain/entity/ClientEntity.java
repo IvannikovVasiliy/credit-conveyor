@@ -19,6 +19,9 @@ import java.sql.Date;
 @Setter
 public class ClientEntity {
 
+    @Version
+    private long version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "client_id")
