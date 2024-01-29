@@ -40,8 +40,9 @@ secrets.conf
 .gradletasknamecache
 .sts4-cache
 .idea
+
+application.conf
+secrets*
+sftp.conf
 application.yaml
 hosts.dat
-sftp.conf
-hosts.dat
-sftp.conf
