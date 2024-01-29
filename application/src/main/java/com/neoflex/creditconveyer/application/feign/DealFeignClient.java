@@ -8,11 +8,13 @@ import jakarta.validation.Valid;
 import org.springframework.cloud.client.loadbalancer.LoadBalancedRecoveryCallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @FeignClient(value = "dealFeign", url = "${dealService.hostPort}", configuration = DecoderConfiguration.class)
+@Validated
 public interface DealFeignClient {
     @GetMapping("/v2/deal/admin/application/{applicationId}")
     ResponseEntity<LoanApplicationResponseDTO> getApplicationById(@Valid @PathVariable Long applicationId);

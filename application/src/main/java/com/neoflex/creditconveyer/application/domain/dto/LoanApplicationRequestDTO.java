@@ -24,7 +24,7 @@ public class LoanApplicationRequestDTO {
     private String middleName;
     private String email;
     private LocalDate birthdate;
-    @NotNull
+    @NotNull(message = "Номер паспорта не должен быть пуст")
     private String passportSeries;
     @NotNull
     private String passportNumber;
