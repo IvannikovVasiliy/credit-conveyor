@@ -1,0 +1,21 @@
+package com.neoflex.creditconveyor.conveyor.domain.dto;
+
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentPosition;
+import com.neoflex.creditconveyor.conveyor.domain.enumeration.EmploymentStatus;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+
+@Getter
+@Setter
+@Builder
+public class EmploymentDTO {
+    private EmploymentStatus employmentStatus;
+    private String employerINN;
+    private BigDecimal salary;
+    private EmploymentPosition position;
+    private Integer workExperienceTotal;
+    private Integer workExperienceCurrent;
+}
