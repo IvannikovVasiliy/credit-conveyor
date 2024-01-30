@@ -15,7 +15,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 class PaymentScheduleTest {
 
     @Test
@@ -51,8 +50,12 @@ class PaymentScheduleTest {
                 new PaymentScheduleElement(8, date.plusMonths(7), BigDecimal.valueOf(1.7361253796).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(1.7361253796).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.ZERO, BigDecimal.ZERO)
         );
 
-        List<PaymentScheduleElement> paymentScheduleElementsResponse =
-                PaymentSchedule.createPaymentSchedule(scoringOwnerBusinessRequest, BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN), BigDecimal.valueOf(16), date);
+        List<PaymentScheduleElement> paymentScheduleElementsResponse = PaymentSchedule.createPaymentSchedule(
+                scoringOwnerBusinessRequest,
+                BigDecimal.valueOf(1505.770917).setScale(Constants.ACCURACY, RoundingMode.DOWN),
+                BigDecimal.valueOf(16),
+                date
+        );
 
         assertEquals(paymentScheduleElementsExpected, paymentScheduleElementsResponse);
     }

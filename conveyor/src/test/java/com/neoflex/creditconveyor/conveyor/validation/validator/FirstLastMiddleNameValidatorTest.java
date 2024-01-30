@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FirstLastMiddleNameValidatorTest {
 
-    FirstLastMiddleNameValidator validator = new FirstLastMiddleNameValidator();
+    private final FirstLastMiddleNameValidator validator = new FirstLastMiddleNameValidator();
     @Mock
     ConstraintValidatorContext constraintValidatorContext;
 

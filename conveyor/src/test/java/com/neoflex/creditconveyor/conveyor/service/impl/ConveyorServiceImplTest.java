@@ -99,7 +99,7 @@ class ConveyorServiceImplTest {
     }
 
     @Test
-    public void validAndScoreAndCalcOffer() throws URISyntaxException, IOException {
+    public void validAndScoreAndCalcOfferTest() throws URISyntaxException, IOException {
         ScoringDataDTO scoringOwnerBusinessRequest = ScoringDataDTO
                 .builder()
                 .amount(BigDecimal.valueOf(10000))
@@ -151,8 +151,10 @@ class ConveyorServiceImplTest {
         responseCredit.setPaymentSchedule(null);
 
         assertEquals(expectedCredit, responseCredit);
-        assertThrows(ValidationAndScoringAndCalculationOfferException.class, () ->
-                conveyorService.validAndScoreAndCalcOffer(scoringDataUnemployedRequest));
+        assertThrows(
+                ValidationAndScoringAndCalculationOfferException.class,
+                () -> conveyorService.validAndScoreAndCalcOffer(scoringDataUnemployedRequest)
+        );
     }
 
     @Test
@@ -198,13 +200,43 @@ class ConveyorServiceImplTest {
                 .isSalaryClient(false)
                 .isInsuranceEnabled(false)
                 .build();
+        ScoringDataDTO scoringDataNotAdult = ScoringDataDTO
+                .builder()
+                .amount(BigDecimal.valueOf(10000)).term(7)
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .gender(Gender.MALE)
+                .birthdate(LocalDate.of(2008, 01, 01))
+                .passportSeries("1234")
+                .passportNumber("123456")
+                .martialStatus(MartialStatus.SINGLE)
+                .employment(EmploymentDTO
+                        .builder()
+                        .employmentStatus(EmploymentStatus.EMPLOYED)
+                        .salary(BigDecimal.valueOf(1000))
+                        .workExperienceCurrent(13)
+                        .workExperienceTotal(4)
+                        .build())
+                .isSalaryClient(false)
+                .isInsuranceEnabled(false)
+                .build();
 
-        assertThrows(ValidationAndScoringAndCalculationOfferException.class, () ->
-                conveyorService.validAndScoreAndCalcOffer(scoringDataExperienceSmall));
-        assertThrows(ValidationAndScoringAndCalculationOfferException.class, () ->
-                conveyorService.validAndScoreAndCalcOffer(scoringDataSmallSalary));
-        assertThrows(ValidationAndScoringAndCalculationOfferException.class, () ->
-                conveyorService.validAndScoreAndCalcOffer(scoringDataExperienceSmall));
+        assertThrows(
+                ValidationAndScoringAndCalculationOfferException.class, () ->
+                conveyorService.validAndScoreAndCalcOffer(scoringDataExperienceSmall)
+        );
+        assertThrows(
+                ValidationAndScoringAndCalculationOfferException.class, () ->
+                conveyorService.validAndScoreAndCalcOffer(scoringDataSmallSalary)
+        );
+        assertThrows(
+                ValidationAndScoringAndCalculationOfferException.class,
+                () -> conveyorService.validAndScoreAndCalcOffer(scoringDataExperienceSmall)
+        );
+        assertThrows(
+                ValidationAndScoringAndCalculationOfferException.class,
+                () -> conveyorService.validAndScoreAndCalcOffer(scoringDataNotAdult)
+        );
     }
 
     @Test
