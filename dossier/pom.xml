@@ -119,6 +119,7 @@
                 <version>4.21.1</version>
             </plugin>
         </plugins>
+        <finalName>dossier:0.0.1-SNAPSHOT</finalName>
     </build>
 
 </project>

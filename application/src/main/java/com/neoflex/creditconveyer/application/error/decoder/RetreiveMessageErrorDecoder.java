@@ -11,10 +11,8 @@ import com.neoflex.creditconveyer.application.http.HttpConfig;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
-import org.webjars.NotFoundException;
 
 import java.io.IOException;
-import java.net.ConnectException;
 
 @Slf4j
 public class RetreiveMessageErrorDecoder implements ErrorDecoder {

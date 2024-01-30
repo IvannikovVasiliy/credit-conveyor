@@ -51,11 +51,48 @@ services:
     networks:
       - credit-conveyor-network
 
+  application:
+    image: application:0.0.1-SNAPSHOT
+    container_name: application
+    build:
+      context: ./application/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - broker-credit-conveyor
+      - postgres-credit-conveyor
+    networks:
+      - credit-conveyor-network
+
+  
+
   conveyor:
     image: conveyor:0.0.1-SNAPSHOT
     container_name: conveyor
+    build:
+      context: ./conveyor/
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - broker-credit-conveyor
+      - postgres-credit-conveyor
+    networks:
+      - credit-conveyor-network
+
+  dossier:
+    image: dossier:0.0.1-SNAPSHOT
+    container_name: dossier
+    build:
+      context: ./dossier/
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
