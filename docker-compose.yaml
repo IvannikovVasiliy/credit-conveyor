@@ -19,7 +19,7 @@ services:
     image: confluentinc/cp-kafka:7.3.2
     container_name: broker-credit-conveyor
     ports:
-      - 9092:9092
+      - "9092:9092"
     depends_on:
       - zookeeper-credit-conveyor
     environment:
@@ -51,23 +51,89 @@ services:
     networks:
       - credit-conveyor-network
 
-  application:
-    image: application:0.0.1-SNAPSHOT
-    container_name: application
+  configuration:
+    image: configuration:0.0.1-SNAPSHOT
+    container_name: configuration
     build:
-      context: ./application/
+      context: ./configuration-docker/
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - "8888:8888"
     depends_on:
       - broker-credit-conveyor
       - postgres-credit-conveyor
     networks:
       - credit-conveyor-network
 
-  
+  discovery:
+    image: discovery:0.0.1-SNAPSHOT
+    container_name: discovery
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - broker-credit-conveyor
+      - postgres-credit-conveyor
+      - configuration
+    networks:
+      - credit-conveyor-network
+
+  gateway:
+    image: gateway:0.0.1-SNAPSHOT
+    container_name: gateway
+    build:
+      context: ./gateway/
+      dockerfile: Dockerfile
+    ports:
+      - "8765:8765"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - broker-credit-conveyor
+      - postgres-credit-conveyor
+      - configuration
+      - discovery
+    networks:
+      - credit-conveyor-network
+
+  application-service:
+    image: application-service:0.0.1-SNAPSHOT
+    container_name: application-service
+    build:
+      context: ./application/
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - broker-credit-conveyor
+      - postgres-credit-conveyor
+      - configuration
+      - discovery
+      - gateway
+    networks:
+      - credit-conveyor-network
+
+  deal:
+    image: deal:0.0.1-SNAPSHOT
+    container_name: deal
+    build:
+      context: ./deal/
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - broker-credit-conveyor
+      - postgres-credit-conveyor
+      - configuration
+      - discovery
+      - gateway
+    networks:
+      - credit-conveyor-network
 
   conveyor:
     image: conveyor:0.0.1-SNAPSHOT
@@ -82,6 +148,9 @@ services:
     depends_on:
       - broker-credit-conveyor
       - postgres-credit-conveyor
+      - configuration
+      - discovery
+      - gateway
     networks:
       - credit-conveyor-network
 
@@ -98,6 +167,9 @@ services:
     depends_on:
       - broker-credit-conveyor
       - postgres-credit-conveyor
+      - configuration
+      - discovery
+      - gateway
     networks:
       - credit-conveyor-network
 

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.SFTPEngine;
 import net.schmizz.sshj.sftp.StatefulSFTPClient;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,6 +70,7 @@ public class DossierConfiguration {
             SSHClient sshClient = new SSHClient();
             sshClient.setConnectTimeout(CONNECTION_TIMEOUT_SFTP);
             try {
+                sshClient.addHostKeyVerifier(new PromiscuousVerifier());
                 sshClient.loadKnownHosts(new File(SFTPConfig.getHostsFile()));
                 sshClient.connect(SFTP_HOST_CONFIG);
                 sshClient.authPassword(SecretConfig.getSftpUserConfig(), SecretConfig.getSftpPasswordConfig());

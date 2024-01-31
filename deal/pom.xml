@@ -61,11 +61,11 @@
             <version>4.21.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.neoflex.creditconveyer</groupId>
-            <artifactId>nf-msa-creditconveyor-utils</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.neoflex.creditconveyer</groupId>-->
+<!--            <artifactId>nf-msa-creditconveyor-utils</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -223,6 +223,8 @@
                 <version>4.21.1</version>
             </plugin>
         </plugins>
+
+        <finalName>deal-0.0.1-SNAPSHOT</finalName>
     </build>
 
 </project>

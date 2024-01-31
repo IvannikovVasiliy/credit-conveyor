@@ -49,6 +49,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+
+        <finalName>discovery-0.0.1-SNAPSHOT</finalName>
     </build>
 
 </project>

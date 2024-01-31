@@ -2,7 +2,7 @@ package com.neoflex.creditconveyer.application.validation.validator;
 
 import com.neoflex.creditconveyer.application.domain.constant.Constants;
 import com.neoflex.creditconveyer.application.error.exception.ResourceNotFoundException;
-import com.neoflex.creditconveyer.utils.DatesUtil;
+import com.neoflex.creditconveyer.application.utils.DatesUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;

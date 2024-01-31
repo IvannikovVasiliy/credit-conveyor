@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.neoflex.creditconveyer</groupId>
-    <artifactId>configuration</artifactId>
+    <artifactId>configuration-docker</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -47,26 +47,5 @@
         </plugins>
         <finalName>configuration-0.0.1-SNAPSHOT</finalName>
     </build>
-
-    <profiles>
-        <profile>
-            <id>native</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <spring.profiles.active>native</spring.profiles.active>
-            </properties>
-        </profile>
-        <profile>
-            <id>docker</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <spring.profiles.active>docker</spring.profiles.active>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>

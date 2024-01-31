@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 
 @Slf4j
-public class RetreiveMessageErrorDecoder implements ErrorDecoder {
+public class RetrieveMessageErrorDecoder implements ErrorDecoder {
 
     private final ErrorDecoder errorDecoder = new Default();
 

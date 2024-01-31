@@ -16,7 +16,6 @@ import com.neoflex.creditconveyer.dossier.service.FileWorker;
 import com.neoflex.creditconveyer.dossier.util.ConfigUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.OpenMode;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.StatefulSFTPClient;
@@ -28,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -52,7 +50,7 @@ public class DossierServiceImpl implements DossierService {
     private final DealFeignService dealFeignService;
     private final DocumentRepository documentRepository;
     private final DocumentService documentService;
-    private final List<SSHClient> sshClients;
+//    private final List<SSHClient> sshClients;
     private final SFTPFactory sftpFactory;
 
     private Random random = new Random();

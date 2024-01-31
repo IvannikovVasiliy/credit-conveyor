@@ -3,3 +3,13 @@ spring:
     name: gateway
   config:
     import: "optional:configserver:http://localhost:8888"
+
+---
+
+spring:
+  profiles:
+    active: docker
+  application:
+    name: gateway
+  config:
+    import: "optional:configserver:http://configuration:8888"

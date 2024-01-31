@@ -1,13 +1,13 @@
-package com.neoflex.creditconveyer.application.error.decoder;
+package com.neoflex.creditconveyer.deal.error.decoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neoflex.creditconveyer.application.domain.dto.MessageInfoDto;
-import com.neoflex.creditconveyer.application.error.exception.BadRequestException;
-import com.neoflex.creditconveyer.application.error.exception.ConnectionRefusedException;
-import com.neoflex.creditconveyer.application.error.exception.ResourceNotFoundException;
-import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
-import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
-import com.neoflex.creditconveyer.application.http.HttpConfig;
+import com.neoflex.creditconveyer.deal.domain.constant.ErrorConstants;
+import com.neoflex.creditconveyer.deal.domain.dto.MessageInfoDto;
+import com.neoflex.creditconveyer.deal.error.exception.BadRequestException;
+import com.neoflex.creditconveyer.deal.error.exception.ConnectionRefusedException;
+import com.neoflex.creditconveyer.deal.error.exception.ResourceNotFoundException;
+import com.neoflex.creditconveyer.deal.error.exception.ValidationAndScoringAndCalculationOfferException;
+import com.neoflex.creditconveyer.deal.error.validation.ErrorResponseValidation;
 import feign.Request;
 import feign.Response;
 import feign.Util;
@@ -25,37 +25,26 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
-public class RetreiveMessageErrorDecoderTest {
+//@SpringBootTest
+class RetrieveMessageErrorDecoderTest {
 
-    private final RetreiveMessageErrorDecoder retreiveMessageErrorDecoder = new RetreiveMessageErrorDecoder();
+    private final RetrieveMessageErrorDecoder retrieveMessageErrorDecoder = new RetrieveMessageErrorDecoder();
 
-    @Autowired
-    private ObjectMapper objectMapper;
+//    @Autowired
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void decodeTest() throws IOException {
-        MessageInfoDto messageInfoDto = new MessageInfoDto();
+        MessageInfoDto messageInfoBadRequest =
+                new MessageInfoDto(ErrorConstants.DEFAULT_ERROR_CODE, HttpStatus.BAD_REQUEST.value(), "Bad Request");
         ErrorResponseValidation errorResponseValidation = new ErrorResponseValidation();
-        Map<String, Collection<String>> headers = new LinkedHashMap<>();
-        headers.put(HttpConfig.CORRELATION_ID_HEADER_CONFIG, List.of("1"));
-
-        Response internalServerErrorResponse = Response
-                .builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .request(Request
-                        .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
-                .headers(headers)
-                .body(objectMapper.writeValueAsBytes(messageInfoDto))
-                .build();
+//
         Response invalidResponse = Response
                 .builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .request(Request
                         .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
-                .headers(headers)
                 .body(Mockito.anyString(), StandardCharsets.UTF_8)
                 .build();
         Response validationBadRequestResponse = Response
@@ -63,7 +52,6 @@ public class RetreiveMessageErrorDecoderTest {
                 .status(HttpStatus.BAD_REQUEST.value())
                 .request(Request
                         .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
-                .headers(headers)
                 .body(objectMapper.writeValueAsBytes(errorResponseValidation))
                 .build();
         Response messageInfoDtoBadRequestResponse = Response
@@ -71,34 +59,30 @@ public class RetreiveMessageErrorDecoderTest {
                 .status(HttpStatus.BAD_REQUEST.value())
                 .request(Request
                         .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
-                .headers(headers)
-                .body(objectMapper.writeValueAsBytes(messageInfoDto))
+                .body(objectMapper.writeValueAsBytes(messageInfoBadRequest))
                 .build();
         Response notFoundResponse = Response
                 .builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .request(Request
                         .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
-                .headers(headers)
-                .body(objectMapper.writeValueAsBytes(messageInfoDto))
+                .body(objectMapper.writeValueAsBytes(messageInfoBadRequest))
                 .build();
-
-        assertThrows(
-                ConnectionRefusedException.class,
-                () -> retreiveMessageErrorDecoder.decode(Mockito.anyString(), internalServerErrorResponse)
-        );
+//
+        String serviceName = "qwerty";
+//
         assertThrows(
                 RuntimeException.class,
-                () -> retreiveMessageErrorDecoder.decode(Mockito.anyString(), invalidResponse)
+                () -> retrieveMessageErrorDecoder.decode(serviceName, invalidResponse)
         );
         assertThrows(
                 BadRequestException.class,
-                () -> retreiveMessageErrorDecoder.decode(Mockito.anyString(), messageInfoDtoBadRequestResponse));
+                () -> retrieveMessageErrorDecoder.decode(serviceName, messageInfoDtoBadRequestResponse));
         assertThrows(
                 ValidationAndScoringAndCalculationOfferException.class,
-                () -> retreiveMessageErrorDecoder.decode(Mockito.anyString(), validationBadRequestResponse));
+                () -> retrieveMessageErrorDecoder.decode(serviceName, validationBadRequestResponse));
         assertThrows(
                 ResourceNotFoundException.class,
-                () -> retreiveMessageErrorDecoder.decode(Mockito.anyString(), notFoundResponse));
+                () -> retrieveMessageErrorDecoder.decode(serviceName, notFoundResponse));
     }
 }

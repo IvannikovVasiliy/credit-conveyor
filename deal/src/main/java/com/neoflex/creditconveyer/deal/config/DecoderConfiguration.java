@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.deal.config;
 
-import com.neoflex.creditconveyer.deal.error.decoder.RetreiveMessageErrorDecoder;
+import com.neoflex.creditconveyer.deal.error.decoder.RetrieveMessageErrorDecoder;
 import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +10,6 @@ public class DecoderConfiguration {
 
     @Bean
     public ErrorDecoder errorDecoder() {
-        return new RetreiveMessageErrorDecoder();
+        return new RetrieveMessageErrorDecoder();
     }
 }

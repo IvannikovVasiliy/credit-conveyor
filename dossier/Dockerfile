@@ -8,5 +8,5 @@ RUN ./mvnw clean package
 
 FROM openjdk:17-jdk-alpine3.14
 WORKDIR /dossier
-COPY --from=builder /dossier/target/dossier:0.0.1-SNAPSHOT.jar dossier.jar
+COPY --from=builder /dossier/target/dossier-0.0.1-SNAPSHOT.jar dossier.jar
 ENTRYPOINT ["java", "-jar", "dossier.jar"]

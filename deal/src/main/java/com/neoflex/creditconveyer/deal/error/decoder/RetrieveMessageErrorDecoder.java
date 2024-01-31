@@ -11,7 +11,7 @@ import feign.codec.ErrorDecoder;
 
 import java.io.IOException;
 
-public class RetreiveMessageErrorDecoder implements ErrorDecoder {
+public class RetrieveMessageErrorDecoder implements ErrorDecoder {
 
     private final ErrorDecoder errorDecoder = new Default();
 

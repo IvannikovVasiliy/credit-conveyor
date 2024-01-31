@@ -14,7 +14,7 @@ spring:
     change-log: classpath:db/changelog/changelog-master.yaml
 
 kafka:
-  bootstrap-server: broker-credit-conveyor:9092
+  bootstrap-server: broker-credit-conveyor:29092
   group-id: dossier-ms-group
   topics:
     finish-registration-topic:
@@ -39,7 +39,7 @@ mail:
   email: ivannikovvasiliya@gmail.com
 
 sftp:
-  host: 172.18.9.144
+  host: 192.168.0.107
   port: 22
   locationFiles: /home/ubuntu/dossier/sftp/files #/var/sftp/Files
   connectionTimeout: 1_000

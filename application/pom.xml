@@ -42,11 +42,11 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.neoflex.creditconveyer</groupId>
-            <artifactId>nf-msa-creditconveyor-utils</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.neoflex.creditconveyer</groupId>-->
+<!--            <artifactId>nf-msa-creditconveyor-utils</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -163,7 +163,7 @@
             </plugin>
         </plugins>
 
-        <finalName>application:0.0.1-SNAPSHOT</finalName>
+        <finalName>application-service-0.0.1-SNAPSHOT</finalName>
     </build>
 
 </project>
