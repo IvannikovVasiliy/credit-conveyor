@@ -182,6 +182,11 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+            </plugin>
         </plugins>
 
         <finalName>application-service-0.0.1-SNAPSHOT</finalName>
