@@ -13,14 +13,12 @@ import feign.Response;
 import feign.Util;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,11 +40,13 @@ public class RetrieveMessageErrorDecoderTest {
         Map<String, Collection<String>> headers = new LinkedHashMap<>();
         headers.put(HttpConfig.CORRELATION_ID_HEADER_CONFIG, List.of("1"));
 
+        String nameMethod = "randomName";
+
         Response internalServerErrorResponse = Response
                 .builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .request(Request
-                        .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
+                        .create(Request.HttpMethod.GET, nameMethod, Collections.emptyMap(), null, Util.UTF_8))
                 .headers(headers)
                 .body(objectMapper.writeValueAsBytes(messageInfoDto))
                 .build();
@@ -54,15 +54,15 @@ public class RetrieveMessageErrorDecoderTest {
                 .builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .request(Request
-                        .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
+                        .create(Request.HttpMethod.GET, nameMethod, Collections.emptyMap(), null, Util.UTF_8))
                 .headers(headers)
-                .body(Mockito.anyString(), StandardCharsets.UTF_8)
+                .body(objectMapper.writeValueAsBytes(errorResponseValidation))
                 .build();
         Response validationBadRequestResponse = Response
                 .builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .request(Request
-                        .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
+                        .create(Request.HttpMethod.GET, nameMethod, Collections.emptyMap(), null, Util.UTF_8))
                 .headers(headers)
                 .body(objectMapper.writeValueAsBytes(errorResponseValidation))
                 .build();
@@ -70,7 +70,7 @@ public class RetrieveMessageErrorDecoderTest {
                 .builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .request(Request
-                        .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
+                        .create(Request.HttpMethod.GET, nameMethod, Collections.emptyMap(), null, Util.UTF_8))
                 .headers(headers)
                 .body(objectMapper.writeValueAsBytes(messageInfoDto))
                 .build();
@@ -78,27 +78,27 @@ public class RetrieveMessageErrorDecoderTest {
                 .builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .request(Request
-                        .create(Request.HttpMethod.GET, Mockito.anyString(), Collections.emptyMap(), null, Util.UTF_8))
+                        .create(Request.HttpMethod.GET, nameMethod, Collections.emptyMap(), null, Util.UTF_8))
                 .headers(headers)
                 .body(objectMapper.writeValueAsBytes(messageInfoDto))
                 .build();
 
         assertThrows(
                 ConnectionRefusedException.class,
-                () -> retrieveMessageErrorDecoder.decode(Mockito.anyString(), internalServerErrorResponse)
+                () -> retrieveMessageErrorDecoder.decode(nameMethod, internalServerErrorResponse)
         );
         assertThrows(
                 RuntimeException.class,
-                () -> retrieveMessageErrorDecoder.decode(Mockito.anyString(), invalidResponse)
+                () -> retrieveMessageErrorDecoder.decode(nameMethod, invalidResponse)
         );
         assertThrows(
                 BadRequestException.class,
-                () -> retrieveMessageErrorDecoder.decode(Mockito.anyString(), messageInfoDtoBadRequestResponse));
+                () -> retrieveMessageErrorDecoder.decode(nameMethod, messageInfoDtoBadRequestResponse));
         assertThrows(
                 ValidationAndScoringAndCalculationOfferException.class,
-                () -> retrieveMessageErrorDecoder.decode(Mockito.anyString(), validationBadRequestResponse));
+                () -> retrieveMessageErrorDecoder.decode(nameMethod, validationBadRequestResponse));
         assertThrows(
                 ResourceNotFoundException.class,
-                () -> retrieveMessageErrorDecoder.decode(Mockito.anyString(), notFoundResponse));
+                () -> retrieveMessageErrorDecoder.decode(nameMethod, notFoundResponse));
     }
 }
