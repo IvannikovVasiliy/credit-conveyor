@@ -75,10 +75,10 @@ class ApplicationServiceImplTest {
         BigDecimal requestedAmount2 = BigDecimal.valueOf(10000);
         Long applicationId = 44L;
 
-        LoanApplicationRequestDTO loanApplicationRequest1 = buildLoanApplicationRequestDTO(
+        LoanApplicationRequestDTO loanApplicationWithoutMiddleName = buildLoanApplicationRequestDTO(
                 requestedAmount1, 7, LocalDate.of(2001, 1 ,1), "Ivan", "Ivanov", null, "qwerty@gmail.com", "1234", "123456"
         );
-        LoanApplicationRequestDTO loanApplicationRequest2 = buildLoanApplicationRequestDTO(
+        LoanApplicationRequestDTO loanApplicationRequestWithMiddleName = buildLoanApplicationRequestDTO(
                 requestedAmount2, 9, LocalDate.of(2000, 10 ,10), "Ivan", "Ivanov", "Ivanovich", "qwerty123456@gmail.com", "1234", "123456"
         );
 
@@ -109,11 +109,11 @@ class ApplicationServiceImplTest {
                 new LoanOfferDTO(applicationId, requestedAmount2, BigDecimal.valueOf(10167.4061640000), 9, BigDecimal.valueOf(1129.7117960000), BigDecimal.valueOf(4), true, true)
         );
 
-        when(dealFeignService.postDealApplication(loanApplicationRequest1)).thenReturn(loanOffers1);
-        when(dealFeignService.postDealApplication(loanApplicationRequest2)).thenReturn(loanOffers2);
+        when(dealFeignService.postDealApplication(loanApplicationWithoutMiddleName)).thenReturn(loanOffers1);
+        when(dealFeignService.postDealApplication(loanApplicationRequestWithMiddleName)).thenReturn(loanOffers2);
 
-        List<LoanOfferDTO> loanOffersResponse1 = applicationService.prescoringAndCalcPossibleConditions(loanApplicationRequest1);
-        List<LoanOfferDTO> loanOffersResponse2 = applicationService.prescoringAndCalcPossibleConditions(loanApplicationRequest2);
+        List<LoanOfferDTO> loanOffersResponse1 = applicationService.prescoringAndCalcPossibleConditions(loanApplicationWithoutMiddleName);
+        List<LoanOfferDTO> loanOffersResponse2 = applicationService.prescoringAndCalcPossibleConditions(loanApplicationRequestWithMiddleName);
         assertEquals(loanOffersExpected1, loanOffersResponse1);
         assertEquals(loanOffersExpected2, loanOffersResponse2);
     }
