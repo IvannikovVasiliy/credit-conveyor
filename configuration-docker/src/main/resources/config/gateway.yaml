@@ -1,0 +1,101 @@
+server:
+  port: 8765
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/
+
+spring:
+  profiles:
+    active: native
+  output:
+    ansi:
+      enabled: always
+  cloud:
+    config:
+      server:
+        bootstrap: false
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: application-get-application-by-id
+          uri: lb://application-service
+          predicates:
+            - Path=/application/*
+          filters:
+            - RewritePath=/application/(?<segment>.*), /v1/application/${segment}
+        - id: application-post-application
+          uri: lb://application-service
+          predicates:
+            - Path=/application
+          filters:
+            - RewritePath=/application, /v1/application
+        - id: application-offer
+          uri: lb://application-service
+          predicates:
+            - Path=/application/apply
+          filters:
+            - RewritePath=/application/apply, /v1/application/offer
+        - id: deal-application-by-id
+          uri: lb://deal
+          predicates:
+            - Path=/deal/admin/application/*
+          filters:
+            - RewritePath=/deal/admin/application/(?<segment>.*), /v2/deal/admin/application/${segment}
+        - id: deal-application
+          uri: lb://deal
+          predicates:
+            - Path=/deal/admin/application
+          filters:
+            - RewritePath=/deal/admin/application, /v2/deal/admin/application
+        - id: deal-calculate
+          uri: lb://deal
+          predicates:
+            - Path=/application/registration/*
+          filters:
+            - RewritePath=/application/registration/(?<segment>.*), /v2/deal/calculate/${segment}
+        - id: deal-document
+          uri: lb://deal
+          predicates:
+            - Path=/document/*
+          filters:
+            - RewritePath=/document/(?<segment>.*), /v2/deal/document/${segment}/send
+        - id: deal-sign
+          uri: lb://deal
+          predicates:
+            - Path=/document/*/sign
+          filters:
+            - RewritePath=/document/(?<segment>.*)/sign, /v2/deal/document/${segment}/sign
+        - id: deal-ses-code
+          uri: lb://deal
+          predicates:
+            - Path=/document/*/code
+          filters:
+            - RewritePath=/document/(?<segment>.*)/code, /v2/deal/document/${segment}/code
+        - id: deal
+          uri: lb://deal
+          predicates:
+            - Path=/deal/**
+          filters:
+            - RewritePath=/deal/(?<path>.*), /$\{path}
+        - id: application-service
+          uri: lb://application-service
+          predicates:
+            - Path=/application-service/**
+          filters:
+            - RewritePath=/application-service/(?<path>.*), /$\{path}
+        - id: openapi
+          uri: http://gateway:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: deal
+        url: /v3/api-docs/deal

@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: native
+  output:
+    ansi:
+      enabled: always
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/

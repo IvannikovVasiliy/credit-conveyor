@@ -36,7 +36,15 @@ out
 overridedb.*
 target
 .flattened-pom.xml
-secrets.yml
 .gradletasknamecache
 .sts4-cache
 .idea
+application.conf
+secrets*
+sftp.conf
+hosts.dat
+hosts*
+
+mvnw
+mvnw.cmd
+.mvn

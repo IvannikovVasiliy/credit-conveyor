@@ -1,0 +1,51 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/dossier
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate.ddl-auto: validate
+    show-sql: true
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yaml
+
+kafka:
+  bootstrap-server: localhost:9092
+  group-id: dossier-ms-group
+  topics:
+    finish-registration-topic:
+      name: finish-registration
+      count-consumers: 3
+    create-documents-topic:
+      name: create-documents
+      count-consumers: 3
+    send-documents-topic:
+      name: send-documents
+      count-consumers: 3
+    sign-documents-topic:
+      name: send-ses
+      count-consumers: 3
+
+dealService:
+  hostPort: http://localhost:8081
+
+mail:
+  host: smtp.gmail.com
+  port: 587
+  email: ivannikovvasiliya@gmail.com
+
+sftp:
+  host: 192.168.0.107
+  port: 22
+  locationFiles: /home/ubuntu/dossier/sftp/files #/var/sftp/Files
+  connectionTimeout: 1_000
+  sshClientPool: 16
+  statefulSftpClientPool: 128
+
+logging:
+  level:
+    com.neoflex.creditconveyer.dossier: DEBUG

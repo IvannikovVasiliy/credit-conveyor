@@ -1,0 +1,42 @@
+[
+  {
+    "applicationId": 123456,
+    "requestedAmount": 50000,
+    "totalAmount": 50668.8851550000,
+    "term": 7,
+    "monthlyPayment": 7238.4121650000,
+    "rate": 4,
+    "isInsuranceEnabled": true,
+    "isSalaryClient": true
+  },
+  {
+    "applicationId": 123456,
+    "requestedAmount": 50000,
+    "totalAmount": 50836.7982850000,
+    "term": 7,
+    "monthlyPayment": 7262.3997550000,
+    "rate": 5,
+    "isInsuranceEnabled": true,
+    "isSalaryClient": false
+  },
+  {
+    "applicationId": 123456,
+    "requestedAmount": 50000,
+    "totalAmount": 51511.2074750000,
+    "term": 7,
+    "monthlyPayment": 7358.7439250000,
+    "rate": 9,
+    "isInsuranceEnabled": false,
+    "isSalaryClient": true
+  },
+  {
+    "applicationId": 123456,
+    "requestedAmount": 50000,
+    "totalAmount": 51680.4971900000,
+    "term": 7,
+    "monthlyPayment": 7382.9281700000,
+    "rate": 10,
+    "isInsuranceEnabled": false,
+    "isSalaryClient": false
+  }
+]

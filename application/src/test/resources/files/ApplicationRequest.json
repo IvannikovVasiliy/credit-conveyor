@@ -1,0 +1,10 @@
+{
+  "amount": 10000,
+  "term": 7,
+  "firstName": "Ivan",
+  "lastName": "Ivanov",
+  "email": "ivannikovvasiliya2001@gmail.com",
+  "birthdate": "2005-01-01",
+  "passportSeries": "1234",
+  "passportNumber": "123456"
+}

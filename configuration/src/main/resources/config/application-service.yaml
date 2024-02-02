@@ -1,0 +1,25 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  profiles:
+    active: native
+  output:
+    ansi:
+      enabled: always
+
+---
+
+spring:
+  profiles:
+    active: docker
+  output:
+    ansi:
+      enabled: always
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://gateway:8761/eureka/
