@@ -33,7 +33,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.organization=ivannikovvasiliy
+            -Dsonar.organization=VasiliyIvannikov
             -Dsonar.projectKey=credit-conveyor
 
 #        run: mvn -B verify sonar:sonar -Dsonar.projectKey=credit-conveyor -Dsonar.organization=ivannikovvasiliy -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml
