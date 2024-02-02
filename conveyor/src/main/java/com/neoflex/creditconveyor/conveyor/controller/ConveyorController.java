@@ -33,7 +33,7 @@ public class ConveyorController {
         List<LoanOfferDTO> loanOffers = conveyorService.createLoanOffers(loanApplicationRequest);
 
         log.debug("Response calculate offers. loanOffers={}", loanOffers);
-        return new ResponseEntity(loanOffers, HttpStatus.OK);
+        return new ResponseEntity<>(loanOffers, HttpStatus.OK);
     }
 
     @PostMapping("/calculation")
