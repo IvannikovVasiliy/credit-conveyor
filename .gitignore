@@ -44,3 +44,6 @@ application.yaml
 secrets*
 hosts.dat
 sftp.conf
+mvn
+.mvn
+mvnw.cmd
