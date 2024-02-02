@@ -14,7 +14,7 @@ class FirstLastMiddleNameValidatorTest {
     ConstraintValidatorContext constraintValidatorContext;
 
     @Test
-    public void isValidTest() {
+     void isValidTest() {
         String shortStr = "a";
         String russianStr = "qwerty русский текст";
         String validStr = "valid";

@@ -1,8 +1,15 @@
 package com.neoflex.creditconveyor.conveyor.util;
 
+import com.neoflex.creditconveyor.conveyor.schedule.PaymentSchedule;
+
 import java.math.BigDecimal;
 
 public class Constants {
+
+    private Constants() {
+        throw new IllegalStateException("Attempt to initialize object of util-class: " + Constants.class.getName());
+    }
+
     public static final Long APPLICATION_ID = 123456L;
 
     public static final Integer INSURANCE_CONSTANT_ARGUMENT = 10000;

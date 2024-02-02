@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PaymentScheduleTest {
 
     @Test
-    public void createPaymentScheduleTest() {
+    void createPaymentScheduleTest() {
         ScoringDataDTO scoringOwnerBusinessRequest = ScoringDataDTO
                 .builder()
                 .amount(BigDecimal.valueOf(10000))

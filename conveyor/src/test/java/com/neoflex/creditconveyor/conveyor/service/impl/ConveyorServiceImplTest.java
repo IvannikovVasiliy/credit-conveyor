@@ -34,7 +34,7 @@ class ConveyorServiceImplTest {
     private ConveyorServiceImpl conveyorService;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         employment = EmploymentDTO
                 .builder()
                 .employmentStatus(EmploymentStatus.BUSINESS_OWNER)
@@ -48,7 +48,7 @@ class ConveyorServiceImplTest {
     private static EmploymentDTO employment;
 
     @Test
-    public void createLoanOfferTest() {
+    void createLoanOfferTest() {
         LoanApplicationRequestDTO loanApplicationRequestDTO = new LoanApplicationRequestDTO(
                         BigDecimal.valueOf(50000), 7, "Ivan", "Ivanov", LocalDate.of(2000, 01, 01), "1234", "123456"
                 );
@@ -99,7 +99,7 @@ class ConveyorServiceImplTest {
     }
 
     @Test
-    public void validAndScoreAndCalcOffer() throws URISyntaxException, IOException {
+    void validAndScoreAndCalcOffer() throws URISyntaxException, IOException {
         ScoringDataDTO scoringOwnerBusinessRequest = ScoringDataDTO
                 .builder()
                 .amount(BigDecimal.valueOf(10000))
@@ -156,7 +156,7 @@ class ConveyorServiceImplTest {
     }
 
     @Test
-    public void refuseCreditThrowExceptionTest() {
+     void refuseCreditThrowExceptionTest() {
         ScoringDataDTO scoringDataSmallSalary = ScoringDataDTO
                 .builder()
                 .amount(BigDecimal.valueOf(10000)).term(7)
@@ -208,7 +208,7 @@ class ConveyorServiceImplTest {
     }
 
     @Test
-    public void calcRateTest() {
+     void calcRateTest() {
         ScoringDataDTO scoringDataDTO = ScoringDataDTO
                 .builder()
                 .martialStatus(MartialStatus.MARRIED)

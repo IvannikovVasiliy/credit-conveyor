@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -106,8 +107,7 @@ public class ConveyorServiceImpl implements ConveyorService {
                         .build()
         ))
                 .stream()
-                .sorted((offer1, offer2) ->
-                        offer1.getRate().compareTo(offer2.getRate()))
+                .sorted(Comparator.comparing(LoanOfferDTO::getRate))
                 .toList();
 
         log.debug("Response calculate offers. loanOffers={}", loanOffers);
@@ -121,7 +121,7 @@ public class ConveyorServiceImpl implements ConveyorService {
                 scoringData.getAmount(), scoringData.getTerm(), scoringData.getFirstName(), scoringData.getLastName(), scoringData.getMiddleName(), scoringData.getGender(), scoringData.getBirthdate(), scoringData.getMartialStatus(), scoringData.getDependentAmount(), scoringData.getEmployment(), scoringData.getAccount(), scoringData.getPassportSeries(), scoringData.getPassportNumber(), scoringData.getPassportIssueDate(), scoringData.getPassportIssueBranch(), scoringData.getIsInsuranceEnabled(), scoringData.getIsSalaryClient());
 
         List<Violation> violations = refuseCredit(scoringData);
-        if (violations.size() > 0) {
+        if (!violations.isEmpty()) {
             log.debug("Error validAndScoreAndCalcOffer. violations:{}", violations);
             throw new ValidationAndScoringAndCalculationOfferException(violations);
         }
@@ -210,54 +210,44 @@ public class ConveyorServiceImpl implements ConveyorService {
         BigDecimal rate = Constants.BASE_RATE;
 
         if (EmploymentStatus.SELF_EMPLOYED.equals(scoringData.getEmployment().getEmploymentStatus())) {
-            BigDecimal rateSelfEmployed = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_SELF_EMPLOYED));
-            rate = rateSelfEmployed;
+            rate = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_SELF_EMPLOYED));
         }
         if (EmploymentStatus.BUSINESS_OWNER.equals(scoringData.getEmployment().getEmploymentStatus())) {
-            BigDecimal rateOwnerBusiness = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_OWNER_BUSINESS));
-            rate = rateOwnerBusiness;
+            rate = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_OWNER_BUSINESS));
         }
 
         if (EmploymentPosition.MID_MANAGER.equals(scoringData.getEmployment().getPosition())) {
-            BigDecimal rateAverageManager = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_MID_MANAGER));
-            rate = rateAverageManager;
+            rate = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_MID_MANAGER));
         }
         if (EmploymentPosition.TOP_MANAGER.equals(scoringData.getEmployment().getPosition())) {
-            BigDecimal rateTopManager = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_TOP_MANAGER));
-            rate = rateTopManager;
+            rate = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_TOP_MANAGER));
         }
 
         if (MartialStatus.MARRIED.equals(scoringData.getMartialStatus())) {
-            BigDecimal rateMarried = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_MARRIED));
-            rate = rateMarried;
+            rate = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_MARRIED));
         }
         if (MartialStatus.DIVORCED.equals(scoringData.getMartialStatus())) {
-            BigDecimal rateDivorced = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_DIVORCED));
-            rate = rateDivorced;
+            rate = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_DIVORCED));
         }
 
         if (null != scoringData.getDependentAmount() && scoringData.getDependentAmount() > Constants.MAX_COUNT_DEPENDENT_AMOUNT) {
-            BigDecimal rateDependentAmount = rate.add(BigDecimal.valueOf(Constants.MAX_COUNT_DEPENDENT_AMOUNT));
-            rate = rateDependentAmount;
+            rate = rate.add(BigDecimal.valueOf(Constants.MAX_COUNT_DEPENDENT_AMOUNT));
         }
 
         if (Gender.FEMALE.equals(scoringData.getGender())) {
             int age = DatesUtil.getYears(scoringData.getBirthdate());
             if (age >= Constants.MIN_AGE_SALE_FEMALE && age < Constants.MAX_AGE_SALE_FEMALE) {
-                BigDecimal rateFemale = rate.add(BigDecimal.valueOf(Constants.RATE_SALE_FOR_FEMALE));
-                rate = rateFemale;
+                rate = rate.add(BigDecimal.valueOf(Constants.RATE_SALE_FOR_FEMALE));
             }
         }
         if (Gender.MALE.equals(scoringData.getGender())) {
             int age = DatesUtil.getYears(scoringData.getBirthdate());
             if (age >= Constants.MIN_AGE_SALE_MALE && age < Constants.MAX_AGE_SALE_MALE) {
-                BigDecimal rateMale = rate.add(BigDecimal.valueOf(Constants.RATE_SALE_FOR_MALE));
-                rate = rateMale;
+                rate = rate.add(BigDecimal.valueOf(Constants.RATE_SALE_FOR_MALE));
             }
         }
         if (Gender.NON_BINARY.equals(scoringData.getGender())) {
-            BigDecimal rateNonbinary = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_NONBINARY_GENDER));
-            rate = rateNonbinary;
+            rate = rate.add(BigDecimal.valueOf(Constants.RATE_FOR_NONBINARY_GENDER));
         }
 
         log.debug("Output rate={}", rate);

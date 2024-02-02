@@ -14,6 +14,10 @@ import java.util.List;
 @Slf4j
 public class PaymentSchedule {
 
+    private PaymentSchedule() {
+        throw new IllegalStateException("Attempt to initialize object of util-class: " + PaymentSchedule.class.getName());
+    }
+
     public static List<PaymentScheduleElement> createPaymentSchedule(ScoringDataDTO scoringData, BigDecimal monthPayment, BigDecimal rate, LocalDate date) {
         log.debug("Input calculateRate. scoringData: {amount:{}, term:{}, firstName:{}, lastName:{}, middleName:{}, gender:{}, birthdate:{}, martialStatus:{}, dependentAmount:{}, employment:{}, account:{},  passportSeries:{}, passportNumber:{}, passportIssueDate:{}, passportIssueBranch:{}, isInsuranceEnabled:{}, isSalaryClient:{}}; monthPayment={}, rate={}",
                 scoringData.getAmount(), scoringData.getTerm(), scoringData.getFirstName(), scoringData.getLastName(), scoringData.getMiddleName(), scoringData.getGender(), scoringData.getBirthdate(), scoringData.getMartialStatus(), scoringData.getDependentAmount(), scoringData.getEmployment(), scoringData.getAccount(), scoringData.getPassportSeries(), scoringData.getPassportNumber(), scoringData.getPassportIssueDate(), scoringData.getPassportIssueBranch(), scoringData.getIsInsuranceEnabled(), scoringData.getIsSalaryClient(), monthPayment, rate);
