@@ -115,16 +115,17 @@ public class ApplicationServiceImpl implements ApplicationService {
                                   boolean isSeriesPassportValid,
                                   boolean isNumberPassportValid) {
         List<Violation> violations = new LinkedList<>();
+        String messageInvalidName = "Invalid value. Length should be between 2 and 30. Letters should be latin.";
         if (!isFirstNameValid) {
-            Violation violation = new Violation("firstName", "Invalid value. Length should be between 2 and 30. Letters should be latin.");
+            Violation violation = new Violation("firstName", messageInvalidName);
             violations.add(violation);
         }
         if (!isLastNameValid) {
-            Violation violation = new Violation("lastName", "Invalid value. Length should be between 2 and 30. Letters should be latin.");
+            Violation violation = new Violation("lastName", messageInvalidName);
             violations.add(violation);
         }
         if (!isMiddleNameValid) {
-            Violation violation = new Violation("middleName", "Invalid value. Length should be between 2 and 30. Letters should be latin.");
+            Violation violation = new Violation("middleName", messageInvalidName);
             violations.add(violation);
         }
         if (!isAmountValid) {

@@ -15,10 +15,8 @@ public class DatesUtil {
 
         if (birthday.getMonthValue() > now.getMonthValue()) {
             years--;
-        } else if (birthday.getMonthValue() == now.getMonthValue()) {
-            if (birthday.getDayOfMonth() > now.getDayOfMonth()) {
-                years--;
-            }
+        } else if (birthday.getMonthValue() == now.getMonthValue() && birthday.getDayOfMonth() > now.getDayOfMonth()) {
+            years--;
         }
 
         log.debug("Output getYears. birthday={}, years={}", birthday, years);

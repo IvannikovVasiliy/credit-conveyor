@@ -11,5 +11,5 @@ public class ValidationAndScoringAndCalculationOfferException extends RuntimeExc
         this.violations = violations;
     }
 
-    private ErrorResponseValidation violations;
+    private final ErrorResponseValidation violations;
 }

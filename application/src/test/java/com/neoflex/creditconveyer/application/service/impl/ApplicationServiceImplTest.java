@@ -131,8 +131,8 @@ class ApplicationServiceImplTest {
                 null);
         applicationService.chooseOffer(loanOfferDTOWithoutSalaryClientAndInsurance);
 
-        assertTrue(loanOfferDTOWithoutSalaryClientAndInsurance.getIsSalaryClient() != null);
-        assertTrue(loanOfferDTOWithoutSalaryClientAndInsurance.getIsInsuranceEnabled() != null);
+        assertNotNull(loanOfferDTOWithoutSalaryClientAndInsurance.getIsSalaryClient());
+        assertNotNull(loanOfferDTOWithoutSalaryClientAndInsurance.getIsInsuranceEnabled());
     }
 
     private LoanApplicationRequestDTO buildLoanApplicationRequestDTO(BigDecimal amount,

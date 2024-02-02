@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class RetrieveMessageErrorDecoderTest {
+class RetrieveMessageErrorDecoderTest {
 
     private final RetrieveMessageErrorDecoder retrieveMessageErrorDecoder = new RetrieveMessageErrorDecoder();
 

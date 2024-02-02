@@ -16,6 +16,7 @@ public class ErrorResponseValidation implements Serializable {
     public ErrorResponseValidation() {
     }
 
+    @Serial
     private List<Violation> violations;
 
     public List<Violation> getViolations() {

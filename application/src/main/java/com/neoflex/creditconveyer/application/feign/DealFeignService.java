@@ -48,7 +48,7 @@ public class DealFeignService {
             log.info("Response loanOffers={}", loanOffers);
             return loanOffers;
         } catch (RuntimeException e) {
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
