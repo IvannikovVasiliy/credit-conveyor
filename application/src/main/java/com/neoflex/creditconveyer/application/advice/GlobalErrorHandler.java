@@ -1,7 +1,6 @@
 package com.neoflex.creditconveyer.application.advice;
 
 import com.neoflex.creditconveyer.application.domain.constant.ErrorConstants;
-import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.application.domain.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.application.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.application.error.exception.ConnectionRefusedException;
@@ -10,14 +9,7 @@ import com.neoflex.creditconveyer.application.error.exception.ValidationAndScori
 import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.application.error.validation.Violation;
 import com.neoflex.creditconveyer.application.http.HttpConfig;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.HeaderParam;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
-import org.hibernate.validator.internal.engine.path.NodeImpl;
-import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -26,8 +18,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.net.ConnectException;
-import java.util.Arrays;
 import java.util.List;
 
 @RestControllerAdvice

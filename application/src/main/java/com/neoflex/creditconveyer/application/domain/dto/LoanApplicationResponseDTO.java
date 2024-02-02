@@ -1,7 +1,6 @@
 package com.neoflex.creditconveyer.application.domain.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
