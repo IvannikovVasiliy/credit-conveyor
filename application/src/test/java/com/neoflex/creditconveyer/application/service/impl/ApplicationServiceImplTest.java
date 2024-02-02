@@ -1,7 +1,7 @@
 package com.neoflex.creditconveyer.application.service.impl;
 
-import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
-import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
+import com.neoflex.creditconveyer.application.dto.LoanApplicationRequestDTO;
+import com.neoflex.creditconveyer.application.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.application.feign.DealFeignService;
 import org.junit.jupiter.api.Test;

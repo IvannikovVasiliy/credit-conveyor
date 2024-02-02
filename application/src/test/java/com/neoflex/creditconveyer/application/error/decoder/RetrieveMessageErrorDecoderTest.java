@@ -1,13 +1,13 @@
 package com.neoflex.creditconveyer.application.error.decoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neoflex.creditconveyer.application.domain.dto.MessageInfoDto;
+import com.neoflex.creditconveyer.application.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.application.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.application.error.exception.ConnectionRefusedException;
 import com.neoflex.creditconveyer.application.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
-import com.neoflex.creditconveyer.application.http.HttpConfig;
+import com.neoflex.creditconveyer.application.utils.HttpConfig;
 import feign.Request;
 import feign.Response;
 import feign.Util;

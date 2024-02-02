@@ -1,14 +1,14 @@
 package com.neoflex.creditconveyer.application.advice;
 
-import com.neoflex.creditconveyer.application.domain.constant.ErrorConstants;
-import com.neoflex.creditconveyer.application.domain.dto.MessageInfoDto;
+import com.neoflex.creditconveyer.application.dto.MessageInfoDto;
 import com.neoflex.creditconveyer.application.error.exception.BadRequestException;
 import com.neoflex.creditconveyer.application.error.exception.ConnectionRefusedException;
 import com.neoflex.creditconveyer.application.error.exception.ResourceNotFoundException;
 import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
 import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.application.error.validation.Violation;
-import com.neoflex.creditconveyer.application.http.HttpConfig;
+import com.neoflex.creditconveyer.application.utils.ErrorConstants;
+import com.neoflex.creditconveyer.application.utils.HttpConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -106,6 +106,6 @@ public class GlobalErrorHandler {
             ValidationAndScoringAndCalculationOfferException offer
     ) {
         log.debug("Input handleValidationAndScoringAndCalculationOfferException. offer: {}", offer.getViolations());
-        return new ErrorResponseValidation(offer.getViolations());
+        return offer.getViolations();
     }
 }

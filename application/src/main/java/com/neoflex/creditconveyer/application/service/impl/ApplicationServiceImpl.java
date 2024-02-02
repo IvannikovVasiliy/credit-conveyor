@@ -1,14 +1,15 @@
 package com.neoflex.creditconveyer.application.service.impl;
 
-import com.neoflex.creditconveyer.application.domain.constant.Constants;
-import com.neoflex.creditconveyer.application.domain.constant.RegExpConstants;
-import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
-import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationResponseDTO;
-import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
+import com.neoflex.creditconveyer.application.dto.LoanApplicationRequestDTO;
+import com.neoflex.creditconveyer.application.dto.LoanApplicationResponseDTO;
+import com.neoflex.creditconveyer.application.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.application.error.exception.ValidationAndScoringAndCalculationOfferException;
+import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
 import com.neoflex.creditconveyer.application.error.validation.Violation;
 import com.neoflex.creditconveyer.application.feign.DealFeignService;
 import com.neoflex.creditconveyer.application.service.ApplicationService;
+import com.neoflex.creditconveyer.application.utils.Constants;
+import com.neoflex.creditconveyer.application.utils.RegExpConstants;
 import com.neoflex.creditconveyer.application.validation.validator.AdultValidator;
 import com.neoflex.creditconveyer.application.validation.validator.FirstNameValidator;
 import com.neoflex.creditconveyer.application.validation.validator.LastNameValidator;
@@ -82,7 +83,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         boolean isEmailValid = true;
         if (loanApplication.getEmail() != null) {
              isEmailValid = Pattern
-                    .compile(RegExpConstants.emailPattern)
+                    .compile(RegExpConstants.EMAIL_PATTERN)
                     .matcher(loanApplication.getEmail())
                     .matches();
         }
@@ -97,7 +98,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         );
         if (violations.size() > 0) {
             log.debug("Error prescoring. violations:{}", violations);
-            throw new ValidationAndScoringAndCalculationOfferException(violations);
+            throw new ValidationAndScoringAndCalculationOfferException(new ErrorResponseValidation(violations));
         }
 
         log.debug("Prescoring is valid. loanApplication={amount: {}, term:{}, firstName:{}, lastName:{}, middleName:{}, email:{}, birthdate:{}, passportSeries:{}, passportNumber:{}}",

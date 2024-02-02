@@ -1,17 +1,15 @@
 package com.neoflex.creditconveyer.application.error.exception;
 
-import com.neoflex.creditconveyer.application.error.validation.Violation;
+import com.neoflex.creditconveyer.application.error.validation.ErrorResponseValidation;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 public class ValidationAndScoringAndCalculationOfferException extends RuntimeException {
 
-    public ValidationAndScoringAndCalculationOfferException(List<Violation> violations) {
+    public ValidationAndScoringAndCalculationOfferException(ErrorResponseValidation violations) {
         super();
         this.violations = violations;
     }
 
-    private List<Violation> violations;
+    private ErrorResponseValidation violations;
 }

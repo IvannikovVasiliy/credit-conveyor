@@ -1,6 +1,11 @@
-package com.neoflex.creditconveyer.application.domain.constant;
+package com.neoflex.creditconveyer.application.utils;
 
 public class ErrorConstants {
+
+    private ErrorConstants() {
+        throw new IllegalStateException("Attempt to initialize object of util-class: " + ErrorConstants.class.getName());
+    }
+
     public static final Integer DEFAULT_ERROR_CODE = -1;
 
     public static final Integer BAD_REQUEST = 400;

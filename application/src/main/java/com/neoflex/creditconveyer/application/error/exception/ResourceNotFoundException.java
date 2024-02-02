@@ -4,6 +4,7 @@ public class ResourceNotFoundException extends RuntimeException {
 
     public ResourceNotFoundException(String errorMessage) {
         super(errorMessage);
+        this.correlationId = null;
     }
 
     public ResourceNotFoundException(String errorMessage, String correlationId) {
@@ -11,7 +12,7 @@ public class ResourceNotFoundException extends RuntimeException {
         this.correlationId = correlationId;
     }
 
-    private String correlationId;
+    private final String correlationId;
 
     public String getCorrelationId() {
         return correlationId;

@@ -1,8 +1,8 @@
 package com.neoflex.creditconveyer.application.service;
 
-import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
-import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationResponseDTO;
-import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
+import com.neoflex.creditconveyer.application.dto.LoanApplicationRequestDTO;
+import com.neoflex.creditconveyer.application.dto.LoanApplicationResponseDTO;
+import com.neoflex.creditconveyer.application.dto.LoanOfferDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 

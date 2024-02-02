@@ -1,10 +1,10 @@
 package com.neoflex.creditconveyer.application.controller;
 
-import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
-import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationResponseDTO;
-import com.neoflex.creditconveyer.application.domain.dto.LoanOfferDTO;
-import com.neoflex.creditconveyer.application.http.HttpConfig;
+import com.neoflex.creditconveyer.application.dto.LoanApplicationRequestDTO;
+import com.neoflex.creditconveyer.application.dto.LoanApplicationResponseDTO;
+import com.neoflex.creditconveyer.application.dto.LoanOfferDTO;
 import com.neoflex.creditconveyer.application.service.ApplicationService;
+import com.neoflex.creditconveyer.application.utils.HttpConfig;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

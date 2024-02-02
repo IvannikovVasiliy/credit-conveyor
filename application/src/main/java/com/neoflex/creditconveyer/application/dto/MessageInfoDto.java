@@ -1,4 +1,4 @@
-package com.neoflex.creditconveyer.application.domain.dto;
+package com.neoflex.creditconveyer.application.dto;
 
 import lombok.Getter;
 import lombok.Setter;

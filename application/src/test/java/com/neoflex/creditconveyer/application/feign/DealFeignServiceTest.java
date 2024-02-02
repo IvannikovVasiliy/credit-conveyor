@@ -1,6 +1,6 @@
 package com.neoflex.creditconveyer.application.feign;
 
-import com.neoflex.creditconveyer.application.domain.dto.LoanApplicationRequestDTO;
+import com.neoflex.creditconveyer.application.dto.LoanApplicationRequestDTO;
 import com.neoflex.creditconveyer.application.error.exception.ConnectionRefusedException;
 import feign.RetryableException;
 import org.junit.jupiter.api.BeforeAll;
